@@ -15,7 +15,12 @@
 	#],
 	
     # This section is where we can define images that can be referenced ingame using Global.getSettings().getSpriteName("category", "name");
-	#"graphics":{
-	#	"category":{ "name":"graphics/ui/sector_age_young.png", }
-	#}
+	"graphics":{
+		"treasure_hunt_events":{ 
+			"hunt_begins":"graphics/ui/circle_cross.png", 
+			"found_lead":"graphics/ui/pylon.png", 
+			"found_treasure":"graphics/ui/circle_dash_outline.png", 
+			"found_opportunity":"graphics/ui/double_square_x.png", 
+		}
+	}
 }
