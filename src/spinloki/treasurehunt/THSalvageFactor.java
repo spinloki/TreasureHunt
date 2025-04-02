@@ -13,7 +13,7 @@ public class THSalvageFactor extends BaseOneTimeFactor {
 
     @Override
     public String getDesc(BaseEventIntel intel) {
-        return "Gained information about your hunt by exploring a derelict " + mType;
+        return "Gained info by " + mType;
     }
 
 }

@@ -18,11 +18,8 @@ public class TreasureHunt extends BaseModPlugin {
     @Override
     public void onNewGame() {
         super.onNewGame();
-        // Add your code here, or delete this method (it does nothing unless you add code)
-    }
-
-    public void onGameLoad(boolean newGame) {
         new THFactorTracker();
+        // Add your code here, or delete this method (it does nothing unless you add code)
     }
 
 

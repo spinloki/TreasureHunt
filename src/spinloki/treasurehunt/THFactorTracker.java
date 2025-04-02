@@ -19,11 +19,20 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
             return;
         }
         var name = entity.getName();
-        if (name.equals("Research Station") || name.equals("Mining Station")){
-            setNotify(new THSalvageFactor(10, "station"));
+        if (name.equals("Research Station") || name.equals("Mining Station") || name.equals("Orbital Habitat")){
+            setNotify(new THSalvageFactor(20, "exploring a derelict station"));
         }
         else if (name.equals("Derelict Ship")){
-            setNotify(new THSalvageFactor(5, "ship"));
+            setNotify(new THSalvageFactor(5, "exploring a derelict ship"));
+        }
+        else if (name.equals("Supply Cache")){
+            setNotify(new THSalvageFactor(5, "exploring a supply cache"));
+        }
+        else if (entity.getId().contains("planet")){
+            setNotify(new THSalvageFactor(10, "exploring a ruin"));
+        }
+        else if (!entity.getFaction().getId().equals("neutral")){
+            setNotify(new THSalvageFactor(10, "raiding a colony"));
         }
     }
 
@@ -55,7 +64,7 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
 
         if (interval.intervalElapsed() && mNotify) {
             mNotify = false;
-            TreasureHuntEventIntel.addFactorCreateIfNecessary(mFactor, null);
+             TreasureHuntEventIntel.addFactorCreateIfNecessary(mFactor, null);
         }
     }
 }
