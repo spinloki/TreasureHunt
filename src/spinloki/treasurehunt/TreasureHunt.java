@@ -22,8 +22,7 @@ public class TreasureHunt extends BaseModPlugin {
     }
 
     public void onGameLoad(boolean newGame) {
-        var thFactorTracker = new THFactorTracker();
-        thFactorTracker.init();
+        new THFactorTracker();
     }
 
 
