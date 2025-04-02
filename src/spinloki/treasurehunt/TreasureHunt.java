@@ -2,10 +2,9 @@ package spinloki.treasurehunt;
 
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.impl.campaign.intel.events.HAPirateBaseDestroyedFactor;
-import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel;
-import com.fs.starfarer.api.impl.campaign.intel.events.ht.HTScanFactor;
-import com.fs.starfarer.api.impl.campaign.intel.events.ht.HyperspaceTopographyEventIntel;
+import com.fs.starfarer.api.campaign.CargoAPI;
+import com.fs.starfarer.api.campaign.CargoStackAPI;
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import org.apache.log4j.Logger;
 
 public class TreasureHunt extends BaseModPlugin {
@@ -23,7 +22,8 @@ public class TreasureHunt extends BaseModPlugin {
     }
 
     public void onGameLoad(boolean newGame) {
-        TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor(300), null);
+        var thFactorTracker = new THFactorTracker();
+        thFactorTracker.init();
     }
 
 
