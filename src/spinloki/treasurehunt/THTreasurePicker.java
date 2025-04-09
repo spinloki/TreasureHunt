@@ -57,6 +57,10 @@ public class THTreasurePicker implements ShowLootListener {
 
     @Override
     public void reportAboutToShowLootToPlayer(CargoAPI loot, InteractionDialogAPI dialog) {
+        if (dialog.getInteractionTarget().getFullName().equals("Cargo Pods")){
+            // So if the player puts an item in a cargo pod and then looks at the cargo pod, it doesn't get removed
+            return;
+        }
         if (loot.getQuantity(CargoAPI.CargoItemType.SPECIAL, null) != 0){
             for (CargoStackAPI stack : loot.getStacksCopy()){
                 if (stack.isSpecialStack()){
