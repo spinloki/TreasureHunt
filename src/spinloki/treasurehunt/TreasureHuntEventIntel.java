@@ -28,7 +28,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     public static int PROGRESS_1 = 100;
     public static int PROGRESS_2 = 300;
 
-    public static String ABANDON_LEAD = "abandon_lead";
+    public static String ABANDON_LEAD = "th_abandon_lead";
 
     public static String KEY = "$treasure_hunt_event_ref";
 
@@ -81,7 +81,10 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
         picker = new THTreasurePicker();
         treasure = "";
-        //addAbility(ABANDON_LEAD);
+
+        if (!Global.getSector().getPlayerFleet().hasAbility(ABANDON_LEAD)){
+            Global.getSector().getPlayerFleet().addAbility(ABANDON_LEAD);
+        }
     }
 
     @Override
@@ -177,9 +180,6 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
     @Override
     public float getImageIndentForStageDesc(Object stageId) {
-//		if (stageId == Stage.REVERSE_POLARITY || stageId == Stage.GENERATE_SLIPSURGE) {
-//			return 16f;
-//		}
         if (stageId == Stage.START) {
             return 0f;
         }
