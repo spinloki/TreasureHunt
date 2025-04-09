@@ -16,7 +16,6 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
         Global.getSector().addScript(this);
     }
 
-    // TODO: Use the correct conditions for all of these instead of trying to infer what happened
     public void reportAboutToShowLootToPlayer(CargoAPI loot, InteractionDialogAPI dialog) {
         var entity = dialog.getInteractionTarget();
         if (entity == null){
@@ -27,17 +26,17 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
         }
         var name = entity.getName();
         if (name.equals("Research Station") || name.equals("Mining Station") || name.equals("Orbital Habitat")){
-            setNotify(new THSalvageFactor(20, "exploring a derelict station"));
+            setNotify(new THSalvageFactor(25, "exploring a derelict station"));
         }
         else if (name.equals("Derelict Ship")){
-            setNotify(new THSalvageFactor(5, "exploring a derelict ship"));
+            setNotify(new THSalvageFactor(3, "exploring a derelict ship"));
         }
         else if (name.equals("Supply Cache")){
             setNotify(new THSalvageFactor(5, "exploring a supply cache"));
         }
         else if (entity.getClass().getName().contains("CampaignPlanet")){
             if (!entity.getFaction().getId().equals("neutral")){
-                setNotify(new THSalvageFactor(10, "raiding a colony"));
+                setNotify(new THSalvageFactor(15, "raiding a colony"));
             }
             else {
                 var ruin = "";
@@ -55,11 +54,11 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
                         size = "widespread";
                     }
                     else if (ruin.contains("extensive")){
-                        value = 30;
+                        value = 40;
                         size = "widespread";
                     }
                     else if (ruin.contains("vast")){
-                        value = 40;
+                        value = 80;
                         size = "vast";
                     }
                     setNotify(new THSalvageFactor(value, String.format("exploring a %s ruin", size)));
@@ -72,7 +71,7 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
     private boolean mNotify = false;
     private float interval = 1;
     private float timePassed = 0;
-    private boolean debugAdvancement = true;
+    private boolean debugAdvancement = false;
     public void setNotify(THSalvageFactor factor) {
         mNotify = true;
         mFactor = factor;
@@ -91,7 +90,7 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
             timePassed += amount;
             if (timePassed > interval){
                 timePassed = 0;
-                TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor( 100), null);
+                TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor( 10), null);
             }
         }
         if (mNotify) {
