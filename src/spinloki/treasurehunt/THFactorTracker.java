@@ -6,6 +6,9 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.campaign.fleet.CampaignFleet;
+
+import java.util.Map;
 
 public class THFactorTracker implements ShowLootListener, EveryFrameScript {
     THFactorTracker(){
@@ -13,9 +16,13 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
         Global.getSector().addScript(this);
     }
 
+    // TODO: Use the correct conditions for all of these instead of trying to infer what happened
     public void reportAboutToShowLootToPlayer(CargoAPI loot, InteractionDialogAPI dialog) {
         var entity = dialog.getInteractionTarget();
         if (entity == null){
+            return;
+        }
+        if (entity.getClass().getName().equals("CampaignFleet")){
             return;
         }
         var name = entity.getName();
@@ -28,22 +35,44 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
         else if (name.equals("Supply Cache")){
             setNotify(new THSalvageFactor(5, "exploring a supply cache"));
         }
-        else if (entity.getId().contains("planet")){
-            setNotify(new THSalvageFactor(10, "exploring a ruin"));
-        }
-        else if (!entity.getFaction().getId().equals("neutral")){
-            setNotify(new THSalvageFactor(10, "raiding a colony"));
+        else if (entity.getClass().getName().contains("CampaignPlanet")){
+            if (!entity.getFaction().getId().equals("neutral")){
+                setNotify(new THSalvageFactor(10, "raiding a colony"));
+            }
+            else {
+                var ruin = "";
+                for (var condition : entity.getMarket().getConditions()){
+                    if (condition.getId().contains("ruin")){
+                        ruin = condition.getId();
+                        break;
+                    }
+                }
+                if (!ruin.isEmpty()){
+                    var value = 10;
+                    var size = "scattered";
+                    if (ruin.contains("widespread")){
+                        value = 20;
+                        size = "widespread";
+                    }
+                    else if (ruin.contains("extensive")){
+                        value = 30;
+                        size = "widespread";
+                    }
+                    else if (ruin.contains("vast")){
+                        value = 40;
+                        size = "vast";
+                    }
+                    setNotify(new THSalvageFactor(value, String.format("exploring a %s ruin", size)));
+                }
+            }
         }
     }
 
-
-    public static float CHECK_DAYS = 0.05f;
-
-    protected IntervalUtil interval = new IntervalUtil(CHECK_DAYS * 0.8f, CHECK_DAYS * 1.2f);
-
-
     private THSalvageFactor mFactor;
     private boolean mNotify = false;
+    private float interval = 1;
+    private float timePassed = 0;
+    private boolean debugAdvancement = true;
     public void setNotify(THSalvageFactor factor) {
         mNotify = true;
         mFactor = factor;
@@ -58,13 +87,16 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
     }
 
     public void advance(float amount){
-        float days = Global.getSector().getClock().convertToDays(amount);
-
-        interval.advance(days);
-
-        if (interval.intervalElapsed() && mNotify) {
+        if (debugAdvancement){
+            timePassed += amount;
+            if (timePassed > interval){
+                timePassed = 0;
+                TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor( 100), null);
+            }
+        }
+        if (mNotify) {
             mNotify = false;
-             TreasureHuntEventIntel.addFactorCreateIfNecessary(mFactor, null);
+            TreasureHuntEventIntel.addFactorCreateIfNecessary(mFactor, null);
         }
     }
 }

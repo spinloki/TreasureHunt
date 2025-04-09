@@ -1,24 +1,34 @@
 package spinloki.treasurehunt;
 
 import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
-import com.fs.starfarer.api.campaign.TextPanelAPI;
+import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.impl.campaign.ids.Abilities;
+import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
 import com.fs.starfarer.api.impl.campaign.intel.events.ht.HyperspaceTopographyEventIntel;
+import com.fs.starfarer.api.impl.campaign.rulecmd.AddAbility;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
+
+import static spinloki.treasurehunt.THTreasurePicker.getSpecialItemDisplayName;
 
 public class TreasureHuntEventIntel extends BaseEventIntel {
+    private THTreasurePicker picker;
+    private String treasure;
+
     public static Color BAR_COLOR = Global.getSettings().getColor("progressBarFleetPointsColor");
     public static int PROGRESS_MAX = 500;
     public static int PROGRESS_1 = 100;
     public static int PROGRESS_2 = 300;
+
+    public static String ABANDON_LEAD = "abandon_lead";
 
     public static String KEY = "$treasure_hunt_event_ref";
 
@@ -31,9 +41,6 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
     public static void addFactorCreateIfNecessary(EventFactor factor, InteractionDialogAPI dialog) {
         if (get() == null) {
-            //TextPanelAPI text = dialog == null ? null : dialog.getTextPanel();
-            //new HyperspaceTopographyEventIntel(text);
-            // adding a factor anyway, so it'll show a message - don't need to double up
             new TreasureHuntEventIntel(null, false);
         }
         if (get() != null) {
@@ -49,7 +56,6 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         super();
 
         Global.getSector().getMemoryWithoutUpdate().set(KEY, this);
-
 
         setup();
 
@@ -73,6 +79,9 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         getDataFor(Stage.OPPORTUNITY).keepIconBrightWhenLaterStageReached = true;
         getDataFor(Stage.FOUND).keepIconBrightWhenLaterStageReached = true;
 
+        picker = new THTreasurePicker();
+        treasure = "";
+        //addAbility(ABANDON_LEAD);
     }
 
     @Override
@@ -85,6 +94,10 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         EventStageData esd = getDataFor(stageId);
         if (esd == null) return null;
         if (stageId == Stage.CHOOSE){
+            var spec = Global.getSettings().getSpecialItemSpec(treasure);
+            if (spec != null){
+                return Global.getSettings().getSpecialItemSpec(treasure).getIconName();
+            }
             return Global.getSettings().getSpriteName("treasure_hunt_events", "found_lead");
         }
         if (stageId == Stage.OPPORTUNITY){
@@ -143,11 +156,11 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
         if (stageId == Stage.START) {
-            info.addPara("MOTHERFUCKING TREASURE HUNT!!!",
+            info.addPara("The Hunt awaits!",
                     initPad);
         }
         else if (stageId == Stage.CHOOSE){
-            info.addPara("YOU GET TO CHOOSE THE THING! DAMN!", initPad);
+            info.addPara(String.format("You have a lead on a %s", getSpecialItemDisplayName(treasure)), initPad);
         }
         else if (stageId == Stage.OPPORTUNITY){
             info.addPara("An opportunity has presented itself", initPad);
@@ -185,7 +198,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
                     float opad = 10f;
 
                     if (esd.id == Stage.CHOOSE) {
-                        tooltip.addTitle("Found a lead");
+                        tooltip.addTitle(String.format("Found a lead on a %s", getSpecialItemDisplayName(treasure)));
                     } else if (esd.id == Stage.OPPORTUNITY) {
                         tooltip.addTitle("Found an opportunity");
                     } else if (esd.id == Stage.FOUND) {
@@ -213,20 +226,52 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         if (isUpdate && getListInfoParam() instanceof EventStageData) {
             EventStageData esd = (EventStageData) getListInfoParam();
             if (esd.id == Stage.CHOOSE) {
-                info.addPara("You have a choice! Damn!", tc, initPad);
+                info.addPara("You have a new lead", tc, initPad);
             }
             if (esd.id == Stage.OPPORTUNITY) {
-                info.addPara("You have an opportunity! Damn!", tc, initPad);
+                info.addPara("Opportunity found", tc, initPad);
             }
             if (esd.id == Stage.FOUND) {
-                info.addPara("You found the treasure! Damn!", tc, initPad);
+                info.addPara("Treasure found", tc, initPad);
             }
             return;
         }
+    }
 
-//		EventStageData esd = getLastActiveStage(false);
-//		if (esd != null && EnumSet.of(Stage.START, Stage.HA_1, Stage.HA_2, Stage.HA_3, Stage.HA_4).contains(esd.id)) {
-//
-//		}
+    protected void notifyStageReached(EventStageData stage){
+        if (stage.id == Stage.CHOOSE) {
+            treasure = picker.getRandomUnseenItem();
+        }
+        if (stage.id == Stage.FOUND){
+            setProgress(0);
+            CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
+            cargo.addItems(CargoAPI.CargoItemType.SPECIAL, new SpecialItemData(treasure, null), 1);
+            treasure = "";
+        }
+    }
+
+    public void addAbility(String id) {
+        if (Global.getSector().getPlayerFleet().hasAbility(id)) {
+            return;
+        }
+        List<Misc.Token> params = new ArrayList<Misc.Token>();
+        Misc.Token t = new Misc.Token(id, Misc.TokenType.LITERAL);
+        params.add(t);
+        t = new Misc.Token("-1", Misc.TokenType.LITERAL);
+        params.add(t); // don't want to assign it to a slot - will assign as hyper-only alternate later here
+        new AddAbility().execute(null, null, params, null);
+
+        PersistentUIDataAPI.AbilitySlotsAPI slots = Global.getSector().getUIData().getAbilitySlotsAPI();
+        int curr = slots.getCurrBarIndex();
+        OUTER: for (int i = 0; i < 5; i++) {
+            slots.setCurrBarIndex(i);
+            for (PersistentUIDataAPI.AbilitySlotAPI slot : slots.getCurrSlotsCopy()) {
+                if (slot.getAbilityId().isEmpty()){
+                    slot.setAbilityId(id);
+                    break OUTER;
+                }
+            }
+        }
+        slots.setCurrBarIndex(curr);
     }
 }
