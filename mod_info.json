@@ -13,11 +13,6 @@
         "id": "lw_lazylib",
         "name": "LazyLib",
         "version": "3.0.0"
-    },
-    {
-      "id": "MagicLib",
-      "name": "MagicLib",
-      "version": "1.5.3-RC01"
     }
   ]
 }

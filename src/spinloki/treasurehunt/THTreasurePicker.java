@@ -10,10 +10,11 @@ import java.util.*;
 public class THTreasurePicker implements ShowLootListener {
     THTreasurePicker(){
         resetUnseenItems();
+        addOneTimeItems();
         Global.getSector().getListenerManager().addListener(this);
     }
 
-    private static final Set<String> ALL_ITEMS = Set.of(
+    private static final Set<String> COLONY_ITEMS = Set.of(
             Items.PRISTINE_NANOFORGE,
             Items.SYNCHROTRON,
             Items.ORBITAL_FUSION_LAMP,
@@ -28,10 +29,22 @@ public class THTreasurePicker implements ShowLootListener {
             Items.DEALMAKER_HOLOSUITE,
             Items.CORONAL_PORTAL
     );
+
+    private static final Set<String> BLUEPRINT_ITEMS = Set.of(
+            Items.LOW_TECH_PACKAGE,
+            Items.MIDLINE_PACKAGE,
+            Items.HIGH_TECH_PACKAGE,
+            Items.MISSILE_PACKAGE
+    );
+
     private Set<String> unseenItems;
 
     private void resetUnseenItems() {
-        unseenItems = new HashSet<>(ALL_ITEMS);
+        unseenItems = new HashSet<>(COLONY_ITEMS);
+    }
+
+    private void addOneTimeItems(){
+        unseenItems.addAll(BLUEPRINT_ITEMS);
     }
 
     public String getRandomUnseenItem() {
@@ -39,7 +52,7 @@ public class THTreasurePicker implements ShowLootListener {
             resetUnseenItems();
         }
 
-        List<String> itemList = new ArrayList<>(unseenItems);
+         List<String> itemList = new ArrayList<>(unseenItems);
         String chosen = itemList.get(new Random().nextInt(itemList.size()));
         unseenItems .remove(chosen);
 

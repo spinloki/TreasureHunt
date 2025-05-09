@@ -55,7 +55,7 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
                     }
                     else if (ruin.contains("extensive")){
                         value = 40;
-                        size = "widespread";
+                        size = "extensive";
                     }
                     else if (ruin.contains("vast")){
                         value = 80;
@@ -86,11 +86,11 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
     }
 
     public void advance(float amount){
-        if (debugAdvancement){
+          if (debugAdvancement){
             timePassed += amount;
             if (timePassed > interval){
                 timePassed = 0;
-                TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor( 10), null);
+                TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor( 50), null);
             }
         }
         if (mNotify) {
