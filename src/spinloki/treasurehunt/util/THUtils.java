@@ -11,4 +11,14 @@ public class THUtils {
         ITEM,
         SHIP_BLUEPRINT
     }
+
+    public static boolean hasTechMining(MarketAPI market) {
+        boolean techMining = false;
+        for (Industry curr : market.getIndustries()) {
+            if (curr.getSpec().hasTag(Industries.TECHMINING)) {
+                techMining = true;
+            }
+        }
+        return techMining;
+    }
 }

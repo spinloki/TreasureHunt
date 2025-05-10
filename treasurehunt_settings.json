@@ -18,5 +18,7 @@
 		"ruins_widespread": 20,
 		"ruins_extensive": 40,
 		"ruins_vast": 80
-	}
+	},
+	"th_colony_ruins_base_progress_divisor": 10,
+	"th_colony_tech_mining_progress_multiplier": 2
 }

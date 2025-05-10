@@ -12,6 +12,8 @@ public class Settings {
     public static boolean TH_DEBUG_USE_TIME_FACTOR = false;
     public static JSONObject TH_BLUEPRINT_PRIORITY_QUEUE;
     public static JSONObject TH_RUINS_EXPLORATION_VALUES;
+    public static Integer TH_COLONY_RUINS_BASE_PROGRESS_DIVISOR;
+    public static Integer TH_COLONY_TECH_MINING_PROGRESS_MULTIPLIER;
 
     public static void loadSettingsFromJson() throws JSONException, IOException {
         JSONObject json = Global.getSettings().loadJSON("treasurehunt_settings.json", "spinloki_treasurehunt");
@@ -20,5 +22,7 @@ public class Settings {
         TH_DEBUG_USE_TIME_FACTOR = json.getBoolean("th_debug_use_time_factor");
         TH_BLUEPRINT_PRIORITY_QUEUE = json.getJSONObject("th_ship_blueprint_priority_queue");
         TH_RUINS_EXPLORATION_VALUES = json.getJSONObject("th_ruins_exploration_values");
+        TH_COLONY_RUINS_BASE_PROGRESS_DIVISOR = json.getInt("th_colony_ruins_base_progress_divisor");
+        TH_COLONY_TECH_MINING_PROGRESS_MULTIPLIER = json.getInt("th_colony_tech_mining_progress_multiplier");
     }
 }

@@ -4,6 +4,9 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.campaign.PlanetAPI;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.campaign.CampaignPlanet;
@@ -11,7 +14,7 @@ import com.fs.starfarer.campaign.fleet.CampaignFleet;
 import org.json.JSONException;
 import spinloki.treasurehunt.config.Settings;
 
-public class THFactorTracker implements ShowLootListener, EveryFrameScript {
+public class THFactorTracker implements ShowLootListener, PlayerColonizationListener, EveryFrameScript {
     public THFactorTracker(){
         Global.getSector().getListenerManager().addListener(this);
         Global.getSector().addScript(this);
@@ -105,5 +108,18 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
             mNotify = false;
             TreasureHuntEventIntel.addFactorCreateIfNecessary(mFactor, null);
         }
+    }
+
+    @Override
+    public void reportPlayerColonizedPlanet(PlanetAPI planet) {
+        var market = planet.getMarket();
+        if (Misc.hasRuins(market)){
+            TreasureHuntEventIntel.addFactorCreateIfNecessary(new THColonyRuinFactor(market), null);
+        }
+    }
+
+    @Override
+    public void reportPlayerAbandonedColony(MarketAPI colony) {
+        // No need to do anything. Factor will expire by itself when the player abandons the colony
     }
 }

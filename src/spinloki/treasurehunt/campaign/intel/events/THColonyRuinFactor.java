@@ -3,18 +3,70 @@ package spinloki.treasurehunt.campaign.intel.events;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventFactor;
 
-import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
+import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel;
+import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import org.json.JSONException;
+import spinloki.treasurehunt.config.Settings;
+import spinloki.treasurehunt.util.THUtils;
+
+import java.awt.*;
 
 public class THColonyRuinFactor extends BaseEventFactor {
     MarketAPI colony;
+    int BASE_PROGRESS;
+    String ruins_type;
+    boolean ENABLED = true;
     THColonyRuinFactor(MarketAPI colony){
         super();
         this.colony = colony;
+        ruins_type = Misc.getRuinsType(colony);
+        try {
+            BASE_PROGRESS = Settings.TH_RUINS_EXPLORATION_VALUES.getInt(ruins_type) / Settings.TH_COLONY_RUINS_BASE_PROGRESS_DIVISOR;
+        } catch (JSONException e) {
+            BASE_PROGRESS = 10;
+        }
+    }
+
+    @Override
+    public boolean shouldShow(BaseEventIntel intel) {
+        return ENABLED;
+    }
+
+    @Override
+    public TooltipMakerAPI.TooltipCreator getMainRowTooltip(final BaseEventIntel intel) {
+        return new BaseFactorTooltip() {
+            @Override
+            public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+                float opad = 10f;
+                Color h = Misc.getHighlightColor();
+
+                tooltip.addPara("Information gathered from your colonies built over long-dead ruins.", 0f);
+
+                int p = Math.round(((HostileActivityEventIntel)intel).getBlowback());
+                String tense = THUtils.hasTechMining(colony) ? "is being" : "can be";
+                tooltip.addPara("Will contribute %s points per month to the treasure hunt, which "
+                                + tense + " boosted by the tech mining industry.", opad, h,
+                        "" + getProgress(intel));
+            }
+
+        };
+    }
+
+    @Override
+    public int getProgress(BaseEventIntel intel){
+        if (!ENABLED) return 0;
+        int progress = BASE_PROGRESS;
+        if (THUtils.hasTechMining(colony)){
+            progress = BASE_PROGRESS * Settings.TH_COLONY_TECH_MINING_PROGRESS_MULTIPLIER;
+        }
+        return progress;
     }
 
     @Override
     public boolean isExpired() {
-        return (!Misc.hasRuins(colony));
+        return (!colony.isPlayerOwned()); // If the player abandons or otherwise loses the colony
     }
 }
