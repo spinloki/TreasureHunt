@@ -43,16 +43,19 @@ public class THColonyRuinFactor extends BaseEventFactor {
                 float opad = 10f;
                 Color h = Misc.getHighlightColor();
 
-                tooltip.addPara("Information gathered from your colonies built over long-dead ruins.", 0f);
+                tooltip.addPara("Information gathered from your colony, %s, built over long-dead ruins.", opad, h, colony.getName());
 
-                int p = Math.round(((HostileActivityEventIntel)intel).getBlowback());
                 String tense = THUtils.hasTechMining(colony) ? "is being" : "can be";
-                tooltip.addPara("Will contribute %s points per month to the treasure hunt, which "
-                                + tense + " boosted by the tech mining industry.", opad, h,
-                        "" + getProgress(intel));
+                tooltip.addPara("Will contribute %s points per month to the treasure hunt, which %s " +
+                        "boosted by the tech mining industry.", opad, h, "" + getProgress(intel), tense);
             }
 
         };
+    }
+
+    @Override
+    public String getDesc(BaseEventIntel intel){
+        return "Ruins at " + colony.getName();
     }
 
     @Override

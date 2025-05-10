@@ -18,9 +18,5 @@ public class TreasureHunt extends BaseModPlugin {
     public void onNewGame() {
         super.onNewGame();
         new THFactorTracker();
-        // Add your code here, or delete this method (it does nothing unless you add code)
     }
-
-
-    // You can add more methods from ModPlugin here. Press Control-O in IntelliJ to see options.
 }
