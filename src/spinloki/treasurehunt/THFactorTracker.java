@@ -6,6 +6,7 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.campaign.fleet.CampaignFleet;
 
 import java.util.Map;
@@ -16,15 +17,34 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
         Global.getSector().addScript(this);
     }
 
+    // Sigmoid because I'm FANCY even though a straight line clamping from 15 to 50 would work exactly as well
+    private static final double K = 0.00001;     // Steepness
+    private static final double X0 = 250000.0;  // Midpoint at 100k base value
+    private static float calculateProgressFromBaseValue(float baseValue) {
+        double sigmoid = 1.0 / (1.0 + Math.exp(-K * ((double) baseValue - X0)));
+        double scaled = 15.0 + (50.0 - 15.0) * sigmoid;
+        return (float) Math.round(scaled);
+    }
+
     public void reportAboutToShowLootToPlayer(CargoAPI loot, InteractionDialogAPI dialog) {
         var entity = dialog.getInteractionTarget();
         if (entity == null){
             return;
         }
-        if (entity.getClass().getName().equals("CampaignFleet")){
+        var name = entity.getName();
+        if (entity instanceof CampaignFleet fleet){
+            if (Misc.isScavenger(fleet)){
+                float value = 0;
+                for (var member : fleet.getFleetData().getSnapshot()){
+                    value += member.getHullSpec().getBaseValue();
+                }
+                for (var member: fleet.getFleetData().getMembers()){
+                    value -= member.getHullSpec().getBaseValue();
+                }
+                setNotify(new THSalvageFactor((int) calculateProgressFromBaseValue(value), "destroying a scavenger fleet"));
+            }
             return;
         }
-        var name = entity.getName();
         if (name.equals("Research Station") || name.equals("Mining Station") || name.equals("Orbital Habitat")){
             setNotify(new THSalvageFactor(25, "exploring a derelict station"));
         }
@@ -86,7 +106,7 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
     }
 
     public void advance(float amount){
-          if (debugAdvancement){
+        if (debugAdvancement){
             timePassed += amount;
             if (timePassed > interval){
                 timePassed = 0;

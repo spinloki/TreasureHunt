@@ -1,3 +1,47 @@
 id,trigger,conditions,script,text,options,notes
-# This file is not required by the game and can be deleted if you aren't using it, but doesn't hurt to keep either.
-# Official rules.csv guide: https://fractalsoftworks.com/2023/11/13/you-merely-adopted-rules-csv-i-was-born-into-it/
+scavBuyTHDataOpt,PopulateOptions,"$menuState == fleetConvMain
+$entity.isScavenger
+!$entity.boughtTHData
+TH_CMD computeDataStats",,,buyTHData:Offer to pay for information about the scavenger's recent finds.,
+scavBuyTHDataSel1,DialogOptionSelected,$option == buyTHData,Highlight $th_dataCost,"You talk through the details with the $post, careful not to ask too directly and getting just enough in return. After a bit of back and forth, you reach a final price of $ht_dataCost credits for the data.","buyTHDataConfirm:Transfer the payment
+buyTHDataNeverMind:Never mind",
+buyTHDataConfirmSel,DialogOptionSelected,$option == buyTHDataConfirm,"AddCredits -$th_dataCost
+$entity.boughtTHData = true 60
+TH_CMD getScavengerData
+FireAll PopulateOptions","The $post speaks freely about $hisOrHer recent discoveries as soon as the credit transfer completes, and the information helps you narrow down your own search.",,
+buyTHDataConfirmSelSpacer,"DialogOptionSelected
+$voice == spacer",$option == buyTHDataConfirm,"AddCredits -$th_dataCost
+$entity.boughtTHData = true 60
+TH_CMD getScavengerData
+FireAll PopulateOptions","""This sort of thing doesn’t come cheap,"" $heOrShe says as the payment clears. ""Takes time to find, and most folks’d rather keep it to themselves. But, well,"" $heOrShe pauses, a smile finally breaking over $hisOrHer face. ""Credits talk."" With that, $heOrShe sends over the data on a promising salvage lead.",,
+buyTHDataConfirmSelFaithful,"DialogOptionSelected
+$voice == faithful",$option == buyTHDataConfirm,"AddCredits -$th_dataCost
+$entity.boughtTHData = true 60
+TH_CMD getScavengerData
+FireAll PopulateOptions","The $post nods as your payment is transferred. ""May you use this knowledge with humility, and find only what Providence allows."" $HeOrShe executes the datastream to transfer the agreed-upon salvage location data.",,
+buyTHDataConfirmSelAristo,"DialogOptionSelected
+$voice == aristo",$option == buyTHDataConfirm,"AddCredits -$th_dataCost
+$entity.boughtTHData = true 60
+TH_CMD getScavengerData
+FireAll PopulateOptions","The $post gives a tight nod as your payment is transferred. ""A discerning investment, Captain. Information like this rarely changes hands so easily."" $HeOrShe executes the datastream, sending over the details.",,
+buyTHDataConfirmSelVillain,"DialogOptionSelected
+$voice == villain",$option == buyTHDataConfirm,"AddCredits -$th_dataCost
+$entity.boughtTHData = true 60
+TH_CMD getScavengerData
+FireAll PopulateOptions","The $post grins as your payment clears. ""Most folks die before they give up what they know. You? You just paid for it."" $HeOrShe chuckles quietly, then executes the datastream with a flourish.",,
+buyTHDataConfirmSelBusiness,"DialogOptionSelected
+$voice == business",$option == buyTHDataConfirm,"AddCredits -$th_dataCost
+$entity.boughtTHData = true 60
+TH_CMD getScavengerData
+FireAll PopulateOptions","""Premium data at a premium price,"" the $post remarks as the payment finalizes. $HeOrShe transmits the file without delay. ""We encourage you to use it prudently.""",,
+buyHTDataNeverMindSel,DialogOptionSelected,$option == buyTHDataNeverMind,FireAll PopulateOptions,"$HeOrShe seems disappointed by your denial, but eventually shrugs it off. ""Anything else?""",,
+buyHTDataNeverMindSelSpacer,"DialogOptionSelected
+$voice == spacer",$option == buyTHDataNeverMind,FireAll PopulateOptions,"$HeOrShe gives a half-shrug, though the downturn in $hisOrHer expression doesn’t quite hide the disappointment. ""That's a shame. Let me know if you change your mind.""",,
+buyHTDataNeverMindSelFaithful,"DialogOptionSelected
+$voice == faithful",$option == buyTHDataNeverMind,FireAll PopulateOptions,"The $post offers a slow nod, expression unreadable. ""Then it is not your burden to carry. The truth of such things reveals itself in time.""",,
+buyHTDataNeverMindSelAristo,"DialogOptionSelected
+$voice == aristo",$option == buyTHDataNeverMind,FireAll PopulateOptions,"The $post arches an eyebrow. ""A shame. One doesn’t often get the chance to buy certainty in this sector.""",,
+buyHTDataNeverMindSelVillain,"DialogOptionSelected
+$voice == villain",$option == buyTHDataNeverMind,FireAll PopulateOptions,"The $post grins, showing teeth. ""Heh. Second thoughts? Hope they don’t cost you more than credits would’ve.""",,
+buyHTDataNeverMindSelBusiness,"DialogOptionSelected
+$voice == business",$option == buyTHDataNeverMind,FireAll PopulateOptions,"""Your call,"" the $post says, already turning back to other tasks. ""Just remember that data like this moves quickly.""",,
