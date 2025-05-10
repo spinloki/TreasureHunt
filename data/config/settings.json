@@ -1,37 +1,15 @@
 {
-	# This file is optional and can be deleted if you aren't using it, but doesn't hurt to keep.
-
-	# Add plugins like `EveryFrameCombatPlugin` and `EveryFrameScript` here and the game will automatically run them.
-	# The list of plugins that should be added here seems slightly random.
-	#"plugins":{
-	#	 "coreLifecyclePlugin":"com.fs.starfarer.api.impl.campaign.CoreLifecyclePluginImpl",
-	#},
-
-	# rules.csv can call Java from within a rule. The code must extend `BaseCommandPlugin`.
-	# This section is where we can tell the game where to look for our custom rule commands.
-	# Rules from multiple packages CAN NOT share the same name	
+	"plugins":{
+	},
 	"ruleCommandPackages":[
 		"spinloki.treasurehunt.campaign.rulecmd",
 	],
-	
-    # This section is where we can define images that can be referenced ingame using Global.getSettings().getSpriteName("category", "name");
 	"graphics":{
 		"treasure_hunt_events":{ 
 			"hunt_begins":"graphics/ui/circle_cross.png", 
-			"found_lead":"graphics/ui/pylon.png", 
+			"found_lead":"graphics/ui/pylon.png",
 			"found_treasure":"graphics/ui/circle_dash_outline.png", 
 			"found_opportunity":"graphics/ui/double_square_x.png", 
 		}
-	},
-	"th_ship_blueprint_priority_queue":{
-		"legion":1,
-		"odyssey":1,
-		"retribution":1,
-		"onslaught":2,
-		"astral":2,
-		"pegasus":2,
-		"invictus":3,
-		"paragon":3,
-		"conquest":3,
 	}
 }

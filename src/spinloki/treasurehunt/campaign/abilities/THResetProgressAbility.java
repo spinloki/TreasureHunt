@@ -14,7 +14,8 @@ public class THResetProgressAbility extends BaseDurationAbility {
                         " by resetting event progress to zero." +
                         " Do this if you would rather look for something else." +
                         " The item in question will not appear as a lead again until" +
-                        " all other special items have been found.", pad
+                        " all other special items have been found." +
+                        " If the item is a blueprint, it will never reappear as a lead.", pad
         );
     }
 

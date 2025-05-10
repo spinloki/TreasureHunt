@@ -5,7 +5,8 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
-import spinloki.treasurehunt.util.THConstants;
+import spinloki.treasurehunt.config.Settings;
+import spinloki.treasurehunt.util.THUtils;
 
 import java.util.*;
 
@@ -27,7 +28,7 @@ public class THTreasurePicker implements ShowLootListener {
 
             private int getPriority(String hullId) {
                 try {
-                    var obj = Global.getSettings().getJSONObject(THConstants.TH_BLUEPRINT_PRIORITY_QUEUE);
+                    var obj = Settings.TH_BLUEPRINT_PRIORITY_QUEUE;
                     return obj.optInt(hullId, 0);
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -37,7 +38,7 @@ public class THTreasurePicker implements ShowLootListener {
         });
 
         try {
-            var priorityData = Global.getSettings().getJSONObject(THConstants.TH_BLUEPRINT_PRIORITY_QUEUE);
+            var priorityData = Settings.TH_BLUEPRINT_PRIORITY_QUEUE;
             Iterator<String> keys = priorityData.keys();
 
             while (keys.hasNext()) {
@@ -75,18 +76,18 @@ public class THTreasurePicker implements ShowLootListener {
             Items.MISSILE_PACKAGE
     );
 
-    private static final Set<String> TREASURE_TYPES = Set.of(
-            "item",
-            "blueprint"
+    private static final Set<THUtils.TreasureType> TREASURE_TYPES = Set.of(
+            THUtils.TreasureType.ITEM,
+            THUtils.TreasureType.SHIP_BLUEPRINT
     );
 
     private PriorityQueue<String> shipBlueprints;
 
     private Set<String> unseenItems;
 
-    private Set<String> treasureTypes = new HashSet<>();
+    private final Set<THUtils.TreasureType> treasureTypes = new HashSet<>();
 
-    private String lastChosenType = "item";
+    private THUtils.TreasureType lastChosenType = THUtils.TreasureType.ITEM;
 
     private void resetUnseenItems() {
         unseenItems = new HashSet<>(COLONY_ITEMS);
@@ -103,21 +104,21 @@ public class THTreasurePicker implements ShowLootListener {
             resetUnseenItems();
         }
 
-        List<String> typeList = new ArrayList<>(treasureTypes);
-        String chosenType = typeList.get(new Random().nextInt(typeList.size()));
+        List<THUtils.TreasureType> typeList = new ArrayList<>(treasureTypes);
+        THUtils.TreasureType chosenType = typeList.get(new Random().nextInt(typeList.size()));
         lastChosenType = chosenType;
 
         String chosenTreasure = null;
 
-        if (Objects.equals(chosenType, "blueprint")){
+        if (chosenType == THUtils.TreasureType.SHIP_BLUEPRINT){
             chosenTreasure = getShipFromPriorityQueue();
             if (chosenTreasure == null){
-                treasureTypes.remove("blueprint");
+                treasureTypes.remove(THUtils.TreasureType.SHIP_BLUEPRINT);
                 return getRandomUnseenItem();
             }
         }
 
-        if (Objects.equals(chosenType, "item")){
+        if (chosenType == THUtils.TreasureType.ITEM){
             List<String> itemList = new ArrayList<>(unseenItems);
             chosenTreasure = itemList.get(new Random().nextInt(itemList.size()));
             unseenItems.remove(chosenTreasure);
@@ -126,7 +127,7 @@ public class THTreasurePicker implements ShowLootListener {
         return chosenTreasure;
     }
 
-    public String getLastChosenType(){
+    public THUtils.TreasureType getLastChosenType(){
         return lastChosenType;
     }
 

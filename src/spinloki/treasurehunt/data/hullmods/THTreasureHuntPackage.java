@@ -13,7 +13,8 @@ import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.impl.hullmods.BaseLogisticsHullMod;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import spinloki.treasurehunt.util.THConstants;
+import spinloki.treasurehunt.config.Settings;
+import spinloki.treasurehunt.util.THUtils;
 
 public class THTreasureHuntPackage extends BaseLogisticsHullMod {
 
@@ -27,21 +28,19 @@ public class THTreasureHuntPackage extends BaseLogisticsHullMod {
         mag.put(HullSize.CAPITAL_SHIP, 8f);
     }
 
-    public static float SMOD_BONUS = 100f;
-
     public void applyEffectsBeforeShipCreation(HullSize hullSize, MutableShipStatsAPI stats, String id) {
         boolean sMod = isSMod(stats);
 
         float mod = (Float) mag.get(hullSize);
         if (sMod) {
-            mod *= 1f + (SMOD_BONUS / 100f);
+            mod *= 1f + (Settings.TH_TREASURE_HUNT_PACKAGE_SMOD_PERCENT_BONUS / 100f);
         }
 
-        stats.getDynamic().getMod(THConstants.TH_TREASURE_HUNT_BOOST).modifyFlat(id, mod);
+        stats.getDynamic().getMod(THUtils.TH_TREASURE_HUNT_BOOST).modifyFlat(id, mod);
     }
 
     public String getSModDescriptionParam(int index, HullSize hullSize) {
-        if (index == 0) return "" + (int) SMOD_BONUS + "%";
+        if (index == 0) return "" + (int) Settings.TH_TREASURE_HUNT_PACKAGE_SMOD_PERCENT_BONUS.intValue() + "%";
         return null;
     }
 
@@ -50,6 +49,7 @@ public class THTreasureHuntPackage extends BaseLogisticsHullMod {
         if (index == 1) return "" + ((Float) mag.get(HullSize.DESTROYER)).intValue();
         if (index == 2) return "" + ((Float) mag.get(HullSize.CRUISER)).intValue();
         if (index == 3) return "" + ((Float) mag.get(HullSize.CAPITAL_SHIP)).intValue();
+        if (index == 4) return "" + Settings.TH_TREASURE_HUNT_PACKAGE_MAX_MULT;
 
         return null;
     }
@@ -63,7 +63,7 @@ public class THTreasureHuntPackage extends BaseLogisticsHullMod {
         Color h = Misc.getHighlightColor();
 
         CampaignFleetAPI fleet = Global.getSector().getPlayerFleet();
-        int boost = (int) Misc.getFleetwideTotalMod(fleet, THConstants.TH_TREASURE_HUNT_BOOST, 0, ship);
+        int boost = (int) Misc.getFleetwideTotalMod(fleet, THUtils.TH_TREASURE_HUNT_BOOST, 0, ship);
 
         tooltip.addPara("The treasure hunt equipment in your fleet increases event progress by %s.",
                 opad, h,

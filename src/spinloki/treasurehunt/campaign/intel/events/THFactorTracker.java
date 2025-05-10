@@ -6,7 +6,10 @@ import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.campaign.CampaignPlanet;
 import com.fs.starfarer.campaign.fleet.CampaignFleet;
+import org.json.JSONException;
+import spinloki.treasurehunt.config.Settings;
 
 public class THFactorTracker implements ShowLootListener, EveryFrameScript {
     public THFactorTracker(){
@@ -51,35 +54,24 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
         else if (name.equals("Supply Cache")){
             setNotify(new THSalvageFactor(5, "exploring a supply cache"));
         }
-        else if (entity.getClass().getName().contains("CampaignPlanet")){
-            if (!entity.getFaction().getId().equals("neutral")){
+        else if (entity instanceof CampaignPlanet planet){
+            var market = planet.getMarket();
+            if (Misc.getDaysSinceLastRaided(market) < .3){
                 setNotify(new THSalvageFactor(15, "raiding a colony"));
             }
-            else {
-                var ruin = "";
-                for (var condition : entity.getMarket().getConditions()){
-                    if (condition.getId().contains("ruin")){
-                        ruin = condition.getId();
-                        break;
-                    }
+
+            else if (Misc.hasRuins(market)){
+                var ruin = Misc.getRuinsType(market);
+                int value;
+                String size;
+                try{
+                    value = (int) Settings.TH_RUINS_EXPLORATION_VALUES.get(ruin);
+                    size = ruin.replace("ruins_","");
+                } catch (JSONException e) {
+                    value = 10;
+                    size = "scattered";
                 }
-                if (!ruin.isEmpty()){
-                    var value = 10;
-                    var size = "scattered";
-                    if (ruin.contains("widespread")){
-                        value = 20;
-                        size = "widespread";
-                    }
-                    else if (ruin.contains("extensive")){
-                        value = 40;
-                        size = "extensive";
-                    }
-                    else if (ruin.contains("vast")){
-                        value = 80;
-                        size = "vast";
-                    }
-                    setNotify(new THSalvageFactor(value, String.format("exploring a %s ruin", size)));
-                }
+                setNotify(new THSalvageFactor(value, String.format("exploring a %s ruin", size)));
             }
         }
     }
@@ -88,7 +80,6 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
     private boolean mNotify = false;
     private float interval = 1;
     private float timePassed = 0;
-    private boolean debugAdvancement = false;
     public void setNotify(THSalvageFactor factor) {
         mNotify = true;
         mFactor = factor;
@@ -103,7 +94,7 @@ public class THFactorTracker implements ShowLootListener, EveryFrameScript {
     }
 
     public void advance(float amount){
-        if (debugAdvancement){
+        if (Settings.TH_DEBUG_USE_TIME_FACTOR){
             timePassed += amount;
             if (timePassed > interval){
                 timePassed = 0;

@@ -22,12 +22,7 @@ public class TH_CMD extends BaseCommandPlugin {
 
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
         if (dialog == null) return false;
-
-        OptionPanelAPI options = dialog.getOptionPanel();
-
-        TextPanelAPI text = dialog.getTextPanel();
         CampaignFleetAPI pf = Global.getSector().getPlayerFleet();
-        CargoAPI cargo = pf.getCargo();
 
         SectorEntityToken entity = dialog.getInteractionTarget();
         if (entity == null) return false;
@@ -36,11 +31,6 @@ public class TH_CMD extends BaseCommandPlugin {
 
         MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
         if (memory == null) return false; // should not be possible unless there are other big problems already
-
-        StarSystemAPI system = null;
-        if (dialog.getInteractionTarget().getContainingLocation() instanceof StarSystemAPI) {
-            system = (StarSystemAPI) dialog.getInteractionTarget().getContainingLocation();
-        }
 
         if ("hasRecentReadingsNearby".equals(action)) {
             return HyperspaceTopographyEventIntel.hasRecentReadingsNearPlayer();

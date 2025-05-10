@@ -1,0 +1,22 @@
+{
+	"th_treasure_hunt_package_smod_percent_bonus" : 100,
+	"th_treasure_hunt_package_mult_clamp" : 3,
+	"th_debug_use_time_factor" : false,
+	"th_ship_blueprint_priority_queue":{
+		"legion":1,
+		"odyssey":1,
+		"retribution":1,
+		"onslaught":2,
+		"astral":2,
+		"pegasus":2,
+		"invictus":3,
+		"paragon":3,
+		"conquest":3
+	},
+	"th_ruins_exploration_values": {
+		"ruins_scattered": 10,
+		"ruins_widespread": 20,
+		"ruins_extensive": 40,
+		"ruins_vast": 80
+	}
+}
