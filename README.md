@@ -1,146 +1,57 @@
-# Starsector IntelliJ Mod Template
+# Treasure Hunt
+Author: spinloki
 
-v1.0.1
+Version: 0.1.0
 
 ## Description
+The goal of this mod is to make the hunt for rare blueprints and colony items more consistent and less rage-inducing.
+It's still very early in development. You'll see some placeholder assets, and some aspects of it might be too overpowered.
 
-This is a template for a generic Starsector mod using Java.
+It adds a new event intel which represents your ongoing efforts to find rare blueprints and colony items.
+Like with the Hyperspace Topography event, it progresses naturally with normal gameplay, but can also be engaged with actively for faster progress.
+Unlike regular salvaging, the rewards are far more consistent, and you get a fair degree of control over what you find.
 
-When you are done, you will have a mod that does nothing, but is ready for anything to be added.
+## Treasure Hunt Intel Screen
+A new intel entry appears in the campaign intel screen once the event begins. There are (currently) 3 stages at 100, 300, and 500 event progress.
 
-Written for IntelliJ Community ([free download](https://www.jetbrains.com/idea/download)), but should work with any IDE.
-You do NOT need IntelliJ Ultimate. Latest version of IntelliJ is 2024.3 as of writing.
+### Found Lead
+At 100 event progress, a random colony item or blueprint is selected from the list of items that you have not yet seen, or do not yet know.
+An item is "seen" when it is selected as a lead, or if you loot it from somewhere while exploring naturally.
 
-## Optional
+For example, if you loot a Pristine Nanoforge from a mothership before getting a lead on that item, you will not get a lead
+on a Pristine Nanoforge again until you see all the other colony items. This way, you won't ever get a lead on a Combat Drone Replicator
+10x in a row. If you loot that Pristine Nanoforge from the mothership after finding a lead on a Pristine Nanoforge, then
+the lead will be unaffected. You will have two Pristine Nanoforges when you complete the hunt.
 
-- Change `LICENSE` to something else.
+###### Abandon Lead
+If you are not interested in the lead that you find at 100 event progress, you can use a new ability called Abandon Lead
+(which you can assign to the ability hotbar) to reset the event progress to 0.
+If the lead was a blueprint or blueprint package, that specific lead will never appear again.
+If the lead was a colony item, it will not appear as a lead again until you have seen all colony items.
 
-## Initial
+If you find a ship blueprint while exploring, while also having that same blueprint as a lead, you should immediately use this ability.
+Otherwise, any further event progress will go to waste.
 
-- Download or `git clone` this repository wherever you want to work.
-  - The simplest is to put it right into your mods folder; otherwise, you'll need to either copy it each time you change things or make an alias to it.
+### Found Opportunity
+This stage doesn't do anything yet, but it's next on the roadmap.
 
-## FAQ
+### Found Item
+At 500 event progress, the hunt is complete. If the treasure is an item, it is placed directly in your cargo. 
+If it is a blueprint, then it is added to your list of known blueprints.
 
-- I already have a mod started. Can I just drag and drop this into my mod folder?
-    - Yes, but don't overwrite anything you already have.
-    - You probably mostly want the `.idea` folder (which contains IntelliJ configuration) and the `src` folder - then,
-      move any code you have into the `src` folder and fix the `package` in each .java file (ask if you don't know how).
-- Everything is working! Do I still need the `readme_files` folder?
-  - lol no, delete it.
+## Progressing the Hunt
+You can contribute to the treasure hunt through three main avenues:
 
-## Explanation of Folders/Files
+### Explore
+Surveying derelict stations and ships, and exploring planetary ruins contributes to the event. 
+The new logistics hullmod `Treasure Hunt Package`, which is unlocked by default, boosts progress gained from one-time sources.
 
-The template contains many folders and files that are commonly used, but not all.
-You may not need everything, but leaving them in place doesn't hurt either.
+### Fight
+Engage scavenger fleets—the same ones who sell hyperspace topography data. 
+Destroying their ships grants event progress based on the value of the ships you destroy.
+Alternatively, you can purchase salvage data from them directly, though the price is steep due,
+as scavengers are reluctant to give up their trade secrets.
 
-- `.git/` Optional. Used by git to store all git-related information. May be deleted if you are not using git.
-- `.idea/` Required. Used by IntelliJ to store settings and configuration.
-- `.run/` Optional. Used by IntelliJ, contains a ready-to-use configuration for running the game. May be deleted if you
-  want to make your own Run Configuration instead.
-- `data/` Optional. Used by Starsector, this folder just contains some common files that mods use that you would
-  probably end up creating yourself. May be deleted if you don't need it.
-- `graphics/` Optional. Default location to place images of all kinds.
-- `sounds/` Optional. Default location to place sounds, including music, which you then add to `data/config/sounds.json`.
-- `src/` Optional? Contains example source code which you will presumably build upon. May be deleted if your mod doesn't
-  have any code (but then why use this template...?)
-- `.gitignore` Optional. Used by git to determine which files should not be committed (for example, not to commit temp
-  files used during the build process). May be deleted if not using git.
-- `LICENSE` Optional. This is the license file, delete or modify it to your liking.
-- `mod_info.json` Required.
-- `README.md` Required?
-- `yourName_uniqueid.version` Optional. This is a sample Version Checker file. May be deleted if not using Version
-  Checker (but you should).
-
-
-## IntelliJ Configuration
-
-### Set your SDK (the thing that compiles the Java code)
-
-- Open `File -> Project Structure -> Project`.
-- Ensure that the `Language Level` is set to `17`.
-- Set an SDK. This should be 17 (recommended) or higher. You can also download an SDK from this dropdown, if the Download option is provided.
-
-![SDKs!](readme_files/intellij-sdk.png "SDKs")
-
-### Ensure that your run configuration is correct:
-
-- In IntelliJ, click `Run - Edit Configurations`.
-- Select "Run Starsector"
-- [ ] Set Working directory to the location of your `starsector-core` folder, if different than what's currently there.
-- [ ] Check other values to make sure they fit your Starsector install. By default, they are set for a typical Windows
-  install.
-- Click Ok. You should now be able to choose Run Starsector from the Run menu and then click the **Debug** button (the icon
-  of a bug)
-- If you are running on linux:
-  - for the VM Arguments, copy your `starsector_linux.sh` file and paste it into the VM Arguments field.
-  - Then, at the start of the args, add `-server -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005`
-
-![Run configuration!](readme_files/intellij-run.png "Run configuration")
-
-### "I didn't put the template in my mods folder"
-
-If you want to symlink or something to the mods folder, then we need to fix some more file paths.
-
-If you placed the template folder in your mods folder, skip to the next part.
-
-1. Open `.idea/libraries/starfarer_api.xml`. It should be fairly clear what needs to be fixed; any path that's pointing to the default game installation should be changed to point to wherever you have it installed.
-   1. It's also possible to edit this in File -> Project Structure -> Libraries, but for editing en masse, editing the xml directly is simpler.
-2. Do the same for `.run/Run Starsector.xml`.
-
-![Library configuration!](readme_files/intellij-libs.png "Library configuration")
-
-### Running the game
-
-To actually build your mod and run the game with it, look for and **click the Debug icon**, which looks like a bug and is green by default. It should be at the top of IntelliJ and next to Build (hammer icon) and Run (play icon) buttons.
-
-Clicking the Debug button will build the .jar, launch the game and pause it, attach IntelliJ's debugger, and unpause the game. The game's launcher will then show. Don't forget to enable your mod in the launcher.
-
-Don't click the Run (play) icon; it will cause the game to wait indefinitely for the debugger and never launch.
-
-### It's working, now what?
-
-Now you have a template that works, but we need to personalize it so multiple people can use the template without
-stepping on each others' toes, so to speak.
-
-See that in `src`, we have `author.modname` as the package (which matches the folder path `src/author/modname`).
-
-1. [ ] The first step is to change the package of our code. This is an organization thing; if there are two Java files
-   with
-   the same name in the same package, then only one of them will get loaded, but if they're in different packages, both
-   will be loaded.
-    1. The easy way to change this is to open up `TemplateModPlugin.java`, click on the first line (`package...`),
-       right-click, and choose Refactor -> Rename. Change it to match your username and modname (or whatever you prefer)
-       .
-    2. When done, you shouldn't have any code in `author.modname`. If that still exists, it can be safely deleted.
-    3. 
-   ![Rename!](readme_files/intellij-rename.png "Rename")
-2. [ ] Now, we've changed where the ModPlugin is located and we need to tell the game the new location the game can call
-   it
-   when the game loads.
-    1. Open the `mod_info.json` file, find `"modPlugin"`, and edit it to use your new package (if you forgot, it's the
-       first line of your `TemplateModPlugin.java` file).
-3. [ ] You can also change the name of the .jar file, which is `Template.jar` by default, in `File -> Project Structure -> Artifacts`, then just right-click on `Template.jar` and choose rename.
-   1. [ ] You will also need to update the name of the .jar in your `mod_info.json` file so the game knows where to look.
-
-![Jar!](readme_files/intellij-artifact.png "Jar")
-
-## Adding more dependencies/libraries
-
-Need to depend on another mod or library (e.g. [GraphicsLib], [LazyLib], [LunaLib], [MagicLib], [Nexelerin], etc)?
-
-1. `File -> Project Structure -> Modules -> "starsector-intellij-template" -> Dependencies tab -> + icon -> JARS or
-   Directories`. Select the .jar(s) you want to add.
-2. Leave Export unchecked and Scope to Compile.
-
-## Other
-
-Author: Wisp
-
-Lowtech Tempest: Selkie
-
-[GraphicsLib]: https://fractalsoftworks.com/forum/index.php?topic=10982.0
-[MagicLib]: https://github.com/MagicLibStarsector/MagicLib/
-[LazyLib]: https://github.com/LazyWizard/lazylib/
-[LunaLib]: https://github.com/Lukas22041/LunaLib/
-[Nexelerin]: https://github.com/Histidine91/Nexerelin/
+### Colonize
+Colonies established on worlds with ruins passively generate treasure hunt progress each month, based on the size and richness of the ruins. 
+Tech-mining further increases the contribution.
