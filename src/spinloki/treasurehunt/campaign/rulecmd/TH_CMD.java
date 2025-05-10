@@ -4,12 +4,11 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.impl.campaign.intel.events.ht.HTPoints;
 import com.fs.starfarer.api.impl.campaign.intel.events.ht.HyperspaceTopographyEventIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
-import spinloki.treasurehunt.THScavengerDataFactor;
-import spinloki.treasurehunt.TreasureHuntEventIntel;
+import spinloki.treasurehunt.campaign.intel.events.THScavengerDataFactor;
+import spinloki.treasurehunt.campaign.intel.events.TreasureHuntEventIntel;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package spinloki.treasurehunt;
+package spinloki.treasurehunt.util;
 
 public class THConstants {
     public static final String TH_TREASURE_HUNT_BOOST = "th_treasure_hunt_boost";

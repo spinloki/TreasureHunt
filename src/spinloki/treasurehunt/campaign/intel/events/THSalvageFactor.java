@@ -1,9 +1,10 @@
-package spinloki.treasurehunt;
+package spinloki.treasurehunt.campaign.intel.events;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseOneTimeFactor;
 import com.fs.starfarer.api.util.Misc;
+import spinloki.treasurehunt.util.THConstants;
 
 public class THSalvageFactor extends BaseOneTimeFactor {
     public THSalvageFactor(int points, String type) {

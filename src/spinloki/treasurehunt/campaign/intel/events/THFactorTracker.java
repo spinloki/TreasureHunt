@@ -1,18 +1,15 @@
-package spinloki.treasurehunt;
+package spinloki.treasurehunt.campaign.intel.events;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
-import com.fs.starfarer.api.util.IntervalUtil;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.campaign.fleet.CampaignFleet;
 
-import java.util.Map;
-
 public class THFactorTracker implements ShowLootListener, EveryFrameScript {
-    THFactorTracker(){
+    public THFactorTracker(){
         Global.getSector().getListenerManager().addListener(this);
         Global.getSector().addScript(this);
     }

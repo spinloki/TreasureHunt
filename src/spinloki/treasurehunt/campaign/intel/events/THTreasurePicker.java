@@ -1,17 +1,15 @@
-package spinloki.treasurehunt;
+package spinloki.treasurehunt.campaign.intel.events;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
-import org.apache.log4j.Logger;
+import spinloki.treasurehunt.util.THConstants;
 
 import java.util.*;
 
 public class THTreasurePicker implements ShowLootListener {
-    private static final Logger log = Logger.getLogger(THTreasurePicker.class);
-
     THTreasurePicker(){
         resetUnseenItems();
         addOneTimeItems();

@@ -1,11 +1,8 @@
 package spinloki.treasurehunt;
 
 import com.fs.starfarer.api.BaseModPlugin;
-import com.fs.starfarer.api.Global;
-import com.fs.starfarer.api.campaign.CargoAPI;
-import com.fs.starfarer.api.campaign.CargoStackAPI;
-import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import org.apache.log4j.Logger;
+import spinloki.treasurehunt.campaign.intel.events.THFactorTracker;
 
 public class TreasureHunt extends BaseModPlugin {
     private static final Logger log = Logger.getLogger(TreasureHunt.class);
