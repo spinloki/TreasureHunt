@@ -5,6 +5,10 @@
     {
       "major": 0,
       "minor": 1,
-      "patch": 0 # Can be a number, character or string (1, 2, a, b, "-RC2", etc)
-    }
+      "patch": 1
+    },
+
+    "modThreadId": 33016,
+
+    "directDownloadURL":"https://github.com/spinloki/TreasureHunt/releases/download/v0.1.1/TreasureHunt_v0.1.1.zip"
 }

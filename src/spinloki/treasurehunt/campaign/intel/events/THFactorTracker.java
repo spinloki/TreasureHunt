@@ -2,6 +2,7 @@ package spinloki.treasurehunt.campaign.intel.events;
 
 import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
 import com.fs.starfarer.api.campaign.PlanetAPI;
@@ -9,8 +10,6 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.util.Misc;
-import com.fs.starfarer.campaign.CampaignPlanet;
-import com.fs.starfarer.campaign.fleet.CampaignFleet;
 import org.json.JSONException;
 import spinloki.treasurehunt.config.Settings;
 
@@ -35,13 +34,13 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
             return;
         }
         var name = entity.getName();
-        if (entity instanceof CampaignFleet fleet){
+        if (entity instanceof CampaignFleetAPI fleet){
             if (Misc.isScavenger(fleet)){
                 float value = 0;
                 for (var member : fleet.getFleetData().getSnapshot()){
                     value += member.getHullSpec().getBaseValue();
                 }
-                for (var member: fleet.getFleetData().getMembers()){
+                for (var member: fleet.getFleetData().getMembersListCopy()){
                     value -= member.getHullSpec().getBaseValue();
                 }
                 setNotify(new THSalvageFactor((int) calculateProgressFromBaseValue(value), "destroying a scavenger fleet"));
@@ -57,7 +56,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         else if (name.equals("Supply Cache")){
             setNotify(new THSalvageFactor(5, "exploring a supply cache"));
         }
-        else if (entity instanceof CampaignPlanet planet){
+        else if (entity instanceof PlanetAPI planet){
             var market = planet.getMarket();
             if (Misc.getDaysSinceLastRaided(market) < .3){
                 setNotify(new THSalvageFactor(15, "raiding a colony"));
