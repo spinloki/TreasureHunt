@@ -21,7 +21,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
 
     // Sigmoid because I'm FANCY even though a straight line clamping from 15 to 50 would work exactly as well
     private static final double K = 0.00001;     // Steepness
-    private static final double X0 = 250000.0;  // Midpoint at 100k base value
+    private static final double X0 = 250000.0;  // Midpoint at 250k base value
     private static float calculateProgressFromBaseValue(float baseValue) {
         double sigmoid = 1.0 / (1.0 + Math.exp(-K * ((double) baseValue - X0)));
         double scaled = 15.0 + (50.0 - 15.0) * sigmoid;
