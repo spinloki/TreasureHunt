@@ -1,7 +1,7 @@
 # Treasure Hunt
 Author: spinloki
 
-Version: 0.1.1
+Version: 0.1.2
 
 ## Description
 The goal of this mod is to make the hunt for rare blueprints and colony items more consistent and less rage-inducing.

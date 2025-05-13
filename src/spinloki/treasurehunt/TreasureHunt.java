@@ -7,6 +7,7 @@ import spinloki.treasurehunt.config.Settings;
 
 public class TreasureHunt extends BaseModPlugin {
     private static final Logger log = Logger.getLogger(TreasureHunt.class);
+    private static THFactorTracker factorTracker = null;
 
     @Override
     public void onApplicationLoad() throws Exception {
@@ -17,6 +18,13 @@ public class TreasureHunt extends BaseModPlugin {
     @Override
     public void onNewGame() {
         super.onNewGame();
-        new THFactorTracker();
+        factorTracker = new THFactorTracker();
+    }
+
+    @Override
+    public void onGameLoad(boolean newGame){
+        if (factorTracker == null){
+            factorTracker = new THFactorTracker();
+        }
     }
 }
