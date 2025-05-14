@@ -285,29 +285,4 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             treasure = "";
         }
     }
-
-    public void addAbility(String id) {
-        if (Global.getSector().getPlayerFleet().hasAbility(id)) {
-            return;
-        }
-        List<Misc.Token> params = new ArrayList<Misc.Token>();
-        Misc.Token t = new Misc.Token(id, Misc.TokenType.LITERAL);
-        params.add(t);
-        t = new Misc.Token("-1", Misc.TokenType.LITERAL);
-        params.add(t); // don't want to assign it to a slot - will assign as hyper-only alternate later here
-        new AddAbility().execute(null, null, params, null);
-
-        PersistentUIDataAPI.AbilitySlotsAPI slots = Global.getSector().getUIData().getAbilitySlotsAPI();
-        int curr = slots.getCurrBarIndex();
-        OUTER: for (int i = 0; i < 5; i++) {
-            slots.setCurrBarIndex(i);
-            for (PersistentUIDataAPI.AbilitySlotAPI slot : slots.getCurrSlotsCopy()) {
-                if (slot.getAbilityId().isEmpty()){
-                    slot.setAbilityId(id);
-                    break OUTER;
-                }
-            }
-        }
-        slots.setCurrBarIndex(curr);
-    }
 }
