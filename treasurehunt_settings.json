@@ -1,17 +1,170 @@
 {
+	"th_mod_enabled": true,
 	"th_treasure_hunt_package_smod_percent_bonus" : 100,
 	"th_treasure_hunt_package_mult_clamp" : 3,
 	"th_debug_use_time_factor" : false,
-	"th_ship_blueprint_priority_queue":{
-		"legion":1,
-		"odyssey":1,
-		"retribution":1,
-		"onslaught":2,
-		"astral":2,
-		"pegasus":2,
-		"invictus":3,
-		"paragon":3,
-		"conquest":3
+	"th_debug_time_factor_points" : 50,
+	"th_blueprints_packages": {
+		"th_ballistics": {
+			"fighters": [],
+			"ships": [],
+			"weapons": [
+				"railgun",
+				"hveldriver",
+				"gauss",
+				"lightneedler",
+				"heavyneedler",
+				"multineedler",
+				"dualflak",
+				"heavymauler"
+			]
+		},
+		"th_beams": {
+			"fighters": [],
+			"ships": [],
+			"weapons": [
+				"pdburst",
+				"phasebeam",
+				"irautolance",
+				"heavyburst",
+				"ionbeam",
+				"guardian",
+				"tachyonlance"
+			]
+		},
+		"th_bolts": {
+			"fighters": [],
+			"ships": [],
+			"weapons": [
+				"amblaster",
+				"heavyblaster",
+				"ionpulser",
+				"plasma",
+				"mjolnir"
+			]
+		},
+		"th_dems": {
+			"fighters": [],
+			"ships": [],
+			"weapons": [
+				"gorgon",
+				"gorgonpod",
+				"gazer",
+				"gazerpod",
+				"dragon",
+				"dragonpod",
+				"hydra"
+			]
+		},
+		"th_heavy_missiles": {
+			"fighters": [],
+			"ships": [],
+			"weapons": [
+				"cyclone",
+				"pilum_large",
+				"hurricane",
+				"squall",
+				"locust"
+			]
+		},
+		"th_frigates": {
+			"fighters": [],
+			"ships": [
+				"vanguard",
+				"hyperion",
+				"omen",
+				"tempest",
+				"monitor",
+				"scarab"
+			],
+			"weapons": []
+		},
+		"th_phase": {
+			"fighters": [],
+			"ships": [
+				"afflictor",
+				"shade",
+				"harbinger",
+				"doom",
+				"grendel",
+				"revenant"
+			],
+			"weapons": []
+		},
+		"th_support": {
+			"fighters": [],
+			"ships": [
+				"phantom",
+				"valkyrie",
+				"atlas",
+				"prometheus",
+				"apogee"
+			],
+			"weapons": []
+		},
+		"th_mid_sized": {
+			"fighters": [],
+			"ships": [
+				"manticore",
+				"medusa",
+				"eagle",
+				"champion",
+				"eradicator",
+				"aurora",
+				"gryphon",
+				"anubis"
+			],
+			"weapons": []
+		},
+		"th_modified": {
+			"fighters": [],
+			"ships": [
+				"prometheus2",
+				"atlas2",
+				"colossus2",
+				"colossus3"
+			],
+			"weapons": []
+		},
+		"th_high_tech_capitals": {
+			"fighters": [],
+			"ships": [
+				"paragon",
+				"odyssey",
+				"astral"
+			],
+			"weapons": []
+		},
+		"th_midline_capitals": {
+			"fighters": [],
+			"ships": [
+				"conquest",
+				"pegasus"
+			],
+			"weapons": []
+		},
+		"th_low_tech_capitals": {
+			"fighters": [],
+			"ships": [
+				"onslaught",
+				"legion",
+				"invictus",
+				"retribution"
+			],
+			"weapons": []
+		},
+		"th_fighters": {
+			"fighters": [
+				"thunder_wing",
+				"claw_wing",
+				"hoplon_wing",
+				"trident_wing",
+				"perdition_wing",
+				"longbow_wing"
+			],
+			"ships": [],
+			"weapons": []
+		}
 	},
 	"th_ruins_exploration_values": {
 		"ruins_scattered": 10,

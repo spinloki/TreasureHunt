@@ -100,7 +100,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
             timePassed += amount;
             if (timePassed > interval){
                 timePassed = 0;
-                TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor( 50), null);
+                TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor(Settings.TH_DEBUG_TIME_FACTOR_POINTS), null);
             }
         }
         if (mNotify) {
