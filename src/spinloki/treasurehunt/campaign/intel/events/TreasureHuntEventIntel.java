@@ -15,13 +15,11 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import static spinloki.treasurehunt.campaign.intel.events.THTreasurePicker.getShipBlueprintDisplayName;
 import static spinloki.treasurehunt.campaign.intel.events.THTreasurePicker.getSpecialItemDisplayName;
 
 public class TreasureHuntEventIntel extends BaseEventIntel {
     private THTreasurePicker picker;
     private String treasure;
-    private THUtils.TreasureType treasureType = THUtils.TreasureType.ITEM;
 
     private static final String category = "treasure_hunt_events";
 
@@ -99,17 +97,9 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         EventStageData esd = getDataFor(stageId);
         if (esd == null) return null;
         if (stageId == Stage.CHOOSE){
-            if (treasureType == THUtils.TreasureType.ITEM){
-                var spec = Global.getSettings().getSpecialItemSpec(treasure);
-                if (spec != null){
-                    return spec.getIconName();
-                }
-            }
-            if (treasureType == THUtils.TreasureType.SHIP_BLUEPRINT){
-                var spec = Global.getSettings().getSpecialItemSpec("ship_bp");
-                if (spec != null){
-                    return spec.getIconName();
-                }
+            var spec = Global.getSettings().getSpecialItemSpec(treasure);
+            if (spec != null){
+                return spec.getIconName();
             }
             return Global.getSettings().getSpriteName(category, "found_lead");
         }
@@ -174,12 +164,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         }
         else if (stageId == Stage.CHOOSE){
             String displayName = null;
-            if (treasureType == THUtils.TreasureType.ITEM){
-                displayName = getSpecialItemDisplayName(treasure);
-            }
-            if (treasureType == THUtils.TreasureType.SHIP_BLUEPRINT){
-                displayName = getShipBlueprintDisplayName(treasure);
-            }
+            displayName = getSpecialItemDisplayName(treasure);
             info.addPara(String.format("You have a lead on a %s", displayName), initPad);
         }
         else if (stageId == Stage.OPPORTUNITY){
@@ -216,12 +201,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
                     if (esd.id == Stage.CHOOSE) {
                         String displayName = null;
-                        if (treasureType == THUtils.TreasureType.ITEM){
-                            displayName = getSpecialItemDisplayName(treasure);
-                        }
-                        if (treasureType == THUtils.TreasureType.SHIP_BLUEPRINT){
-                            displayName = getShipBlueprintDisplayName(treasure);
-                        }
+                        displayName = getSpecialItemDisplayName(treasure);
                         tooltip.addTitle(String.format("Found a lead on a %s", displayName));
                     } else if (esd.id == Stage.OPPORTUNITY) {
                         tooltip.addTitle("Found an opportunity");
@@ -257,12 +237,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             }
             if (esd.id == Stage.FOUND) {
                 String message = "Treasure found";
-                if (treasureType == THUtils.TreasureType.ITEM){
-                    message += ": " + getSpecialItemDisplayName(treasure) + " added to inventory.";
-                }
-                if (treasureType == THUtils.TreasureType.SHIP_BLUEPRINT){
-                    message += ": " + getShipBlueprintDisplayName(treasure) + " added to known ship blueprints.";
-                }
+                message += ": " + getSpecialItemDisplayName(treasure) + " added to inventory.";
                 info.addPara(message, tc, initPad);
             }
         }
@@ -271,17 +246,11 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     protected void notifyStageReached(EventStageData stage){
         if (stage.id == Stage.CHOOSE) {
             treasure = picker.getRandomUnseenItem();
-            treasureType = picker.getLastChosenType();
         }
         if (stage.id == Stage.FOUND){
             setProgress(0);
             CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
-            if (treasureType == THUtils.TreasureType.ITEM){
-                cargo.addItems(CargoAPI.CargoItemType.SPECIAL, new SpecialItemData(treasure, null), 1);
-            }
-            if (treasureType == THUtils.TreasureType.SHIP_BLUEPRINT){
-                Global.getSector().getPlayerFaction().addKnownShip(treasure, true);
-            }
+            cargo.addItems(CargoAPI.CargoItemType.SPECIAL, new SpecialItemData(treasure, null), 1);
             treasure = "";
         }
     }
