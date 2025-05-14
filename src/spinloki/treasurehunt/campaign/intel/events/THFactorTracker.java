@@ -14,9 +14,18 @@ import org.json.JSONException;
 import spinloki.treasurehunt.config.Settings;
 
 public class THFactorTracker implements ShowLootListener, PlayerColonizationListener, EveryFrameScript {
-    public THFactorTracker(){
+    private boolean isManaged = false;
+
+    public THFactorTracker(boolean managed){
+        isManaged = true;
         Global.getSector().getListenerManager().addListener(this);
         Global.getSector().addScript(this);
+    }
+
+    public void cleanup(){
+        Global.getSector().getListenerManager().removeListener(this);
+        Global.getSector().removeScript(this);
+
     }
 
     // Sigmoid because I'm FANCY even though a straight line clamping from 15 to 50 would work exactly as well
@@ -96,6 +105,10 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
     }
 
     public void advance(float amount){
+        if (!isManaged){
+            cleanup();
+            return;
+        }
         if (Settings.TH_DEBUG_USE_TIME_FACTOR){
             timePassed += amount;
             if (timePassed > interval){
