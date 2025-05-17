@@ -1,0 +1,2 @@
+command,class,tags,syntax,help
+TH_AddProgress,spinloki.treasurehunt.data.console.TH_AddProgress,"cheat,campaign",th_addprogress <amount (>=0)>,Adds progress for the Treasure Hunt event
