@@ -13,6 +13,12 @@ import com.fs.starfarer.api.util.Misc;
 import org.json.JSONException;
 import spinloki.treasurehunt.config.Settings;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
+
 public class THFactorTracker implements ShowLootListener, PlayerColonizationListener, EveryFrameScript {
     public THFactorTracker(){
 
@@ -27,6 +33,18 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         return (float) Math.round(scaled);
     }
 
+    public void queueFactorForDestroyingFleet(CampaignFleetAPI fleet){
+        float value = 0;
+        for (var fleetMember : fleet.getFleetData().getSnapshot()){
+            value += fleetMember.getHullSpec().getBaseValue();
+        }
+        for (var fleetMember: fleet.getFleetData().getMembersListCopy()){
+            value -= fleetMember.getHullSpec().getBaseValue();
+        }
+        mFactors.add(new THSalvageFactor((int) calculateProgressFromBaseValue(value), "destroying a scavenger fleet"));
+
+    }
+
     public void reportAboutToShowLootToPlayer(CargoAPI loot, InteractionDialogAPI dialog) {
         var entity = dialog.getInteractionTarget();
         if (entity == null){
@@ -35,30 +53,30 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         var name = entity.getName();
         if (entity instanceof CampaignFleetAPI fleet){
             if (Misc.isScavenger(fleet)){
-                float value = 0;
-                for (var member : fleet.getFleetData().getSnapshot()){
-                    value += member.getHullSpec().getBaseValue();
+                if (fleet.getBattle() != null){ // Shouldn't be null, but I've seen it be null sometimes when using nuke command
+                    for (var enemyFleet : fleet.getBattle().getNonPlayerSide()){
+                        queueFactorForDestroyingFleet(enemyFleet);
+                    }
                 }
-                for (var member: fleet.getFleetData().getMembersListCopy()){
-                    value -= member.getHullSpec().getBaseValue();
+                else{
+                    queueFactorForDestroyingFleet(fleet);
                 }
-                setNotify(new THSalvageFactor((int) calculateProgressFromBaseValue(value), "destroying a scavenger fleet"));
             }
             return;
         }
         if (name.equals("Research Station") || name.equals("Mining Station") || name.equals("Orbital Habitat")){
-            setNotify(new THSalvageFactor(25, "exploring a derelict station"));
+            mFactors.add(new THSalvageFactor(25, "exploring a derelict station"));
         }
         else if (name.equals("Derelict Ship")){
-            setNotify(new THSalvageFactor(3, "exploring a derelict ship"));
+            mFactors.add(new THSalvageFactor(3, "exploring a derelict ship"));
         }
         else if (name.equals("Supply Cache")){
-            setNotify(new THSalvageFactor(5, "exploring a supply cache"));
+            mFactors.add(new THSalvageFactor(5, "exploring a supply cache"));
         }
         else if (entity instanceof PlanetAPI planet){
             var market = planet.getMarket();
             if (Misc.getDaysSinceLastRaided(market) < .3){
-                setNotify(new THSalvageFactor(15, "raiding a colony"));
+                mFactors.add(new THSalvageFactor(15, "raiding a colony"));
             }
 
             else if (Misc.hasRuins(market)){
@@ -72,19 +90,15 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
                     value = 10;
                     size = "scattered";
                 }
-                setNotify(new THSalvageFactor(value, String.format("exploring a %s ruin", size)));
+                mFactors.add(new THSalvageFactor(value, String.format("exploring a %s ruin", size)));
             }
         }
     }
 
     private THSalvageFactor mFactor;
-    private boolean mNotify = false;
+    private Queue<THSalvageFactor> mFactors = new LinkedList<>();
     private float interval = 1;
     private float timePassed = 0;
-    public void setNotify(THSalvageFactor factor) {
-        mNotify = true;
-        mFactor = factor;
-    }
 
     public boolean isDone() {
         return false;
@@ -95,16 +109,15 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
     }
 
     public void advance(float amount){
-        if (Settings.TH_DEBUG_USE_TIME_FACTOR){
+         if (Settings.TH_DEBUG_USE_TIME_FACTOR){
             timePassed += amount;
             if (timePassed > interval){
                 timePassed = 0;
                 TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor(Settings.TH_DEBUG_TIME_FACTOR_POINTS), null);
             }
         }
-        if (mNotify) {
-            mNotify = false;
-            TreasureHuntEventIntel.addFactorCreateIfNecessary(mFactor, null);
+        while (!mFactors.isEmpty()){
+            TreasureHuntEventIntel.addFactorCreateIfNecessary(mFactors.poll(), null);
         }
     }
 
