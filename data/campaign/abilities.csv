@@ -1,2 +1,2 @@
 name,id,type,tags,activationDays,activationCooldown,durationDays,deactivationDays,deactivationCooldown,unlockedAtStart,defaultForAIFleet,musicSuppression,uiOn,uiOff,uiLoop,worldOn,worldOff,worldLoop,icon,plugin,ai,desc,sortOrder
-Abandon Lead,th_abandon_lead,DURATION,,0,,0,0,.1,TRUE,,,ui_distress_call_on,,,,,,graphics/ui/double_square_x.png,spinloki.treasurehunt.campaign.abilities.THResetProgressAbility,,Abandon the lead.,1000
+Abandon Lead,th_abandon_lead,DURATION,,0,,0,0,.1,TRUE,,,ui_distress_call_on,,,,,,graphics/icons/intel/beacon_high.png,spinloki.treasurehunt.campaign.abilities.THResetProgressAbility,,Abandon the lead.,1000
