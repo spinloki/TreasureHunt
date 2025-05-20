@@ -1,7 +1,6 @@
 package spinloki.treasurehunt.campaign.intel.events;
 
 import com.fs.starfarer.api.EveryFrameScript;
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
@@ -13,11 +12,8 @@ import com.fs.starfarer.api.util.Misc;
 import org.json.JSONException;
 import spinloki.treasurehunt.config.Settings;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class THFactorTracker implements ShowLootListener, PlayerColonizationListener, EveryFrameScript {
     public THFactorTracker(){
@@ -35,14 +31,21 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
 
     public void queueFactorForDestroyingFleet(CampaignFleetAPI fleet){
         float value = 0;
-        for (var fleetMember : fleet.getFleetData().getSnapshot()){
+        for (var fleetMember : Misc.getSnapshotMembersLost(fleet)){
             value += fleetMember.getHullSpec().getBaseValue();
-        }
-        for (var fleetMember: fleet.getFleetData().getMembersListCopy()){
-            value -= fleetMember.getHullSpec().getBaseValue();
         }
         mFactors.add(new THSalvageFactor((int) calculateProgressFromBaseValue(value), "destroying a scavenger fleet"));
 
+    }
+
+    protected int getExplorationPointValue(String settingsId, int defaultVal){
+        int value;
+        try{
+            value = (int) Settings.TH_EXPLORATION_VALUES.get("settingsId");
+        } catch (JSONException e) {
+            value = defaultVal;
+        }
+        return value;
     }
 
     public void reportAboutToShowLootToPlayer(CargoAPI loot, InteractionDialogAPI dialog) {
@@ -65,18 +68,18 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
             return;
         }
         if (name.equals("Research Station") || name.equals("Mining Station") || name.equals("Orbital Habitat")){
-            mFactors.add(new THSalvageFactor(25, "exploring a derelict station"));
+            mFactors.add(new THSalvageFactor(getExplorationPointValue("station", 25), "exploring a derelict station"));
         }
         else if (name.equals("Derelict Ship")){
-            mFactors.add(new THSalvageFactor(3, "exploring a derelict ship"));
+            mFactors.add(new THSalvageFactor(getExplorationPointValue("ship", 3), "exploring a derelict ship"));
         }
         else if (name.equals("Supply Cache")){
-            mFactors.add(new THSalvageFactor(5, "exploring a supply cache"));
+            mFactors.add(new THSalvageFactor(getExplorationPointValue("cache", 5), "exploring a supply cache"));
         }
         else if (entity instanceof PlanetAPI planet){
             var market = planet.getMarket();
             if (Misc.getDaysSinceLastRaided(market) < .3){
-                mFactors.add(new THSalvageFactor(15, "raiding a colony"));
+                mFactors.add(new THSalvageFactor(getExplorationPointValue("raid", 15), "raiding a colony"));
             }
 
             else if (Misc.hasRuins(market)){
@@ -84,7 +87,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
                 int value;
                 String size;
                 try{
-                    value = (int) Settings.TH_RUINS_EXPLORATION_VALUES.get(ruin);
+                    value = (int) Settings.TH_EXPLORATION_VALUES.get(ruin);
                     size = ruin.replace("ruins_","");
                 } catch (JSONException e) {
                     value = 10;

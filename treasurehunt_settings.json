@@ -166,11 +166,15 @@
 			"weapons": []
 		}
 	},
-	"th_ruins_exploration_values": {
+	"th_exploration_values": {
 		"ruins_scattered": 10,
 		"ruins_widespread": 20,
 		"ruins_extensive": 40,
-		"ruins_vast": 80
+		"ruins_vast": 80,
+		"station": 25,
+		"ship": 3,
+		"cache": 5,
+		"raid": 15
 	},
 	"th_colony_ruins_base_progress_divisor": 10,
 	"th_colony_tech_mining_progress_multiplier": 2
