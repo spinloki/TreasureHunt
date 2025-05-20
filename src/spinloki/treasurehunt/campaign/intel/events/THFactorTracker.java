@@ -41,7 +41,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
     protected int getExplorationPointValue(String settingsId, int defaultVal){
         int value;
         try{
-            value = (int) Settings.TH_EXPLORATION_VALUES.get("settingsId");
+            value = (int) Settings.TH_EXPLORATION_VALUES.get(settingsId);
         } catch (JSONException e) {
             value = defaultVal;
         }
