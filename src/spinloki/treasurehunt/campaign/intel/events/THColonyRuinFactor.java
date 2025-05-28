@@ -7,7 +7,6 @@ import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import org.json.JSONException;
 import spinloki.treasurehunt.config.Settings;
 import spinloki.treasurehunt.util.THUtils;
 
@@ -22,11 +21,7 @@ public class THColonyRuinFactor extends BaseEventFactor {
         super();
         this.colony = colony;
         ruins_type = Misc.getRuinsType(colony);
-        try {
-            BASE_PROGRESS = Settings.TH_EXPLORATION_VALUES.getInt(ruins_type) / Settings.TH_COLONY_RUINS_BASE_PROGRESS_DIVISOR;
-        } catch (JSONException e) {
-            BASE_PROGRESS = 10;
-        }
+        BASE_PROGRESS = Settings.getTHRewardValue(ruins_type) / Settings.TH_COLONY_RUINS_BASE_PROGRESS_DIVISOR;
     }
 
     @Override

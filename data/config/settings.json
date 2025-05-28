@@ -11,5 +11,65 @@
 			"found_treasure":"graphics/icons/campaign/event_good.png",
 			"found_opportunity":"graphics/icons/campaign/event_neutral.png"
 		}
+	},
+	"th_rewards": {
+		"station": {
+			"value": 25,
+			"description": "exploring a derelict station"
+		},
+		"derelict_ship": {
+			"value": 3,
+			"description": "exploring a derelict ship"
+		},
+		"cache": {
+			"value": 5,
+			"description": "exploring a hidden cache"
+		},
+		"derelict_probe": {
+			"value": 10,
+			"description": "exploring a derelict probe"
+		},
+		"derelict_survey_ship": {
+			"value": 20,
+			"description": "exploring a derelict survey ship"
+		},
+		"derelict_mothership": {
+			"value": 40,
+			"description": "exploring a derelict mothership"
+		},
+		"ruins_scattered": {
+			"value": 10,
+			"description": "exploring a scattered ruin"
+		},
+		"ruins_widespread": {
+			"value": 20,
+			"description": "exploring a widespread ruin"
+		},
+		"ruins_extensive": {
+			"value": 40,
+			"description": "exploring a extensive ruin"
+		},
+		"ruins_vast": {
+			"value": 80,
+			"description": "exploring a vast ruin"
+		},
+		"station_research_remnant": "station",
+		"station_mining_remnant": "station",
+		"orbital_habitat_remnant": "station",
+		"station_research": "station",
+		"station_mining": "station",
+		"orbital_habitat": "station",
+		"supply_cache": "cache",
+		"weapons_cache": "cache",
+		"weapons_cache_remnant": "cache",
+		"weapons_cache_low": "cache",
+		"weapons_cache_high": "cache",
+		"equipment_cache": "cache",
+		"supply_cache_small": "cache",
+		"weapons_cache_small": "cache",
+		"weapons_cache_small_remnant": "cache",
+		"weapons_cache_small_low": "cache",
+		"weapons_cache_small_high": "cache",
+		"equipment_cache_small": "cache"
 	}
 }

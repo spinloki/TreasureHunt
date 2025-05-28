@@ -1,6 +1,7 @@
 package spinloki.treasurehunt.campaign.intel.events;
 
 import com.fs.starfarer.api.EveryFrameScript;
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
@@ -25,7 +26,9 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
     private static final double X0 = 250000.0;  // Midpoint at 250k base value
     private static float calculateProgressFromBaseValue(float baseValue) {
         double sigmoid = 1.0 / (1.0 + Math.exp(-K * ((double) baseValue - X0)));
-        double scaled = 15.0 + (50.0 - 15.0) * sigmoid;
+        int min = getExplorationPointValue("scav_kill_min", 1);
+        int max = getExplorationPointValue("scav_kill_max", 50);
+        double scaled = min + (max - min) * sigmoid;
         return (float) Math.round(scaled);
     }
 
@@ -38,7 +41,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
 
     }
 
-    protected int getExplorationPointValue(String settingsId, int defaultVal){
+    protected static int getExplorationPointValue(String settingsId, int defaultVal){
         int value;
         try{
             value = (int) Settings.TH_EXPLORATION_VALUES.get(settingsId);
@@ -53,7 +56,6 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         if (entity == null){
             return;
         }
-        var name = entity.getName();
         if (entity instanceof CampaignFleetAPI fleet){
             if (fleet.getBattle() != null){ // Shouldn't be null, but I've seen it be null sometimes when using nuke command
                 for (var enemyFleet : fleet.getBattle().getNonPlayerSide()){
@@ -67,14 +69,9 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
             }
             return;
         }
-        if (name.equals("Research Station") || name.equals("Mining Station") || name.equals("Orbital Habitat")){
-            mFactors.add(new THSalvageFactor(getExplorationPointValue("station", 25), "exploring a derelict station"));
-        }
-        else if (name.equals("Derelict Ship")){
-            mFactors.add(new THSalvageFactor(getExplorationPointValue("ship", 3), "exploring a derelict ship"));
-        }
-        else if (name.equals("Supply Cache")){
-            mFactors.add(new THSalvageFactor(getExplorationPointValue("cache", 5), "exploring a supply cache"));
+        var customDescId = entity.getCustomDescriptionId();
+        if (Settings.customDescriptionIdHasTHReward(customDescId)){
+            mFactors.add(new THSalvageFactor(Settings.getTHRewardValue(customDescId), Settings.getTHRewardDescription(customDescId)));
         }
         else if (entity instanceof PlanetAPI planet){
             var market = planet.getMarket();
@@ -84,16 +81,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
 
             else if (Misc.hasRuins(market)){
                 var ruin = Misc.getRuinsType(market);
-                int value;
-                String size;
-                try{
-                    value = (int) Settings.TH_EXPLORATION_VALUES.get(ruin);
-                    size = ruin.replace("ruins_","");
-                } catch (JSONException e) {
-                    value = 10;
-                    size = "scattered";
-                }
-                mFactors.add(new THSalvageFactor(value, String.format("exploring a %s ruin", size)));
+                mFactors.add(new THSalvageFactor(Settings.getTHRewardValue(ruin), Settings.getTHRewardDescription(ruin)));
             }
         }
     }

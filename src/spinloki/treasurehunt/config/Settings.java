@@ -22,6 +22,7 @@ public class Settings {
     public static Integer TH_COLONY_RUINS_BASE_PROGRESS_DIVISOR;
     public static Integer TH_COLONY_TECH_MINING_PROGRESS_MULTIPLIER;
     public static JSONObject TH_BLUEPRINTS_PACKAGES;
+    public static JSONObject TH_REWARDS;
 
     public static void loadSettingsFromJson() throws JSONException, IOException {
         JSONObject json = Global.getSettings().loadJSON("treasurehunt_settings.json", "spinloki_treasurehunt");
@@ -33,6 +34,10 @@ public class Settings {
         TH_COLONY_RUINS_BASE_PROGRESS_DIVISOR = json.getInt("th_colony_ruins_base_progress_divisor");
         TH_COLONY_TECH_MINING_PROGRESS_MULTIPLIER = json.getInt("th_colony_tech_mining_progress_multiplier");
         TH_BLUEPRINTS_PACKAGES = json.getJSONObject("th_blueprints_packages");
+    }
+
+    public static void loadTHRewards() throws JSONException, IOException {
+        TH_REWARDS = Global.getSettings().getJSONObject("th_rewards");
     }
 
     public static List<String> getIdsFromPackage(String packageName, String type) {
@@ -76,5 +81,56 @@ public class Settings {
             blueprintPackages.add(keys.next().toString());
         }
         return blueprintPackages;
+    }
+
+    public static boolean customDescriptionIdHasTHReward(String customDescriptionId){
+        return TH_REWARDS.has(customDescriptionId);
+    }
+
+    public static JSONObject resolveTHAliases(String customDescriptionId) throws JSONException {
+        String currentKey = customDescriptionId;
+
+        while (TH_REWARDS.has(currentKey)) {
+            Object value = TH_REWARDS.get(currentKey);
+
+            if (value instanceof JSONObject) {
+                return (JSONObject) value;
+            } else if (value instanceof String) {
+                currentKey = (String) value;  // Follow alias
+            } else {
+                break;  // Unexpected type
+            }
+        }
+
+        log.error("Failed to resolve alias for " + customDescriptionId);
+        return null;
+    }
+
+    public static int getTHRewardValue(String customDescriptionId){
+        var val = 5; // default fallback value
+        try{
+            var obj = resolveTHAliases(customDescriptionId);
+            if (obj != null){
+                val = obj.getInt("value");
+            }
+        }
+        catch(JSONException e){
+            log.error("Failed to get treasure hunt reward value for " + customDescriptionId);
+        }
+        return val;
+    }
+
+    public static String getTHRewardDescription(String customDescriptionId){
+        var desc = "exploration"; // default fallback value
+        try{
+            var obj = resolveTHAliases(customDescriptionId);
+            if (obj != null){
+                desc = obj.getString("description");
+            }
+        }
+        catch(JSONException e){
+            log.error("Failed to get treasure hunt reward value for " + customDescriptionId);
+        }
+        return desc;
     }
 }

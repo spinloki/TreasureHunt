@@ -16,6 +16,7 @@ public class TreasureHunt extends BaseModPlugin {
     public void onApplicationLoad() throws Exception {
         super.onApplicationLoad();
         Settings.loadSettingsFromJson();
+        Settings.loadTHRewards();
         THVanillaItemTagger.tagItems();
     }
 
