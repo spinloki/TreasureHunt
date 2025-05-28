@@ -3,7 +3,7 @@ scavBuyTHDataOpt,PopulateOptions,"$menuState == fleetConvMain
 $entity.isScavenger
 !$entity.boughtTHData
 TH_CMD computeDataStats",,,buyTHData:Offer to pay for information about the scavenger's recent finds.,
-scavBuyTHDataSel1,DialogOptionSelected,$option == buyTHData,Highlight $th_dataCost,"You talk through the details with the $post, careful not to ask too directly and getting just enough in return. After a bit of back and forth, you reach a final price of $ht_dataCost credits for the data.","buyTHDataConfirm:Transfer the payment
+scavBuyTHDataSel1,DialogOptionSelected,$option == buyTHData,Highlight $th_dataCost,"You talk through the details with the $post, careful not to ask too directly and getting just enough in return. After a bit of back and forth, you reach a final price of $th_dataCost credits for the data.","buyTHDataConfirm:Transfer the payment
 buyTHDataNeverMind:Never mind",
 buyTHDataConfirmSel,DialogOptionSelected,$option == buyTHDataConfirm,"AddCredits -$th_dataCost
 $entity.boughtTHData = true 60
