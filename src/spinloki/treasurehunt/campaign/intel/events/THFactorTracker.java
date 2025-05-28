@@ -55,15 +55,15 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         }
         var name = entity.getName();
         if (entity instanceof CampaignFleetAPI fleet){
-            if (Misc.isScavenger(fleet)){
-                if (fleet.getBattle() != null){ // Shouldn't be null, but I've seen it be null sometimes when using nuke command
-                    for (var enemyFleet : fleet.getBattle().getNonPlayerSide()){
+            if (fleet.getBattle() != null){ // Shouldn't be null, but I've seen it be null sometimes when using nuke command
+                for (var enemyFleet : fleet.getBattle().getNonPlayerSide()){
+                    if (Misc.isScavenger(enemyFleet)){
                         queueFactorForDestroyingFleet(enemyFleet);
                     }
                 }
-                else{
-                    queueFactorForDestroyingFleet(fleet);
-                }
+            }
+            else if (Misc.isScavenger(fleet)){ // Fallback. Unfortunately, player won't get credit for other fleets that participate
+                queueFactorForDestroyingFleet(fleet);
             }
             return;
         }
