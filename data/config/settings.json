@@ -53,6 +53,14 @@
 			"value": 80,
 			"description": "exploring a vast ruin"
 		},
+		"debris_field_shared": {
+			"value": 3,
+			"description": "exploring a debris field"
+		},
+		"raid": {
+			"value": 15,
+			"description": "raiding a market"
+		},
 		"station_research_remnant": "station",
 		"station_mining_remnant": "station",
 		"orbital_habitat_remnant": "station",

@@ -73,12 +73,11 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         if (Settings.customDescriptionIdHasTHReward(customDescId)){
             mFactors.add(new THSalvageFactor(Settings.getTHRewardValue(customDescId), Settings.getTHRewardDescription(customDescId)));
         }
-        else if (entity instanceof PlanetAPI planet){
-            var market = planet.getMarket();
-            if (Misc.getDaysSinceLastRaided(market) < .3){
-                mFactors.add(new THSalvageFactor(getExplorationPointValue("raid", 15), "raiding a colony"));
+        else if (entity.getMarket() != null){
+            var market = entity.getMarket();
+            if (Misc.getDaysSinceLastRaided(market) < .3){ // figure .3 should be a reasonable value to determine that the player raided the market
+                mFactors.add(new THSalvageFactor(Settings.getTHRewardValue("raid"), Settings.getTHRewardDescription("raid")));
             }
-
             else if (Misc.hasRuins(market)){
                 var ruin = Misc.getRuinsType(market);
                 mFactors.add(new THSalvageFactor(Settings.getTHRewardValue(ruin), Settings.getTHRewardDescription(ruin)));

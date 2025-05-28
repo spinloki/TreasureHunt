@@ -166,7 +166,6 @@
 		}
 	},
 	"th_exploration_values": {
-		"raid": 15,
 		"scav_kill_min": 1,
 		"scav_kill_max": 50
 	},
