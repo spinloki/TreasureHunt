@@ -23,6 +23,7 @@ public class Settings {
     public static Integer TH_COLONY_TECH_MINING_PROGRESS_MULTIPLIER;
     public static JSONObject TH_BLUEPRINTS_PACKAGES;
     public static JSONObject TH_REWARDS;
+    public static Float TH_PICK_BLUEPRINT_WEIGHT;
 
     public static void loadSettingsFromJson() throws JSONException, IOException {
         JSONObject json = Global.getSettings().loadJSON("treasurehunt_settings.json", "spinloki_treasurehunt");
@@ -33,7 +34,8 @@ public class Settings {
         TH_EXPLORATION_VALUES = json.getJSONObject("th_exploration_values");
         TH_COLONY_RUINS_BASE_PROGRESS_DIVISOR = json.getInt("th_colony_ruins_base_progress_divisor");
         TH_COLONY_TECH_MINING_PROGRESS_MULTIPLIER = json.getInt("th_colony_tech_mining_progress_multiplier");
-        TH_BLUEPRINTS_PACKAGES = json.getJSONObject("th_blueprints_packages");
+        TH_BLUEPRINTS_PACKAGES = Global.getSettings().getJSONObject("th_blueprints_packages");
+        TH_PICK_BLUEPRINT_WEIGHT = (float) json.getDouble("th_pick_blueprint_weight");
     }
 
     public static void loadTHRewards() throws JSONException, IOException {

@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
+import spinloki.TreasureHunt.config.Settings;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.*;
@@ -41,22 +42,23 @@ public class THTreasurePicker implements ShowLootListener {
             Items.MISSILE_PACKAGE
     );
 
-    private Set<String> unseenItems;
+    private Set<String> unseenOneTimeItems;
+    private Set<String> unseenRepeatableItems;
 
     private void resetUnseenItems() {
-        unseenItems = new HashSet<>(COLONY_ITEMS);
+        unseenRepeatableItems = new HashSet<>(COLONY_ITEMS);
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
             if (item.hasTag(THUtils.TH_SPECIAL_ITEM)){
-                unseenItems.add(item.getId());
+                unseenRepeatableItems.add(item.getId());
             }
         }
     }
 
     private void addOneTimeItems(){
-        unseenItems.addAll(BLUEPRINT_ITEMS);
+        unseenOneTimeItems = new HashSet<>(BLUEPRINT_ITEMS);
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
             if (item.hasTag(THUtils.TH_BLUEPRINT_PACKAGE)){
-                unseenItems.add(item.getId());
+                unseenOneTimeItems.add(item.getId());
             }
         }
     }
@@ -67,14 +69,22 @@ public class THTreasurePicker implements ShowLootListener {
             resetUnseenItems();
             addOneTimeItems();
         }
-        if (unseenItems.isEmpty()) {
+
+        if (unseenRepeatableItems.isEmpty()){
             resetUnseenItems();
         }
 
-        String chosenTreasure = null;
+        Set<String> unseenItems;
+        boolean pickBlueprint = (new Random().nextDouble() <= Settings.TH_PICK_BLUEPRINT_WEIGHT) && !unseenOneTimeItems.isEmpty();
+        if (pickBlueprint) {
+            unseenItems = unseenOneTimeItems;
+        }
+        else {
+            unseenItems = unseenRepeatableItems;
+        }
 
         List<String> itemList = new ArrayList<>(unseenItems);
-        chosenTreasure = itemList.get(new Random().nextInt(itemList.size()));
+        String chosenTreasure = itemList.get(new Random().nextInt(itemList.size()));
         unseenItems.remove(chosenTreasure);
 
         return chosenTreasure;
@@ -108,11 +118,8 @@ public class THTreasurePicker implements ShowLootListener {
     }
 
     public void markItemAsSeen(String itemId) {
-        unseenItems.remove(itemId);
-    }
-
-    public Set<String> getUnseenItems() {
-        return Collections.unmodifiableSet(unseenItems);
+        unseenOneTimeItems.remove(itemId);
+        unseenRepeatableItems.remove(itemId);
     }
 }
 
