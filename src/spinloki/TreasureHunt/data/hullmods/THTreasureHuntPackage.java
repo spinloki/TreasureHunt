@@ -20,7 +20,7 @@ public class THTreasureHuntPackage extends BaseLogisticsHullMod {
 
     String TH_TREASURE_HUNT_BOOST = "th_treasure_hunt_boost";
 
-    private static Map mag = new HashMap();
+    private static final HashMap<HullSize, Float> mag = new HashMap<>();
     static {
         mag.put(HullSize.FRIGATE, 1f);
         mag.put(HullSize.DESTROYER, 2f);
@@ -40,7 +40,7 @@ public class THTreasureHuntPackage extends BaseLogisticsHullMod {
     }
 
     public String getSModDescriptionParam(int index, HullSize hullSize) {
-        if (index == 0) return "" + (int) Settings.TH_TREASURE_HUNT_PACKAGE_SMOD_PERCENT_BONUS.intValue() + "%";
+        if (index == 0) return (int) Settings.TH_TREASURE_HUNT_PACKAGE_SMOD_PERCENT_BONUS.intValue() + "%";
         return null;
     }
 

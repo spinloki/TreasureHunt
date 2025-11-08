@@ -11,6 +11,7 @@ import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.util.Misc;
 import org.json.JSONException;
 import spinloki.TreasureHunt.config.Settings;
+import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,15 +21,12 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
 
     }
 
-    // Sigmoid because I'm FANCY even though a straight line clamping from 15 to 50 would work exactly as well
-    private static final double K = 0.00001;     // Steepness
-    private static final double X0 = 250000.0;  // Midpoint at 250k base value
     private static float calculateProgressFromBaseValue(float baseValue) {
-        double sigmoid = 1.0 / (1.0 + Math.exp(-K * ((double) baseValue - X0)));
         int min = getExplorationPointValue("scav_kill_min", 1);
         int max = getExplorationPointValue("scav_kill_max", 50);
-        double scaled = min + (max - min) * sigmoid;
-        return (float) Math.round(scaled);
+        float scale = 10000.0F;
+        float value = baseValue / scale;
+        return (float) THUtils.clamp(Math.round(value), min, max);
     }
 
     public void queueFactorForDestroyingFleet(CampaignFleetAPI fleet){
@@ -84,9 +82,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         }
     }
 
-    private THSalvageFactor mFactor;
-    private Queue<THSalvageFactor> mFactors = new LinkedList<>();
-    private float interval = 1;
+    private final Queue<THSalvageFactor> mFactors = new LinkedList<>();
     private float timePassed = 0;
 
     public boolean isDone() {
@@ -100,7 +96,8 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
     public void advance(float amount){
          if (Settings.TH_DEBUG_USE_TIME_FACTOR){
             timePassed += amount;
-            if (timePassed > interval){
+             float interval = 1;
+             if (timePassed > interval){
                 timePassed = 0;
                 TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor(Settings.TH_DEBUG_TIME_FACTOR_POINTS), null);
             }

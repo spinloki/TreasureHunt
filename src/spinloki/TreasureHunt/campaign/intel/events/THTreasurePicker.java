@@ -81,7 +81,6 @@ public class THTreasurePicker implements ShowLootListener {
     }
 
     public static String getSpecialItemDisplayName(String specialItemId) {
-        var allspecs = Global.getSettings().getAllSpecialItemSpecs();
         SpecialItemSpecAPI spec = Global.getSettings().getSpecialItemSpec(specialItemId);
         if (spec != null) {
             return spec.getName();
@@ -109,7 +108,7 @@ public class THTreasurePicker implements ShowLootListener {
     }
 
     public void markItemAsSeen(String itemId) {
-        unseenItems.remove(itemId); // In case you need to mark one manually
+        unseenItems.remove(itemId);
     }
 
     public Set<String> getUnseenItems() {
