@@ -1,4 +1,4 @@
-package spinloki.treasurehunt.util;
+package spinloki.TreasureHunt.util;
 
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;

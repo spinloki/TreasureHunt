@@ -1,4 +1,4 @@
-package spinloki.treasurehunt.campaign.intel.events;
+package spinloki.TreasureHunt.campaign.intel.events;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventFactor;
@@ -7,8 +7,8 @@ import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import spinloki.treasurehunt.config.Settings;
-import spinloki.treasurehunt.util.THUtils;
+import spinloki.TreasureHunt.config.Settings;
+import spinloki.TreasureHunt.util.THUtils;
 
 import java.awt.*;
 

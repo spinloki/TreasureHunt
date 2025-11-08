@@ -1,4 +1,4 @@
-package spinloki.treasurehunt.data.hullmods;
+package spinloki.TreasureHunt.data.hullmods;
 
 import java.awt.Color;
 import java.util.HashMap;
@@ -13,8 +13,8 @@ import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.impl.hullmods.BaseLogisticsHullMod;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import spinloki.treasurehunt.config.Settings;
-import spinloki.treasurehunt.util.THUtils;
+import spinloki.TreasureHunt.config.Settings;
+import spinloki.TreasureHunt.util.THUtils;
 
 public class THTreasureHuntPackage extends BaseLogisticsHullMod {
 

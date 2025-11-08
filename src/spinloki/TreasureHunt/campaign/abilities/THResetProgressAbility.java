@@ -1,10 +1,10 @@
-package spinloki.treasurehunt.campaign.abilities;
+package spinloki.TreasureHunt.campaign.abilities;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import spinloki.treasurehunt.campaign.intel.events.TreasureHuntEventIntel;
+import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
 
 public class THResetProgressAbility extends BaseDurationAbility {
     @Override

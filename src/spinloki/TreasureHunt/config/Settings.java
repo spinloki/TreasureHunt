@@ -1,4 +1,4 @@
-package spinloki.treasurehunt.config;
+package spinloki.TreasureHunt.config;
 
 import com.fs.starfarer.api.Global;
 import org.json.JSONArray;

@@ -1,8 +1,8 @@
-package spinloki.treasurehunt.campaign.items;
+package spinloki.TreasureHunt.campaign.items;
 
 import com.fs.starfarer.api.Global;
 import org.apache.log4j.Logger;
-import spinloki.treasurehunt.config.Settings;
+import spinloki.TreasureHunt.config.Settings;
 
 import java.util.List;
 

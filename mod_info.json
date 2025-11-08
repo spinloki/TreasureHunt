@@ -7,7 +7,7 @@
   "description": "Starsector IntelliJ template.",
   "gameVersion": "0.98a-RC7",
   "jars": [ "jars/TreasureHunt.jar" ],
-  "modPlugin": "spinloki.treasurehunt.TreasureHunt",
+  "modPlugin": "spinloki.TreasureHunt.TreasureHunt",
   "dependencies": [
     {
         "id": "lw_lazylib",

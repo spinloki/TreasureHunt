@@ -2,7 +2,7 @@
 	"plugins":{
 	},
 	"ruleCommandPackages":[
-		"spinloki.treasurehunt.campaign.rulecmd"
+		"spinloki.TreasureHunt.campaign.rulecmd"
 	],
 	"graphics":{
 		"treasure_hunt_events":{ 

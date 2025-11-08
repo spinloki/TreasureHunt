@@ -1,21 +1,17 @@
-package spinloki.treasurehunt.campaign.intel.events;
+package spinloki.TreasureHunt.campaign.intel.events;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
-import com.fs.starfarer.api.impl.campaign.rulecmd.AddAbility;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import spinloki.treasurehunt.util.THUtils;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 
-import static spinloki.treasurehunt.campaign.intel.events.THTreasurePicker.getSpecialItemDisplayName;
+import static spinloki.TreasureHunt.campaign.intel.events.THTreasurePicker.getSpecialItemDisplayName;
 
 public class TreasureHuntEventIntel extends BaseEventIntel {
     private THTreasurePicker picker;

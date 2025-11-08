@@ -1,11 +1,11 @@
-package spinloki.treasurehunt.data.console;
+package spinloki.TreasureHunt.data.console;
 
 import org.jetbrains.annotations.NotNull;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
-import spinloki.treasurehunt.campaign.intel.events.THTimeFactor;
-import spinloki.treasurehunt.campaign.intel.events.TreasureHuntEventIntel;
+import spinloki.TreasureHunt.campaign.intel.events.THTimeFactor;
+import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
 
 import static org.lazywizard.console.CommandUtils.isInteger;
 

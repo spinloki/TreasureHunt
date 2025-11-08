@@ -23,27 +23,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../MagicLib/jars/MagicLib.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../MagicLib/jars/MagicLib.jar!/" />
-          <root url="jar://$MODULE_DIR$/../MagicLib/jars/MagicLib.jar!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../Progressive S-Mods/jars/Progressive S-Mods.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../Console Commands/jars/lw_Console.jar!/" />
         </CLASSES>
         <JAVADOC />

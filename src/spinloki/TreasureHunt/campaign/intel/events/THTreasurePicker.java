@@ -1,12 +1,10 @@
-package spinloki.treasurehunt.campaign.intel.events;
+package spinloki.TreasureHunt.campaign.intel.events;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import com.fs.starfarer.api.campaign.impl.items.BlueprintProviderItem;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
-import spinloki.treasurehunt.config.Settings;
-import spinloki.treasurehunt.util.THUtils;
+import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.*;
 

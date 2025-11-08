@@ -1,7 +1,6 @@
-package spinloki.treasurehunt.campaign.intel.events;
+package spinloki.TreasureHunt.campaign.intel.events;
 
 import com.fs.starfarer.api.EveryFrameScript;
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
@@ -11,7 +10,7 @@ import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.util.Misc;
 import org.json.JSONException;
-import spinloki.treasurehunt.config.Settings;
+import spinloki.TreasureHunt.config.Settings;
 
 import java.util.LinkedList;
 import java.util.Queue;
