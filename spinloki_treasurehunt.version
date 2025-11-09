@@ -5,10 +5,10 @@
     {
       "major": 1,
       "minor": 0,
-      "patch": 0
+      "patch": 1
     },
 
     "modThreadId": 33016,
 
-    "directDownloadURL":"https://github.com/spinloki/TreasureHunt/releases/download/v1.0.0/TreasureHunt.zip"
+    "directDownloadURL":"https://github.com/spinloki/TreasureHunt/releases/download/v1.0.1/TreasureHunt.zip"
 }
