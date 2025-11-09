@@ -32,5 +32,15 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES />
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/../Console Commands" />
+          <root url="file://$MODULE_DIR$/../Console Commands/src" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
