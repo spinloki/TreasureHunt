@@ -7,7 +7,7 @@ import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import spinloki.TreasureHunt.config.Settings;
+import spinloki.TreasureHunt.config.THSettings;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.awt.*;
@@ -21,7 +21,7 @@ public class THColonyRuinFactor extends BaseEventFactor {
         super();
         this.colony = colony;
         ruins_type = Misc.getRuinsType(colony);
-        BASE_PROGRESS = Settings.getTHRewardValue(ruins_type) / Settings.TH_COLONY_RUINS_BASE_PROGRESS_DIVISOR;
+        BASE_PROGRESS = THSettings.getTHRewardValue(ruins_type) / THSettings.TH_COLONY_RUINS_BASE_PROGRESS_DIVISOR;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class THColonyRuinFactor extends BaseEventFactor {
         if (!ENABLED) return 0;
         int progress = BASE_PROGRESS;
         if (THUtils.hasTechMining(colony)){
-            progress = BASE_PROGRESS * Settings.TH_COLONY_TECH_MINING_PROGRESS_MULTIPLIER;
+            progress = BASE_PROGRESS * THSettings.TH_COLONY_TECH_MINING_PROGRESS_MULTIPLIER;
         }
         return progress;
     }

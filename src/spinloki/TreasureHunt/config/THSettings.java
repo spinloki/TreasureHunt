@@ -11,8 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Settings {
-    public static Logger log = Global.getLogger(Settings.class);
+public class THSettings {
+    public static Logger log = Global.getLogger(THSettings.class);
 
     public static Float TH_TREASURE_HUNT_PACKAGE_SMOD_PERCENT_BONUS = 100F;
     public static Float TH_TREASURE_HUNT_PACKAGE_MAX_MULT = 3F;

@@ -5,7 +5,7 @@ import com.fs.starfarer.api.Global;
 import org.apache.log4j.Logger;
 import spinloki.TreasureHunt.campaign.intel.events.THFactorTracker;
 import spinloki.TreasureHunt.campaign.items.THVanillaItemTagger;
-import spinloki.TreasureHunt.config.Settings;
+import spinloki.TreasureHunt.config.THSettings;
 
 public class TreasureHunt extends BaseModPlugin {
     private static final Logger log = Logger.getLogger(TreasureHunt.class);
@@ -14,8 +14,8 @@ public class TreasureHunt extends BaseModPlugin {
     @Override
     public void onApplicationLoad() throws Exception {
         super.onApplicationLoad();
-        Settings.loadSettingsFromJson();
-        Settings.loadTHRewards();
+        THSettings.loadSettingsFromJson();
+        THSettings.loadTHRewards();
         THVanillaItemTagger.tagItems();
     }
 

@@ -2,18 +2,18 @@ package spinloki.TreasureHunt.campaign.items;
 
 import com.fs.starfarer.api.Global;
 import org.apache.log4j.Logger;
-import spinloki.TreasureHunt.config.Settings;
+import spinloki.TreasureHunt.config.THSettings;
 
 import java.util.List;
 
 public class THVanillaItemTagger {
-    public static Logger log = Global.getLogger(Settings.class);
+    public static Logger log = Global.getLogger(THSettings.class);
     public static void tagItems(){
-        var blueprintPackages = Settings.getAllBlueprintPackages();
+        var blueprintPackages = THSettings.getAllBlueprintPackages();
         for (var blueprintPackage : blueprintPackages){
-            tagFighters(Settings.getFightersFromPackage(blueprintPackage), blueprintPackage);
-            tagShips(Settings.getShipsFromPackage(blueprintPackage), blueprintPackage);
-            tagWeapons(Settings.getWeaponsFromPackage(blueprintPackage), blueprintPackage);
+            tagFighters(THSettings.getFightersFromPackage(blueprintPackage), blueprintPackage);
+            tagShips(THSettings.getShipsFromPackage(blueprintPackage), blueprintPackage);
+            tagWeapons(THSettings.getWeaponsFromPackage(blueprintPackage), blueprintPackage);
         }
     }
 

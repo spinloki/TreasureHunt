@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
-import spinloki.TreasureHunt.config.Settings;
+import spinloki.TreasureHunt.config.THSettings;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.*;
@@ -75,7 +75,7 @@ public class THTreasurePicker implements ShowLootListener {
         }
 
         Set<String> unseenItems;
-        boolean pickBlueprint = (new Random().nextDouble() <= Settings.TH_PICK_BLUEPRINT_WEIGHT) && !unseenOneTimeItems.isEmpty();
+        boolean pickBlueprint = (new Random().nextDouble() <= THSettings.TH_PICK_BLUEPRINT_WEIGHT) && !unseenOneTimeItems.isEmpty();
         if (pickBlueprint) {
             unseenItems = unseenOneTimeItems;
         }

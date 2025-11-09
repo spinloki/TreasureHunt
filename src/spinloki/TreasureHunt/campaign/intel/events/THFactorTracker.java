@@ -10,7 +10,7 @@ import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.util.Misc;
 import org.json.JSONException;
-import spinloki.TreasureHunt.config.Settings;
+import spinloki.TreasureHunt.config.THSettings;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.LinkedList;
@@ -41,7 +41,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
     protected static int getExplorationPointValue(String settingsId, int defaultVal){
         int value;
         try{
-            value = (int) Settings.TH_EXPLORATION_VALUES.get(settingsId);
+            value = (int) THSettings.TH_EXPLORATION_VALUES.get(settingsId);
         } catch (JSONException e) {
             value = defaultVal;
         }
@@ -67,17 +67,17 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
             return;
         }
         var customDescId = entity.getCustomDescriptionId();
-        if (Settings.customDescriptionIdHasTHReward(customDescId)){
-            mFactors.add(new THSalvageFactor(Settings.getTHRewardValue(customDescId), Settings.getTHRewardDescription(customDescId)));
+        if (THSettings.customDescriptionIdHasTHReward(customDescId)){
+            mFactors.add(new THSalvageFactor(THSettings.getTHRewardValue(customDescId), THSettings.getTHRewardDescription(customDescId)));
         }
         else if (entity.getMarket() != null){
             var market = entity.getMarket();
             if (Misc.getDaysSinceLastRaided(market) < .3){ // figure .3 should be a reasonable value to determine that the player raided the market
-                mFactors.add(new THSalvageFactor(Settings.getTHRewardValue("raid"), Settings.getTHRewardDescription("raid")));
+                mFactors.add(new THSalvageFactor(THSettings.getTHRewardValue("raid"), THSettings.getTHRewardDescription("raid")));
             }
             else if (Misc.hasRuins(market)){
                 var ruin = Misc.getRuinsType(market);
-                mFactors.add(new THSalvageFactor(Settings.getTHRewardValue(ruin), Settings.getTHRewardDescription(ruin)));
+                mFactors.add(new THSalvageFactor(THSettings.getTHRewardValue(ruin), THSettings.getTHRewardDescription(ruin)));
             }
         }
     }
@@ -94,12 +94,12 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
     }
 
     public void advance(float amount){
-         if (Settings.TH_DEBUG_USE_TIME_FACTOR){
+         if (THSettings.TH_DEBUG_USE_TIME_FACTOR){
             timePassed += amount;
              float interval = 1;
              if (timePassed > interval){
                 timePassed = 0;
-                TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor(Settings.TH_DEBUG_TIME_FACTOR_POINTS), null);
+                TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor(THSettings.TH_DEBUG_TIME_FACTOR_POINTS), null);
             }
         }
         while (!mFactors.isEmpty()){

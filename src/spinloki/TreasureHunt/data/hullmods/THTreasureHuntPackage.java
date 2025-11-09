@@ -2,7 +2,6 @@ package spinloki.TreasureHunt.data.hullmods;
 
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.Map;
 
 import com.fs.starfarer.api.GameState;
 import com.fs.starfarer.api.Global;
@@ -13,7 +12,7 @@ import com.fs.starfarer.api.combat.ShipAPI.HullSize;
 import com.fs.starfarer.api.impl.hullmods.BaseLogisticsHullMod;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import spinloki.TreasureHunt.config.Settings;
+import spinloki.TreasureHunt.config.THSettings;
 import spinloki.TreasureHunt.util.THUtils;
 
 public class THTreasureHuntPackage extends BaseLogisticsHullMod {
@@ -33,14 +32,14 @@ public class THTreasureHuntPackage extends BaseLogisticsHullMod {
 
         float mod = (Float) mag.get(hullSize);
         if (sMod) {
-            mod *= 1f + (Settings.TH_TREASURE_HUNT_PACKAGE_SMOD_PERCENT_BONUS / 100f);
+            mod *= 1f + (THSettings.TH_TREASURE_HUNT_PACKAGE_SMOD_PERCENT_BONUS / 100f);
         }
 
         stats.getDynamic().getMod(THUtils.TH_TREASURE_HUNT_BOOST).modifyFlat(id, mod);
     }
 
     public String getSModDescriptionParam(int index, HullSize hullSize) {
-        if (index == 0) return (int) Settings.TH_TREASURE_HUNT_PACKAGE_SMOD_PERCENT_BONUS.intValue() + "%";
+        if (index == 0) return (int) THSettings.TH_TREASURE_HUNT_PACKAGE_SMOD_PERCENT_BONUS.intValue() + "%";
         return null;
     }
 
@@ -49,7 +48,7 @@ public class THTreasureHuntPackage extends BaseLogisticsHullMod {
         if (index == 1) return "" + ((Float) mag.get(HullSize.DESTROYER)).intValue();
         if (index == 2) return "" + ((Float) mag.get(HullSize.CRUISER)).intValue();
         if (index == 3) return "" + ((Float) mag.get(HullSize.CAPITAL_SHIP)).intValue();
-        if (index == 4) return "" + Settings.TH_TREASURE_HUNT_PACKAGE_MAX_MULT;
+        if (index == 4) return "" + THSettings.TH_TREASURE_HUNT_PACKAGE_MAX_MULT;
 
         return null;
     }

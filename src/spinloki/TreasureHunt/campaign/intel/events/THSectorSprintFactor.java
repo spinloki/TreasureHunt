@@ -10,7 +10,7 @@ import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.campaign.intel.THSectorSprintIntel;
-import spinloki.TreasureHunt.config.Settings;
+import spinloki.TreasureHunt.config.THSettings;
 
 import java.awt.*;
 import java.util.List;
@@ -28,7 +28,7 @@ public class THSectorSprintFactor  extends BaseEventFactor {
         this.relays = relays;
         this.parent = parent;
         this.starSystem = relays.get(0).getStarSystem();
-        BASE_PROGRESS = Settings.TH_SECTOR_SPRINT_REWARD;
+        BASE_PROGRESS = THSettings.TH_SECTOR_SPRINT_REWARD;
         hasDomainEraRelay = false;
         for (var relay : relays){
             if (!relay.getCustomEntityType().equals("comm_relay_makeshift")){
