@@ -7,6 +7,8 @@ import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import spinloki.TreasureHunt.campaign.intel.THSectorSprintIntel;
+import spinloki.TreasureHunt.util.THUtils;
 
 import java.awt.*;
 import java.util.EnumSet;
@@ -242,6 +244,11 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     protected void notifyStageReached(EventStageData stage){
         if (stage.id == Stage.CHOOSE) {
             treasure = picker.getRandomUnseenItem();
+        }
+        if (stage.id == Stage.OPPORTUNITY){
+            for (var system : THUtils.getRandomUninhabitedSystemsWithStablePoints(3)){
+                new THSectorSprintIntel(system);
+            }
         }
         if (stage.id == Stage.FOUND){
             setProgress(0);

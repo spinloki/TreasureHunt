@@ -9,5 +9,6 @@
 	},
 	"th_colony_ruins_base_progress_divisor": 10,
 	"th_colony_tech_mining_progress_multiplier": 2,
+    "th_sector_sprint_reward": 60,
     "th_pick_blueprint_weight": 0.5
 }
