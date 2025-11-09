@@ -33,8 +33,8 @@ public class THUtils {
     }
 
     public static Set<StarSystemAPI> getRandomUninhabitedSystemsWithStablePoints(int count) {
-        Stack<StarSystemAPI> good_candidates = new Stack<>();
-        Stack<StarSystemAPI> bad_candidates = new Stack<>();
+        List<StarSystemAPI> good_candidates = new ArrayList<>();
+        List<StarSystemAPI> bad_candidates = new ArrayList<>();
 
         for (StarSystemAPI system : Global.getSector().getStarSystems()) {
             // skip core worlds or claimed systems
@@ -46,8 +46,12 @@ public class THUtils {
             boolean hasRelay = !system.getEntitiesWithTag(Tags.COMM_RELAY).isEmpty();
             boolean hasStable = !system.getEntitiesWithTag(Tags.STABLE_LOCATION).isEmpty();
 
-            if (hasStable) bad_candidates.push(system);
-            if (hasRelay) good_candidates.push(system); // weight comm relays extra
+            if (hasRelay) {
+                good_candidates.add(system);
+            }
+            else if (hasStable) {
+                bad_candidates.add(system);
+            }
         }
 
         Collections.shuffle(good_candidates, new Random());
@@ -57,8 +61,8 @@ public class THUtils {
 
         Set<StarSystemAPI> systems = new HashSet<>();
         for (int i = 0; i < count; i++) {
-            Stack<StarSystemAPI> candidates = new Random().nextBoolean() ? good_candidates : bad_candidates;
-            systems.add(candidates.pop());
+            List<StarSystemAPI> candidates = new Random().nextBoolean() ? good_candidates : bad_candidates;
+            systems.add(candidates.remove(candidates.size() - 1));
         }
         return systems;
     }
