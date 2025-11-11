@@ -7,8 +7,7 @@ import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import spinloki.TreasureHunt.campaign.intel.THSectorSprintIntel;
-import spinloki.TreasureHunt.util.THUtils;
+import spinloki.TreasureHunt.campaign.intel.opportunities.THSectorSprintOpportunity;
 
 import java.awt.*;
 import java.util.EnumSet;
@@ -16,7 +15,8 @@ import java.util.EnumSet;
 import static spinloki.TreasureHunt.campaign.intel.events.THTreasurePicker.getSpecialItemDisplayName;
 
 public class TreasureHuntEventIntel extends BaseEventIntel {
-    private THTreasurePicker picker;
+    private THTreasurePicker treasurePicker;
+    private THOpportunityPicker opportunityPicker;
     private String treasure;
 
     private static final String category = "treasure_hunt_events";
@@ -77,8 +77,11 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         getDataFor(Stage.OPPORTUNITY).keepIconBrightWhenLaterStageReached = true;
         getDataFor(Stage.FOUND).keepIconBrightWhenLaterStageReached = true;
 
-        picker = new THTreasurePicker();
+        treasurePicker = new THTreasurePicker();
         treasure = "";
+
+        opportunityPicker = new THOpportunityPicker();
+        opportunityPicker.registerCandidate(new THSectorSprintOpportunity());
 
         if (!Global.getSector().getPlayerFleet().hasAbility(ABANDON_LEAD)){
             Global.getSector().getPlayerFleet().addAbility(ABANDON_LEAD);
@@ -243,12 +246,10 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
     protected void notifyStageReached(EventStageData stage){
         if (stage.id == Stage.CHOOSE) {
-            treasure = picker.getRandomUnseenItem();
+            treasure = treasurePicker.getRandomUnseenItem();
         }
         if (stage.id == Stage.OPPORTUNITY){
-            for (var system : THUtils.getRandomUninhabitedSystemsWithStablePoints(3)){
-                new THSectorSprintIntel(system);
-            }
+            opportunityPicker.pickCandidate().trigger();
         }
         if (stage.id == Stage.FOUND){
             setProgress(0);
