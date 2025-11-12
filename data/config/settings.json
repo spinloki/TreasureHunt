@@ -248,5 +248,11 @@
 			"ships": [],
 			"weapons": []
 		}
-	}
+	},
+    "th_one_time_items": [
+        #"threat_processing_unit",
+    ],
+    "th_repeat_items": [
+        #"shrouded_substrate",
+    ]
 }

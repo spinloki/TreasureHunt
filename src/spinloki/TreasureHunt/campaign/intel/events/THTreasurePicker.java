@@ -48,7 +48,10 @@ public class THTreasurePicker implements ShowLootListener {
     private void resetUnseenItems() {
         unseenRepeatableItems = new HashSet<>(COLONY_ITEMS);
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
-            if (item.hasTag(THUtils.TH_SPECIAL_ITEM)){
+            if (item.hasTag(THUtils.TH_REPEAT_ITEM)){
+                unseenRepeatableItems.add(item.getId());
+            }
+            else if (THSettings.getRepeatItems().contains(item.getId())){
                 unseenRepeatableItems.add(item.getId());
             }
         }
@@ -57,7 +60,10 @@ public class THTreasurePicker implements ShowLootListener {
     private void addOneTimeItems(){
         unseenOneTimeItems = new HashSet<>(BLUEPRINT_ITEMS);
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
-            if (item.hasTag(THUtils.TH_BLUEPRINT_PACKAGE)){
+            if (item.hasTag(THUtils.TH_ONE_TIME_ITEM)){
+                unseenOneTimeItems.add(item.getId());
+            }
+            else if (THSettings.getOneTimeItems().contains(item.getId())){
                 unseenOneTimeItems.add(item.getId());
             }
         }

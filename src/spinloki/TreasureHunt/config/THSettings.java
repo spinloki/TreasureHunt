@@ -25,6 +25,8 @@ public class THSettings {
     public static JSONObject TH_REWARDS;
     public static Float TH_PICK_BLUEPRINT_WEIGHT;
     public static Integer TH_SECTOR_SPRINT_REWARD;
+    public static JSONArray TH_ONE_TIME_ITEMS;
+    public static JSONArray TH_REPEAT_ITEMS;
 
     public static void loadSettingsFromJson() throws JSONException, IOException {
         JSONObject json = Global.getSettings().loadJSON("treasurehunt_settings.json", "spinloki_treasurehunt");
@@ -38,6 +40,29 @@ public class THSettings {
         TH_SECTOR_SPRINT_REWARD = json.getInt("th_sector_sprint_reward");
         TH_BLUEPRINTS_PACKAGES = Global.getSettings().getJSONObject("th_blueprints_packages");
         TH_PICK_BLUEPRINT_WEIGHT = (float) json.getDouble("th_pick_blueprint_weight");
+        TH_ONE_TIME_ITEMS = Global.getSettings().getJSONArray("th_one_time_items");
+        TH_REPEAT_ITEMS = Global.getSettings().getJSONArray("th_repeat_items");
+    }
+
+    public static List<String> getOneTimeItems(){
+        return getStringListFromJsonArray(TH_ONE_TIME_ITEMS, "th_one_time_items");
+    }
+
+    public static List<String> getRepeatItems(){
+        return getStringListFromJsonArray(TH_REPEAT_ITEMS, "th_repeat_items");
+    }
+
+    public static List<String> getStringListFromJsonArray(JSONArray jsonArray, String name) {
+        List<String> oneTimeItems = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++) {
+            try {
+                String item = jsonArray.getString(i);
+                oneTimeItems.add(item);
+            } catch (JSONException e) {
+                throw new RuntimeException("Index " + i + " in " + name + " was not a string");
+            }
+        }
+        return oneTimeItems;
     }
 
     public static void loadTHRewards() throws JSONException, IOException {
