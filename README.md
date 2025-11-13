@@ -1,7 +1,7 @@
 # Treasure Hunt
 Author: spinloki
 
-Version: 1.0.1
+Version: 1.0.2
 
 ## Description
 The goal of this mod is to make the hunt for rare blueprints and colony items more consistent and less rage-inducing.
@@ -30,7 +30,7 @@ If the lead was a blueprint package, that specific lead will never appear again.
 If the lead was a colony item, it will not appear as a lead again until you have seen all colony items and blueprint packages.
 
 ### Found Opportunity
-This stage doesn't do anything yet, but it's next on the roadmap.
+One of a number of events will occur that can aid your hunt. Right now, Sector Sprint and Station Lead are implemented. Sector Sprint lets you passively gain event progress by building or claiming comm relays in randomly selected systems. Station Lead gives hints to the location of the nearest undiscovered derelict stations.
 
 ### Found Item
 At 500 event progress, the hunt is complete. The item or blueprint package will be placed directly in your cargo.
