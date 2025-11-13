@@ -79,13 +79,18 @@ public class THUtils {
             "orbital_junk"
     );
 
+    public static List<SectorEntityToken> getNearestEntitiesWithName(
+            CampaignFleetAPI player, int n, String nameFilter){
+        return getNearestEntitiesWithName(player, n, nameFilter, false);
+    }
+
     /**
      * Finds up to N nearest entities across all star systems (and hyperspace), starting
      * with the player's current system (if any). Systems are processed in order of
      * squared hyperspace distance to the player for efficiency.
      */
     public static List<SectorEntityToken> getNearestEntitiesWithName(
-            CampaignFleetAPI player, int n, String nameFilter)
+            CampaignFleetAPI player, int n, String nameFilter, boolean strictMatch)
     {
         if (player == null)
             return List.of();
@@ -109,7 +114,8 @@ public class THUtils {
                     .filter(e -> {
                         String nm = e.getFullName();
                         return nm != null && (needle.isEmpty() ||
-                                nm.toLowerCase(Locale.ROOT).contains(needle));
+                                (!strictMatch && nm.toLowerCase(Locale.ROOT).contains(needle)) ||
+                                (strictMatch && nm.equals(nameFilter)));
                     })
                     // Sort distances differently depending on whether we're in the same system
                     .sorted(Comparator.comparingDouble(e -> {
@@ -121,15 +127,12 @@ public class THUtils {
                     .toList();
 
             results.addAll(matches);
-
-            if (results.size() >= n)
-                break;
         }
 
         // Sort all final results by true cross-system distance
         results.sort(Comparator.comparingDouble(e -> getCrossSystemDistance(player, e)));
 
-        return results.stream().limit(n).collect(Collectors.toList());
+        return results.stream().limit(n).toList();
     }
 
     // --- Helpers -----------------------------------------------------------
@@ -138,7 +141,7 @@ public class THUtils {
      * Computes a consistent "distance" metric between the player and an entity,
      * even across systems.
      */
-    private static double getCrossSystemDistance(CampaignFleetAPI player, SectorEntityToken entity)
+    public static double getCrossSystemDistance(CampaignFleetAPI player, SectorEntityToken entity)
     {
         Vector2f playerHS = player.getLocationInHyperspace();
         if (entity == null) return Double.MAX_VALUE;

@@ -10,8 +10,9 @@
 			"found_lead":"graphics/icons/abilities/blank.png",
 			"found_treasure":"graphics/icons/campaign/event_good.png",
 			"found_opportunity":"graphics/icons/campaign/event_neutral.png",
- 			"sector_sprint":"graphics/icons/abilities/emergency_burn.png"
-}
+ 			"sector_sprint":"graphics/icons/abilities/emergency_burn.png",
+			"station_lead":"graphics/icons/missions/data_retrieval.png"
+		}
 	},
 	# customDescriptionId is what indexes into this
 	"th_rewards": {

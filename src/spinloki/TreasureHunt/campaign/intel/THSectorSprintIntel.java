@@ -18,16 +18,14 @@ import spinloki.TreasureHunt.util.THUtils;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class THSectorSprintIntel extends BaseIntelPlugin implements EveryFrameScript {
-    public static Logger log = Global.getLogger(THSectorSprintIntel.class);
-
+public class THSectorSprintIntel extends BaseIntelPlugin {
     private float daysRemaining = 60f;
     private final StarSystemAPI targetSystem;
 
-    public THSectorSprintIntel(StarSystemAPI targetSystem) {
+    public THSectorSprintIntel(StarSystemAPI targetSystem, int duration) {
         this.targetSystem = targetSystem;
+        daysRemaining = duration;
         Global.getSector().getIntelManager().addIntel(this);
         Global.getSector().addScript(this);
     }
@@ -109,7 +107,7 @@ public class THSectorSprintIntel extends BaseIntelPlugin implements EveryFrameSc
     @Override
     public String getName() {
         String base = "Sector Sprint";
-        return base + " – " + targetSystem.getName();
+        return base + " - " + targetSystem.getName();
     }
 
     @Override
@@ -140,7 +138,6 @@ public class THSectorSprintIntel extends BaseIntelPlugin implements EveryFrameSc
             info.addPara("• %s", 3f, h, targetSystem.getName());
         }
     }
-
 
     @Override
     public String getIcon() {

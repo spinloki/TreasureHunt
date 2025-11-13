@@ -8,7 +8,7 @@ import java.util.List;
 public class THOpportunityPicker {
     private final List<THOpportunity> opportunityCandidates = new ArrayList<>();
 
-    public void registerCandidate(THOpportunity opportunity){
+    public void addCandidate(THOpportunity opportunity){
         opportunityCandidates.add(opportunity);
     }
 
