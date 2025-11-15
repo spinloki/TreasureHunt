@@ -3,7 +3,7 @@
   "name": "Treasure Hunt",
   "author": "spinloki",
   "utility": false,
-  "version": { "major": '1', "minor": '0', "patch": '2' },
+  "version": { "major": '1', "minor": '0', "patch": '3' },
   "description": "Adds new event for acquiring rare items",
   "gameVersion": "0.98a-RC7",
   "jars": [ "jars/TreasureHunt.jar" ],
