@@ -163,8 +163,21 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
         if (stageId == Stage.START) {
-            info.addPara("The Hunt awaits!",
-                    initPad);
+            info.addPara(
+                    "Rumors, half-deciphered logs, and sensor fragments all point toward valuable relics of the Domain "
+                            + "still hidden throughout the sector.",
+                    opad
+            );
+            info.addPara(
+                    "Salvaging derelicts and ruins, interacting with other scavengers, and seizing the occasional opportunity "
+                            + "will narrow down your search.",
+                    opad
+            );
+            info.addPara(
+                    "Outfitting your ships with the special Treasure Hunt Package hullmod can also greatly boost progress.",
+                    opad
+            );
+            info.addPara("The Hunt awaits!", initPad);
         }
         else if (stageId == Stage.CHOOSE){
             String displayName = null;
