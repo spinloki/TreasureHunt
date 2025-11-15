@@ -21,7 +21,7 @@ public class THStationLeadOpportunity extends BaseTHOpportunity{
     ));
     private final Set<String> revealed = new HashSet<>();
     private final List<String> locations = new ArrayList<>();
-    private final String icon = Global.getSettings().getSpriteName("treasure_hunt_events", "station_lead");
+    private static final String icon = Global.getSettings().getSpriteName("treasure_hunt_events", "station_lead");
 
     @Override
     public float getProbabilityWeight() {

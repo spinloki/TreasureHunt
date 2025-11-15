@@ -102,11 +102,6 @@ public class THSectorSprintIntel extends BaseIntelPlugin {
     }
 
     @Override
-    public String getSortString() {
-        return "Sector Sprint";
-    }
-
-    @Override
     public String getName() {
         String base = "Sector Sprint";
         return base + " - " + targetSystem.getName();

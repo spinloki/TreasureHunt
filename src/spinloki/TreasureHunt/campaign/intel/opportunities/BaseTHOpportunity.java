@@ -1,6 +1,6 @@
 package spinloki.TreasureHunt.campaign.intel.opportunities;
 
-public class BaseTHOpportunity implements THOpportunity{
+public abstract class BaseTHOpportunity implements THOpportunity{
     protected int timesTriggered = 0;
     protected final float probabilityWeight = 1f; // Standard likelihood
 
@@ -15,10 +15,5 @@ public class BaseTHOpportunity implements THOpportunity{
     @Override
     public void trigger() {
         timesTriggered++;
-    }
-
-    @Override
-    public String getIcon(){
-        return "";
     }
 }

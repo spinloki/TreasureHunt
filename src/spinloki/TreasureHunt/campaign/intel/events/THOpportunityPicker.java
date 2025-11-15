@@ -1,5 +1,6 @@
 package spinloki.TreasureHunt.campaign.intel.events;
 
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THOpportunity;
 
 import java.util.ArrayList;
@@ -21,26 +22,14 @@ public class THOpportunityPicker {
             return null;
         }
 
-        float totalWeight = 0f;
-        for (THOpportunity opp : opportunityCandidates) {
-            totalWeight += Math.max(0, opp.getProbabilityWeight()); // ignore negatives
-        }
-
-        float random = (float) (Math.random() * totalWeight);
-        float cumulative = 0f;
+        var picker = new WeightedRandomPicker<THOpportunity>();
 
         for (THOpportunity opp : opportunityCandidates) {
-            float probabilityWeight = opp.getProbabilityWeight();
-            if (probabilityWeight <= 0){
-                continue; // take no chances!
-            }
-            cumulative += probabilityWeight;
-            if (random <= cumulative) {
-                return opp;
+            if (opp.getProbabilityWeight() != 0){
+                picker.add(opp, opp.getProbabilityWeight());
             }
         }
 
-        // fallback (shouldn’t happen unless rounding issues)
-        return opportunityCandidates.get(opportunityCandidates.size() - 1);
+        return picker.pick();
     }
 }

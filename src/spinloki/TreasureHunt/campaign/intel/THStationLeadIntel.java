@@ -73,11 +73,6 @@ public class THStationLeadIntel extends BaseIntelPlugin {
     }
 
     @Override
-    public String getSortString() {
-        return station.getFullName() + " Lead";
-    }
-
-    @Override
     public String getName() {
         String base = station.getFullName() + " Lead";
         return base + " - " + station.getConstellation().getNameWithType();
@@ -124,7 +119,7 @@ public class THStationLeadIntel extends BaseIntelPlugin {
     }
 
     @Override
-    protected void notifyEnded() {
+    public void notifyEnded(){
         super.notifyEnded();
         Global.getSector().removeScript(this);
     }

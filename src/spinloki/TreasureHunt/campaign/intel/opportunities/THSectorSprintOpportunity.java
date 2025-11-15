@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class THSectorSprintOpportunity extends BaseTHOpportunity{
     private final int numIntelsToCreate = 3;
-    private final String icon = Global.getSettings().getSpriteName("treasure_hunt_events", "sector_sprint");
+    private static final String icon = Global.getSettings().getSpriteName("treasure_hunt_events", "sector_sprint");
 
     @Override
     public void trigger() {

@@ -82,11 +82,6 @@ public class THFoundTreasureIntel extends BaseIntelPlugin implements ShowLootLis
     }
 
     @Override
-    public String getSortString() {
-        return "Treasure Location Discovered - " + displayName;
-    }
-
-    @Override
     public String getName() {
         return "Treasure Location Discovered - " + displayName;
     }
