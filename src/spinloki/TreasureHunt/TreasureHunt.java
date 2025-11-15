@@ -23,23 +23,16 @@ public class TreasureHunt extends BaseModPlugin {
     public void onNewGame() {
         super.onNewGame();
         factorTracker = new THFactorTracker();
+        Global.getSector().addScript(new THFactorTracker());
+        Global.getSector().getListenerManager().addListener(factorTracker);
     }
 
     @Override
     public void onGameLoad(boolean newGame){
-        if (factorTracker == null){
+        if (!Global.getSector().hasScript(THFactorTracker.class)) {
             factorTracker = new THFactorTracker();
+            Global.getSector().addScript(factorTracker);
+            Global.getSector().getListenerManager().addListener(factorTracker);
         }
-
-        // Sorry, but this hacky way is the only way I can reliably solve that stupid duplicate glitch
-        Global.getSector().removeScriptsOfClass(factorTracker.getClass());
-        Global.getSector().getListenerManager().removeListenerOfClass(factorTracker.getClass());
-        Global.getSector().addScript(factorTracker);
-        Global.getSector().getListenerManager().addListener(factorTracker);
-
-        // TODO: Replace the whole factor tracker member nonsense with the below on major increment
-        /*if (!Global.getSector().hasScript(THFactorTracker.class)) {
-            Global.getSector().addScript(new THFactorTracker());
-        }*/
     }
 }

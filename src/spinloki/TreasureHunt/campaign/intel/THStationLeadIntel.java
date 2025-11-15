@@ -102,7 +102,7 @@ public class THStationLeadIntel extends BaseIntelPlugin {
 
     @Override
     public String getIcon() {
-        return Global.getSettings().getSpriteName("treasure_hunt_events", "station_lead");
+        return icon;
     }
 
     @Override

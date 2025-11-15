@@ -5,7 +5,6 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.impl.campaign.ids.Entities;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
-import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -84,21 +83,16 @@ public class THFoundTreasureIntel extends BaseIntelPlugin implements ShowLootLis
 
     @Override
     public String getSortString() {
-        return "Treasure Found - " + displayName;
+        return "Treasure Location Discovered - " + displayName;
     }
 
     @Override
     public String getName() {
-        return "Treasure Found - " + displayName;
+        return "Treasure Location Discovered - " + displayName;
     }
 
     @Override
     public void createSmallDescription(TooltipMakerAPI info, float width, float height) {
-        float opad = 10f;
-        Color highlight = Misc.getHighlightColor();
-        Color player = Misc.getBasePlayerColor();
-        Color playerDark = Misc.getDarkPlayerColor();
-
         if (!lootGiven) {
             info.addPara("""
             You've uncovered information pointing to the location of a hidden treasure cache. You know where to look.

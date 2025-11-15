@@ -119,7 +119,6 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     @Override
     public Color getBarColor() {
         Color color = BAR_COLOR;
-        //color = Misc.getBasePlayerColor();
         color = Misc.interpolateColor(color, Color.black, 0.25f);
         return color;
     }
@@ -147,13 +146,6 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
         EventStageData stage = getDataFor(stageId);
         if (stage == null) return;
-
-//		if (isStageActiveAndLast(stageId) &&  stageId == Stage.START) {
-//			addStageDesc(info, stageId, small, false);
-//		} else if (isStageActive(stageId) && stageId != Stage.START) {
-//			addStageDesc(info, stageId, small, false);
-//		}
-
         if (isStageActive(stageId)) {
             addStageDesc(info, stageId, small, false);
         }

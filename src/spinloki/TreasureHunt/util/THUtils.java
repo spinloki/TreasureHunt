@@ -12,7 +12,6 @@ import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class THUtils {
     public static final String TH_TREASURE_HUNT_BOOST = "th_treasure_hunt_boost";
@@ -97,7 +96,6 @@ public class THUtils {
 
         List<SectorEntityToken> results = new ArrayList<>();
 
-        // Build and sort all systems by hyperspace distance to the player
         List<StarSystemAPI> systems = new ArrayList<>(Global.getSector().getStarSystems());
         systems.sort(Comparator.comparingDouble(sys ->
                 MathUtils.getDistanceSquared(playerHyperspaceLoc, sys.getLocation())));
@@ -125,7 +123,6 @@ public class THUtils {
             results.addAll(matches);
         }
 
-        // Sort all final results by true cross-system distance
         results.sort(Comparator.comparingDouble(e -> getCrossSystemDistance(player, e)));
 
         return results.stream().limit(n).toList();

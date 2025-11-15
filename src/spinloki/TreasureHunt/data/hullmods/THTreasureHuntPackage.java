@@ -17,8 +17,6 @@ import spinloki.TreasureHunt.util.THUtils;
 
 public class THTreasureHuntPackage extends BaseLogisticsHullMod {
 
-    String TH_TREASURE_HUNT_BOOST = "th_treasure_hunt_boost";
-
     private static final HashMap<HullSize, Float> mag = new HashMap<>();
     static {
         mag.put(HullSize.FRIGATE, 1f);
