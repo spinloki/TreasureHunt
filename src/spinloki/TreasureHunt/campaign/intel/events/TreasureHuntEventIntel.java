@@ -19,6 +19,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     private THTreasurePicker treasurePicker;
     private THOpportunityPicker opportunityPicker;
     private String treasure;
+    private String opportunityIcon;
 
     private static final String category = "treasure_hunt_events";
 
@@ -107,7 +108,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             return Global.getSettings().getSpriteName(category, "found_lead");
         }
         if (stageId == Stage.OPPORTUNITY){
-            return Global.getSettings().getSpriteName(category, "found_opportunity");
+            return opportunityIcon;
         }
         if (stageId == Stage.FOUND){
             return Global.getSettings().getSpriteName(category, "found_treasure");
@@ -251,7 +252,9 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             treasure = treasurePicker.getRandomUnseenItem();
         }
         if (stage.id == Stage.OPPORTUNITY){
-            opportunityPicker.pickCandidate().trigger();
+            var opportunity = opportunityPicker.pickCandidate();
+            opportunity.trigger();
+            opportunityIcon = opportunity.getIcon();
         }
         if (stage.id == Stage.FOUND){
             setProgress(0);

@@ -15,10 +15,12 @@ import java.util.Set;
 public class THStationLeadIntel extends BaseIntelPlugin {
     SectorEntityToken station;
     String locationDescription;
+    private final String icon;
 
-    public THStationLeadIntel(SectorEntityToken station, String locationDescription){
+    public THStationLeadIntel(SectorEntityToken station, String locationDescription, String icon){
         this.station = station;
         this.locationDescription = locationDescription;
+        this.icon = icon;
         Global.getSector().getIntelManager().addIntel(this);
         Global.getSector().addScript(this);
     }

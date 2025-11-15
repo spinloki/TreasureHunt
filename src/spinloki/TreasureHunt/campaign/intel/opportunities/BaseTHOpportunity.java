@@ -16,4 +16,9 @@ public class BaseTHOpportunity implements THOpportunity{
     public void trigger() {
         timesTriggered++;
     }
+
+    @Override
+    public String getIcon(){
+        return "";
+    }
 }

@@ -22,10 +22,12 @@ import java.util.List;
 public class THSectorSprintIntel extends BaseIntelPlugin {
     private float daysRemaining = 60f;
     private final StarSystemAPI targetSystem;
+    private final String icon;
 
-    public THSectorSprintIntel(StarSystemAPI targetSystem, int duration) {
+    public THSectorSprintIntel(StarSystemAPI targetSystem, int duration, String icon) {
         this.targetSystem = targetSystem;
         daysRemaining = duration;
+        this.icon = icon;
         Global.getSector().getIntelManager().addIntel(this);
         Global.getSector().addScript(this);
     }
@@ -141,7 +143,7 @@ public class THSectorSprintIntel extends BaseIntelPlugin {
 
     @Override
     public String getIcon() {
-        return Global.getSettings().getSpriteName("treasure_hunt_events", "sector_sprint");
+        return icon;
     }
 
     @Override

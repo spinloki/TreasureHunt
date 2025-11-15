@@ -21,6 +21,7 @@ public class THStationLeadOpportunity extends BaseTHOpportunity{
     ));
     private final Set<String> revealed = new HashSet<>();
     private final List<String> locations = new ArrayList<>();
+    private final String icon = Global.getSettings().getSpriteName("treasure_hunt_events", "station_lead");
 
     @Override
     public float getProbabilityWeight() {
@@ -52,7 +53,12 @@ public class THStationLeadOpportunity extends BaseTHOpportunity{
 
         for (var e : toReveal.stream().limit(numStationsToReveal).toList()){
             revealed.add(e.getId());
-            new THStationLeadIntel(e, BreadcrumbSpecial.getLocatedString(e, false));
+            new THStationLeadIntel(e, BreadcrumbSpecial.getLocatedString(e, false), icon);
         }
+    }
+
+    @Override
+    public String getIcon(){
+        return icon;
     }
 }
