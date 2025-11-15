@@ -135,6 +135,15 @@ public class THUtils {
         return results.stream().limit(n).toList();
     }
 
+    public static String getSpecialItemDisplayName(String specialItemId) {
+        SpecialItemSpecAPI spec = Global.getSettings().getSpecialItemSpec(specialItemId);
+        if (spec != null) {
+            return spec.getName();
+        } else {
+            return specialItemId; // fallback if not found
+        }
+    }
+
     // --- Helpers -----------------------------------------------------------
 
     /**

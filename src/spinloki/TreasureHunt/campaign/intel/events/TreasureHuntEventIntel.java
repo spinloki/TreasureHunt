@@ -7,13 +7,13 @@ import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import spinloki.TreasureHunt.campaign.intel.THFoundTreasureIntel;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THStationLeadOpportunity;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THSectorSprintOpportunity;
+import spinloki.TreasureHunt.util.THUtils;
 
 import java.awt.*;
 import java.util.EnumSet;
-
-import static spinloki.TreasureHunt.campaign.intel.events.THTreasurePicker.getSpecialItemDisplayName;
 
 public class TreasureHuntEventIntel extends BaseEventIntel {
     private THTreasurePicker treasurePicker;
@@ -167,7 +167,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         }
         else if (stageId == Stage.CHOOSE){
             String displayName = null;
-            displayName = getSpecialItemDisplayName(treasure);
+            displayName = THUtils.getSpecialItemDisplayName(treasure);
             info.addPara(String.format("You have a lead on a %s", displayName), initPad);
         }
         else if (stageId == Stage.OPPORTUNITY){
@@ -204,7 +204,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
                     if (esd.id == Stage.CHOOSE) {
                         String displayName = null;
-                        displayName = getSpecialItemDisplayName(treasure);
+                        displayName = THUtils.getSpecialItemDisplayName(treasure);
                         tooltip.addTitle(String.format("Found a lead on a %s", displayName));
                     } else if (esd.id == Stage.OPPORTUNITY) {
                         tooltip.addTitle("Found an opportunity");
@@ -240,7 +240,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             }
             if (esd.id == Stage.FOUND) {
                 String message = "Treasure found";
-                message += ": " + getSpecialItemDisplayName(treasure) + " added to inventory.";
+                message += ": " + THUtils.getSpecialItemDisplayName(treasure) + " added to inventory.";
                 info.addPara(message, tc, initPad);
             }
         }
@@ -255,8 +255,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         }
         if (stage.id == Stage.FOUND){
             setProgress(0);
-            CargoAPI cargo = Global.getSector().getPlayerFleet().getCargo();
-            cargo.addItems(CargoAPI.CargoItemType.SPECIAL, new SpecialItemData(treasure, null), 1);
+            new THFoundTreasureIntel(treasure);
             treasure = "";
         }
     }

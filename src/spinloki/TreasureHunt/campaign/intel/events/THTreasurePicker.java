@@ -96,15 +96,6 @@ public class THTreasurePicker implements ShowLootListener {
         return chosenTreasure;
     }
 
-    public static String getSpecialItemDisplayName(String specialItemId) {
-        SpecialItemSpecAPI spec = Global.getSettings().getSpecialItemSpec(specialItemId);
-        if (spec != null) {
-            return spec.getName();
-        } else {
-            return specialItemId; // fallback if not found
-        }
-    }
-
     @Override
     public void reportAboutToShowLootToPlayer(CargoAPI loot, InteractionDialogAPI dialog) {
         if (dialog.getInteractionTarget().getFullName().equals("Cargo Pods")){
