@@ -251,9 +251,38 @@
 		}
 	},
     "th_one_time_items": [
-        #"threat_processing_unit",
+	    "low_tech_package",
+	    "midline_package",
+	    "high_tech_package",
+	    "missile_package",
+	    "th_ballistics",
+	    "th_beams",
+	    "th_bolts",
+	    "th_dems",
+	    "th_heavy_missiles",
+	    "th_frigates",
+	    "th_phase",
+	    "th_support",
+	    "th_mid_sized",
+	    "th_modified",
+	    "th_high_tech_capitals",
+	    "th_midline_capitals",
+	    "th_low_tech_capitals",
+	    "th_fighters"
     ],
     "th_repeat_items": [
-        #"shrouded_substrate",
+        "pristine_nanoforge",
+        "synchrotron",
+        "orbital_fusion_lamp",
+        "mantle_bore",
+        "catalytic_core",
+        "soil_nanites",
+        "biofactory_embryo",
+        "fullerene_spool",
+        "plasma_dynamo",
+        "cryoarithmetic_engine",
+        "drone_replicator",
+        "dealmaker_holosuite",
+        "coronal_portal"
     ]
 }

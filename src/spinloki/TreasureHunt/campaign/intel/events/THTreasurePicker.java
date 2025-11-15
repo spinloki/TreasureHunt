@@ -19,51 +19,22 @@ public class THTreasurePicker implements ShowLootListener {
     private static final String THTreasurePickerVersionId = "$th_treasure_picker_version";
     private static final int currentPickerVersion = 1;
 
-    private static final Set<String> COLONY_ITEMS = Set.of(
-            Items.PRISTINE_NANOFORGE,
-            Items.SYNCHROTRON,
-            Items.ORBITAL_FUSION_LAMP,
-            Items.MANTLE_BORE,
-            Items.CATALYTIC_CORE,
-            Items.SOIL_NANITES,
-            Items.BIOFACTORY_EMBRYO,
-            Items.FULLERENE_SPOOL,
-            Items.PLASMA_DYNAMO,
-            Items.CRYOARITHMETIC_ENGINE,
-            Items.DRONE_REPLICATOR,
-            Items.DEALMAKER_HOLOSUITE,
-            Items.CORONAL_PORTAL
-    );
-
-    private static final Set<String> BLUEPRINT_ITEMS = Set.of(
-            Items.LOW_TECH_PACKAGE,
-            Items.MIDLINE_PACKAGE,
-            Items.HIGH_TECH_PACKAGE,
-            Items.MISSILE_PACKAGE
-    );
-
     private Set<String> unseenOneTimeItems;
     private Set<String> unseenRepeatableItems;
 
     private void resetUnseenItems() {
-        unseenRepeatableItems = new HashSet<>(COLONY_ITEMS);
+        unseenRepeatableItems = new HashSet<>();
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
-            if (item.hasTag(THUtils.TH_REPEAT_ITEM)){
-                unseenRepeatableItems.add(item.getId());
-            }
-            else if (THSettings.getRepeatItems().contains(item.getId())){
+            if (THSettings.getRepeatItems().contains(item.getId())){
                 unseenRepeatableItems.add(item.getId());
             }
         }
     }
 
     private void addOneTimeItems(){
-        unseenOneTimeItems = new HashSet<>(BLUEPRINT_ITEMS);
+        unseenOneTimeItems = new HashSet<>();
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
-            if (item.hasTag(THUtils.TH_ONE_TIME_ITEM)){
-                unseenOneTimeItems.add(item.getId());
-            }
-            else if (THSettings.getOneTimeItems().contains(item.getId())){
+            if (THSettings.getOneTimeItems().contains(item.getId())){
                 unseenOneTimeItems.add(item.getId());
             }
         }

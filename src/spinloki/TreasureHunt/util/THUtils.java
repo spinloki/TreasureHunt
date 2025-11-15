@@ -16,10 +16,6 @@ import java.util.stream.Collectors;
 
 public class THUtils {
     public static final String TH_TREASURE_HUNT_BOOST = "th_treasure_hunt_boost";
-
-    public static final String TH_ONE_TIME_ITEM = "th_one_time_item";
-    public static final String TH_REPEAT_ITEM = "th_repeat_item";
-
     public static final String TH_TAG = "Treasure Hunt";
 
     public static boolean hasTechMining(MarketAPI market) {
