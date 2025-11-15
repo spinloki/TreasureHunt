@@ -112,7 +112,7 @@ public class THSettings {
         return blueprintPackages;
     }
 
-    public static boolean customDescriptionIdHasTHReward(String customDescriptionId){
+    public static boolean customEntityTypeHasTHReward(String customDescriptionId){
         return TH_REWARDS.has(customDescriptionId);
     }
 

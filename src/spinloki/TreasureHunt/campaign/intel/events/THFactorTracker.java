@@ -66,9 +66,9 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
             }
             return;
         }
-        var customDescId = entity.getCustomDescriptionId();
-        if (THSettings.customDescriptionIdHasTHReward(customDescId)){
-            mFactors.add(new THSalvageFactor(THSettings.getTHRewardValue(customDescId), THSettings.getTHRewardDescription(customDescId)));
+        var customEntityType = entity.getCustomEntityType();
+        if (THSettings.customEntityTypeHasTHReward(customEntityType)){
+            mFactors.add(new THSalvageFactor(THSettings.getTHRewardValue(customEntityType), THSettings.getTHRewardDescription(customEntityType)));
         }
         else if (entity.getMarket() != null){
             var market = entity.getMarket();
