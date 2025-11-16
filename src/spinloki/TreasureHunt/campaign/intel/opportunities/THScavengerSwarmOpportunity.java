@@ -4,6 +4,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import com.fs.starfarer.coreui.V;
+import org.lazywizard.lazylib.MathUtils;
+import org.lwjgl.util.vector.Vector2f;
 import spinloki.TreasureHunt.campaign.intel.THScavengerSwarmIntel;
 
 import java.util.List;
@@ -28,7 +31,9 @@ public class THScavengerSwarmOpportunity extends BaseTHOpportunity {
         for (StarSystemAPI system : Global.getSector().getStarSystems()) {
             boolean interesting = system.hasTag(Tags.THEME_INTERESTING) || system.hasTag(Tags.THEME_INTERESTING_MINOR);
             if (!interesting) continue;
-            float weight = 1f; // TODO: Weight unvisited systems more
+            var numSavlageables = system.getEntitiesWithTag(Tags.SALVAGEABLE).size();
+            float weight = (numSavlageables * numSavlageables) /
+                    MathUtils.getDistanceSquared(system.getCenter().getLocationInHyperspace(), new Vector2f(0,0));
             picker.add(system, weight);
         }
         return picker.pick();
