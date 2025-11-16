@@ -4,6 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import spinloki.TreasureHunt.config.THSettings;
 import spinloki.TreasureHunt.util.THUtils;
 
@@ -60,11 +61,11 @@ public class THTreasurePicker implements ShowLootListener {
             unseenItems = unseenRepeatableItems;
         }
 
-        List<String> itemList = new ArrayList<>(unseenItems);
-        String chosenTreasure = itemList.get(new Random().nextInt(itemList.size()));
-        unseenItems.remove(chosenTreasure);
-
-        return chosenTreasure;
+        var picker = new WeightedRandomPicker<String>();
+        picker.addAll(unseenItems);
+        var treasure = picker.pick();
+        unseenItems.remove(treasure);
+        return treasure;
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.campaign.intel.THFoundTreasureIntel;
+import spinloki.TreasureHunt.campaign.intel.opportunities.THScavengerSwarmOpportunity;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THStationLeadOpportunity;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THSectorSprintOpportunity;
 import spinloki.TreasureHunt.util.THUtils;
@@ -85,6 +86,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         opportunityPicker = new THOpportunityPicker();
         opportunityPicker.addCandidate(new THSectorSprintOpportunity());
         opportunityPicker.addCandidate(new THStationLeadOpportunity());
+        opportunityPicker.addCandidate(new THScavengerSwarmOpportunity());
 
         if (!Global.getSector().getPlayerFleet().hasAbility(ABANDON_LEAD)){
             Global.getSector().getPlayerFleet().addAbility(ABANDON_LEAD);
