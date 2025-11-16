@@ -1,41 +1,61 @@
 package spinloki.TreasureHunt.campaign.intel;
 
 import com.fs.starfarer.api.Global;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FactionAPI;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.RouteFleetAssignmentAI;
 import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.Pair;
+import spinloki.TreasureHunt.campaign.fleets.THScavengerSwarmRouteFleetManager;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class THScavengerSwarmIntel extends BaseIntelPlugin {
     private final StarSystemAPI target;
     private final String icon;
-    private List<FactionAPI> factions = new ArrayList<>();
     private static final String displayName = "Scavenger Swarm";
+    private final THScavengerSwarmRouteFleetManager routeManager;
+
+    // Maps factionId to fleet AI
+    private static final Map<FactionAPI, Pair<THSwarmAICreator, THSwarmFleetCreator>> factions = new HashMap<>();
+
+    public static void addFactionWithAIAndFleetCreators(String factionId, THSwarmAICreator aiCreator, THSwarmFleetCreator fleetCreator){
+        factions.put(Global.getSector().getFaction(factionId), new Pair<>(aiCreator, fleetCreator));
+    }
+
+    public static Map<FactionAPI, Pair<THSwarmAICreator, THSwarmFleetCreator>> getFactionsWithAIAndFleetCreators(){
+        return factions;
+    }
+
+    public interface THSwarmAICreator {
+        RouteFleetAssignmentAI create(CampaignFleetAPI fleet, RouteData route);
+    }
+    public interface THSwarmFleetCreator{
+        CampaignFleetAPI createFleet(
+                StarSystemAPI system,
+                RouteData route,
+                MarketAPI sourceMarket,
+                Random random
+        );
+    }
 
     public THScavengerSwarmIntel(StarSystemAPI target, String icon){
         this.target = target;
         this.icon = icon;
         Global.getSector().getIntelManager().addIntel(this);
         Global.getSector().addScript(this);
-        factions.add(Global.getSector().getFaction(Factions.PIRATES));
-        factions.add(Global.getSector().getFaction(Factions.HEGEMONY));
-        factions.add(Global.getSector().getFaction(Factions.PERSEAN));
-        factions.add(Global.getSector().getFaction(Factions.TRITACHYON));
-        factions.add(Global.getSector().getFaction(Factions.INDEPENDENT));
-        factions.add(Global.getSector().getFaction(Factions.LUDDIC_CHURCH));
-        factions.add(Global.getSector().getFaction(Factions.LUDDIC_PATH));
-        factions.add(Global.getSector().getFaction(Factions.DIKTAT));
+        routeManager = new THScavengerSwarmRouteFleetManager(target);
+        target.addScript(routeManager);
     }
 
     private float timePassed = 0;
@@ -87,7 +107,8 @@ public class THScavengerSwarmIntel extends BaseIntelPlugin {
         if (!(isEnded() || isEnding())) {
             info.addSectionHeading("Involved Factions", Alignment.MID, 10f);
             bullet(info);
-            for (var faction : factions){
+
+            for (var faction : factions.keySet()){
                 info.addPara(Misc.ucFirst(faction.getDisplayName()), 3f, faction.getBaseUIColor(), Misc.ucFirst(faction.getDisplayName()));
             }
         }
@@ -141,5 +162,6 @@ public class THScavengerSwarmIntel extends BaseIntelPlugin {
     public void notifyEnded(){
         super.notifyEnded();
         Global.getSector().removeScript(this);
+        target.removeScript(routeManager);
     }
 }

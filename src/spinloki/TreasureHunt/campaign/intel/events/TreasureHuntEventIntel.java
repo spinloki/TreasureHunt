@@ -2,12 +2,19 @@ package spinloki.TreasureHunt.campaign.intel.events;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.RuinsFleetRouteManager;
+import com.fs.starfarer.api.impl.campaign.procgen.themes.ScavengerFleetAssignmentAI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.campaign.intel.THFoundTreasureIntel;
+import spinloki.TreasureHunt.campaign.intel.THScavengerSwarmIntel;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THScavengerSwarmOpportunity;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THStationLeadOpportunity;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THSectorSprintOpportunity;
@@ -91,6 +98,8 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         if (!Global.getSector().getPlayerFleet().hasAbility(ABANDON_LEAD)){
             Global.getSector().getPlayerFleet().addAbility(ABANDON_LEAD);
         }
+
+        setupScavengerSwarmVanillaFactionBehaviors();
     }
 
     @Override
@@ -268,5 +277,86 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             new THFoundTreasureIntel(treasure);
             treasure = "";
         }
+    }
+
+    private void setupScavengerSwarmVanillaFactionBehaviors() {
+        THScavengerSwarmIntel.addFactionWithAIAndFleetCreators(
+                Factions.PIRATES,
+                (fleet, route) -> {
+                    return new ScavengerFleetAssignmentAI(fleet, route, true);
+                },
+                (system, route, sourceMarket, random1) -> RuinsFleetRouteManager.createScavenger(
+                        null,
+                        system.getLocation(),
+                        route,
+                        route.getMarket(),
+                        true,
+                        route.getRandom()
+                )
+        );
+        THScavengerSwarmIntel.addFactionWithAIAndFleetCreators(
+                Factions.INDEPENDENT,
+                (fleet, route) -> new ScavengerFleetAssignmentAI(fleet, route, false),
+                (system, route, sourceMarket, random1) ->
+                        RuinsFleetRouteManager.createScavenger(
+                                null,
+                                system.getLocation(),
+                                route,
+                                route.getMarket(),
+                                false,
+                                route.getRandom()
+                        )
+        );
+        THScavengerSwarmIntel.addFactionWithAIAndFleetCreators(
+                Factions.PERSEAN,
+                (fleet, route) -> new ScavengerFleetAssignmentAI(fleet, route, false),
+                (system, route, source, random) -> FleetFactoryV3.createFleet(
+                        new FleetParamsV3(
+                                source,
+                                system.getLocation(),
+                                Factions.PERSEAN,
+                                null,
+                                FleetTypes.LEAGUE_ENFORCER,
+                                20f,  // combat
+                                10f,  // freighter
+                                5f,   // tanker
+                                0f, 0f, 0f, 0f
+                        )
+                )
+        );
+        THScavengerSwarmIntel.addFactionWithAIAndFleetCreators(
+                Factions.HEGEMONY,
+                (fleet, route) -> new ScavengerFleetAssignmentAI(fleet, route, false),
+                (system, route, source, random) -> FleetFactoryV3.createFleet(
+                        new FleetParamsV3(
+                                source,
+                                system.getLocation(),
+                                Factions.HEGEMONY,
+                                null,
+                                FleetTypes.INSPECTION_FLEET,
+                                20f,  // combat
+                                10f,  // freighter
+                                5f,   // tanker
+                                0f, 0f, 0f, 0f
+                        )
+                )
+        );
+        THScavengerSwarmIntel.addFactionWithAIAndFleetCreators(
+                Factions.TRITACHYON,
+                ((fleet, route) -> new ScavengerFleetAssignmentAI(fleet, route, false)),
+                (system, route, source, random) -> FleetFactoryV3.createFleet(
+                        new FleetParamsV3(
+                                source,
+                                system.getLocation(),
+                                Factions.TRITACHYON,
+                                null,
+                                FleetTypes.MERC_PRIVATEER,
+                                20f,  // combat
+                                10f,  // freighter
+                                5f,   // tanker
+                                0f, 0f, 0f, 0f
+                        )
+                )
+        );
     }
 }
