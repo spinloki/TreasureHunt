@@ -40,6 +40,12 @@ public class TH_CMD extends BaseCommandPlugin {
                 float fp = fleet.getFleetPoints();
                 int cost = getDataCost(fp);
                 memory.set("$th_dataCost", Misc.getWithDGS(cost));
+                int credits = (int) Global.getSector().getPlayerFleet().getCargo().getCredits().get();
+                if (credits < cost) {
+                    memory.set("$th_cant_afford", true);
+                } else {
+                    memory.unset("$th_cant_afford");
+                }
                 return true;
             }
             return false;
