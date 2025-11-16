@@ -37,6 +37,10 @@ public class THScavengerSwarmIntel extends BaseIntelPlugin {
         return factions;
     }
 
+    public static void resetFactionsWithAIAndFleetCreators(){
+        factions.clear();
+    }
+
     public interface THSwarmAICreator {
         RouteFleetAssignmentAI create(CampaignFleetAPI fleet, RouteData route);
     }

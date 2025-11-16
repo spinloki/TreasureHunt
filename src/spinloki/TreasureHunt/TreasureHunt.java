@@ -3,6 +3,8 @@ package spinloki.TreasureHunt;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import org.apache.log4j.Logger;
+import spinloki.TreasureHunt.campaign.fleets.THScavengerSwarmFactionSetup;
+import spinloki.TreasureHunt.campaign.intel.THScavengerSwarmIntel;
 import spinloki.TreasureHunt.campaign.intel.events.THFactorTracker;
 import spinloki.TreasureHunt.campaign.items.THVanillaItemTagger;
 import spinloki.TreasureHunt.config.THSettings;
@@ -29,10 +31,15 @@ public class TreasureHunt extends BaseModPlugin {
 
     @Override
     public void onGameLoad(boolean newGame){
-        if (!Global.getSector().hasScript(THFactorTracker.class)) {
-            factorTracker = new THFactorTracker();
-            Global.getSector().addScript(factorTracker);
-            Global.getSector().getListenerManager().addListener(factorTracker);
+        if (Global.getSector().hasScript(THFactorTracker.class)) {
+            Global.getSector().removeScriptsOfClass(THFactorTracker.class);
+            Global.getSector().getListenerManager().removeListenerOfClass(THFactorTracker.class);
         }
+        factorTracker = new THFactorTracker();
+        Global.getSector().addScript(factorTracker);
+        Global.getSector().getListenerManager().addListener(factorTracker);
+
+        THScavengerSwarmIntel.resetFactionsWithAIAndFleetCreators();
+        THScavengerSwarmFactionSetup.setupScavengerSwarmVanillaFactionBehaviors();
     }
 }

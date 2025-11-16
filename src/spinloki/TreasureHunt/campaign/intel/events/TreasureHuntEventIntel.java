@@ -98,8 +98,6 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         if (!Global.getSector().getPlayerFleet().hasAbility(ABANDON_LEAD)){
             Global.getSector().getPlayerFleet().addAbility(ABANDON_LEAD);
         }
-
-        setupScavengerSwarmVanillaFactionBehaviors();
     }
 
     @Override
@@ -277,86 +275,5 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             new THFoundTreasureIntel(treasure);
             treasure = "";
         }
-    }
-
-    private void setupScavengerSwarmVanillaFactionBehaviors() {
-        THScavengerSwarmIntel.addFactionWithAIAndFleetCreators(
-                Factions.PIRATES,
-                (fleet, route) -> {
-                    return new ScavengerFleetAssignmentAI(fleet, route, true);
-                },
-                (system, route, sourceMarket, random1) -> RuinsFleetRouteManager.createScavenger(
-                        null,
-                        system.getLocation(),
-                        route,
-                        route.getMarket(),
-                        true,
-                        route.getRandom()
-                )
-        );
-        THScavengerSwarmIntel.addFactionWithAIAndFleetCreators(
-                Factions.INDEPENDENT,
-                (fleet, route) -> new ScavengerFleetAssignmentAI(fleet, route, false),
-                (system, route, sourceMarket, random1) ->
-                        RuinsFleetRouteManager.createScavenger(
-                                null,
-                                system.getLocation(),
-                                route,
-                                route.getMarket(),
-                                false,
-                                route.getRandom()
-                        )
-        );
-        THScavengerSwarmIntel.addFactionWithAIAndFleetCreators(
-                Factions.PERSEAN,
-                (fleet, route) -> new ScavengerFleetAssignmentAI(fleet, route, false),
-                (system, route, source, random) -> FleetFactoryV3.createFleet(
-                        new FleetParamsV3(
-                                source,
-                                system.getLocation(),
-                                Factions.PERSEAN,
-                                null,
-                                FleetTypes.LEAGUE_ENFORCER,
-                                20f,  // combat
-                                10f,  // freighter
-                                5f,   // tanker
-                                0f, 0f, 0f, 0f
-                        )
-                )
-        );
-        THScavengerSwarmIntel.addFactionWithAIAndFleetCreators(
-                Factions.HEGEMONY,
-                (fleet, route) -> new ScavengerFleetAssignmentAI(fleet, route, false),
-                (system, route, source, random) -> FleetFactoryV3.createFleet(
-                        new FleetParamsV3(
-                                source,
-                                system.getLocation(),
-                                Factions.HEGEMONY,
-                                null,
-                                FleetTypes.INSPECTION_FLEET,
-                                20f,  // combat
-                                10f,  // freighter
-                                5f,   // tanker
-                                0f, 0f, 0f, 0f
-                        )
-                )
-        );
-        THScavengerSwarmIntel.addFactionWithAIAndFleetCreators(
-                Factions.TRITACHYON,
-                ((fleet, route) -> new ScavengerFleetAssignmentAI(fleet, route, false)),
-                (system, route, source, random) -> FleetFactoryV3.createFleet(
-                        new FleetParamsV3(
-                                source,
-                                system.getLocation(),
-                                Factions.TRITACHYON,
-                                null,
-                                FleetTypes.MERC_PRIVATEER,
-                                20f,  // combat
-                                10f,  // freighter
-                                5f,   // tanker
-                                0f, 0f, 0f, 0f
-                        )
-                )
-        );
     }
 }

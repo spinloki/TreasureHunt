@@ -8,6 +8,7 @@ import com.fs.starfarer.coreui.V;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 import spinloki.TreasureHunt.campaign.intel.THScavengerSwarmIntel;
+import spinloki.TreasureHunt.config.THSettings;
 
 import java.util.List;
 
@@ -31,8 +32,12 @@ public class THScavengerSwarmOpportunity extends BaseTHOpportunity {
         for (StarSystemAPI system : Global.getSector().getStarSystems()) {
             boolean interesting = system.hasTag(Tags.THEME_INTERESTING) || system.hasTag(Tags.THEME_INTERESTING_MINOR);
             if (!interesting) continue;
-            var numSavlageables = system.getEntitiesWithTag(Tags.SALVAGEABLE).size();
-            float weight = (numSavlageables * numSavlageables) /
+            float value = 1;
+            for (var entity : system.getEntitiesWithTag(Tags.SALVAGEABLE)){
+                var type = entity.getCustomEntityType();
+                value += THSettings.getTHRewardValue(type);
+            }
+            float weight = (value * value) /
                     MathUtils.getDistanceSquared(system.getCenter().getLocationInHyperspace(), new Vector2f(0,0));
             picker.add(system, weight);
         }
