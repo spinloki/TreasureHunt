@@ -119,4 +119,8 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
     public void reportPlayerAbandonedColony(MarketAPI colony) {
         // No need to do anything. Factor will expire by itself when the player abandons the colony
     }
+
+    public Queue<THSalvageFactor> getmFactors() {
+        return mFactors;
+    }
 }

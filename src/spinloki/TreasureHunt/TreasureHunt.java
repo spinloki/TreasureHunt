@@ -42,4 +42,8 @@ public class TreasureHunt extends BaseModPlugin {
         THScavengerSwarmIntel.resetFactionsWithAIAndFleetCreators();
         THScavengerSwarmFactionSetup.setupScavengerSwarmVanillaFactionBehaviors();
     }
+
+    public static THFactorTracker getFactorTrackerForTestOnly(){
+        return factorTracker;
+    }
 }
