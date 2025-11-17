@@ -25,6 +25,7 @@ public class THScavengerSwarmIntel extends BaseIntelPlugin {
     private final String icon;
     private static final String displayName = "Scavenger Swarm";
     private final THScavengerSwarmRouteFleetManager routeManager;
+    public float daysRemaining = 180f;
 
     // Maps factionId to fleet AI
     private static final Map<FactionAPI, Pair<THSwarmAICreator, THSwarmFleetCreator>> factions = new HashMap<>();
@@ -62,8 +63,6 @@ public class THScavengerSwarmIntel extends BaseIntelPlugin {
         target.addScript(routeManager);
     }
 
-    private float timePassed = 0;
-    private final float interval = 1;
     @Override
     public void advanceImpl(float amount){
         if (Global.getSector().isPaused()) return;
@@ -73,10 +72,9 @@ public class THScavengerSwarmIntel extends BaseIntelPlugin {
         }
 
         float days = Global.getSector().getClock().convertToDays(amount);
-        timePassed += days;
-        if (timePassed > interval){
-            timePassed = 0;
-            factions.remove(0);
+        daysRemaining -= days;
+        if (daysRemaining < 0f){
+            endAfterDelay();
         }
     }
 
@@ -136,7 +134,8 @@ public class THScavengerSwarmIntel extends BaseIntelPlugin {
         if (isEnding() || isEnded()) {
             info.addPara("Factions have lost interest", initPad, tc, h, "lost interest");
         } else {
-            info.addPara("Factions swarming system", initPad, tc, h, "treasure");
+            info.addPara("Factions swarming system", initPad);
+            info.addPara((int)daysRemaining + " days remaining", initPad, tc, h, "" + (int)daysRemaining);
         }
     }
 
