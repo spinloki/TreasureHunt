@@ -2,3 +2,4 @@ command,class,tags,syntax,help
 TH_AddProgress,spinloki.TreasureHunt.data.console.TH_AddProgress,"cheat,campaign",th_addprogress <amount (>=0)>,Adds progress for the Treasure Hunt event
 TH_GetNearestEntitiesWithName,spinloki.TreasureHunt.data.console.TH_GetNearestEntitiesWithName,"cheat,campaign",th_getnearestentitieswithname,Prints a list of the nearest N entities with names matching input
 TH_TestFactorTracker,spinloki.TreasureHunt.data.console.TH_TestFactorTracker,"cheat,campaign",th_testfactortracker,Integration test for factor tracker
+TH_TestItemRewards,spinloki.TreasureHunt.data.console.TH_TestItemRewards,"cheat,campaign",th_testitemrewards,Integration test for item rewards
