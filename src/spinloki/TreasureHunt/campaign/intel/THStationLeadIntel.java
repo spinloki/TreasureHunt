@@ -15,11 +15,19 @@ import java.util.Set;
 public class THStationLeadIntel extends BaseIntelPlugin {
     SectorEntityToken station;
     String locationDescription;
+    String locationName;
     private final String icon;
 
     public THStationLeadIntel(SectorEntityToken station, String locationDescription, String icon){
         this.station = station;
         this.locationDescription = locationDescription;
+        if (station.getConstellation() != null){
+            this.locationName = station.getConstellation().getNameWithType();
+        }
+        else{
+            this.locationName = station.getStarSystem().getNameWithTypeIfNebula();
+        }
+
         this.icon = icon;
         Global.getSector().getIntelManager().addIntel(this);
         Global.getSector().addScript(this);
@@ -54,7 +62,7 @@ public class THStationLeadIntel extends BaseIntelPlugin {
         }
         if (mode == ListInfoMode.INTEL || mode == ListInfoMode.MAP_TOOLTIP) {
             info.addPara("Located in %s", 0f, tc, h,
-                    String.valueOf(station.getConstellation().getName()));
+                    String.valueOf(locationName));
         }
     }
 
@@ -75,7 +83,7 @@ public class THStationLeadIntel extends BaseIntelPlugin {
     @Override
     public String getName() {
         String base = station.getFullName() + " Lead";
-        return base + " - " + station.getConstellation().getNameWithType();
+        return base + " - " + locationName;
     }
 
     @Override
