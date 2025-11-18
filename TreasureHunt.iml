@@ -7,28 +7,44 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="starfarer.api" level="project" />
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../LazyLib/jars/LazyLib.jar!/" />
+          <root url="jar://$MODULE_DIR$/../Console Commands/jars/lw_Console.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../LazyLib/jars/LazyLib.jar!/" />
-          <root url="jar://$MODULE_DIR$/../LazyLib/jars/LazyLib.jar!/" />
+          <root url="jar://$MODULE_DIR$/../Console Commands/jars/lw_Console.jar!/" />
+          <root url="jar://$MODULE_DIR$/../Console Commands/jars/lw_Console.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" scope="PROVIDED" name="LazyLib-3.0" level="project" />
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../Console Commands/jars/lw_Console.jar!/" />
+          <root url="file://$MODULE_DIR$/../.." />
+          <root url="file://$MODULE_DIR$/../.." />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../Console Commands/jars/lw_Console.jar!/" />
-          <root url="jar://$MODULE_DIR$/../Console Commands/jars/lw_Console.jar!/" />
+          <root url="file://$MODULE_DIR$/../.." />
+          <root url="file://$MODULE_DIR$/../.." />
+          <root url="file://$MODULE_DIR$/../.." />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/../.." recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../.." recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../LazyLib-3.0.0/jars/LazyLib.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../LazyLib-3.0.0/jars/LazyLib.jar!/" />
+          <root url="jar://$MODULE_DIR$/../LazyLib-3.0.0/jars/LazyLib.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
