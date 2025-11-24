@@ -36,7 +36,7 @@
         <jarDirectory url="file://$MODULE_DIR$/../.." recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" scope="PROVIDED">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../LazyLib-3.0.0/jars/LazyLib.jar!/" />
