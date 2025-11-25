@@ -27,10 +27,10 @@ the lead will be unaffected. You will have two Pristine Nanoforges when you comp
 If you are not interested in the lead that you find at 100 event progress, you can use a new ability called Abandon Lead
 (which you can assign to the ability hotbar) to reset the event progress to 0.
 If the lead was a blueprint package, that specific lead will never appear again.
-If the lead was a colony item, it will not appear as a lead again until you have seen all colony items and blueprint packages.
+If the lead was a colony item, it will not appear as a lead again until you have seen all colony items.
 
 ### Found Opportunity
-One of a number of events will occur that can aid your hunt. Right now, Sector Sprint and Station Lead are implemented. Sector Sprint lets you passively gain event progress by building or claiming comm relays in randomly selected systems. Station Lead gives hints to the location of the nearest undiscovered derelict stations.
+One of a number of events will occur that can aid your hunt. Right now, Sector Sprint, Scavenger Swarm, and Station Lead are implemented. Sector Sprint lets you passively gain event progress by building or claiming comm relays in randomly selected systems. Scavenger Swarm causes most of the vanilla factions to send lots of fleets to a system that it likely to contain many salvageables. Since these fleets all count as Scavengers, this makes an excellent opportunity to gain additional progress by paying or fighting them. Station Lead gives hints to the location of the nearest undiscovered derelict stations.
 
 ### Found Item
 At 500 event progress, the hunt is complete. The item or blueprint package will be placed directly in your cargo.
