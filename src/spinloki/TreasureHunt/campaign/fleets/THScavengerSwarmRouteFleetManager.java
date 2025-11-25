@@ -47,10 +47,18 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
     protected void addRouteFleetIfPossible() {
         if (factionAPIDeque.isEmpty()) return;
 
-        var faction = factionAPIDeque.removeFirst();
-        factionAPIDeque.addLast(faction);
+        MarketAPI source = null;
+        while (source == null && !factionAPIDeque.isEmpty()){
+            var faction = factionAPIDeque.removeFirst();
+            source = pickSourceMarket(faction);
+            if (source != null) {
+                factionAPIDeque.addLast(faction);
+            }
+        }
+        if (factionAPIDeque.isEmpty()){
+            return;
+        }
 
-        MarketAPI source = pickSourceMarket(faction);
         long seed = new Random().nextLong();
         RouteData route = RouteManager.getInstance().addRoute(getRouteSourceId(),
                 source,
