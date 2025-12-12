@@ -55,7 +55,7 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
                 factionAPIDeque.addLast(faction);
             }
         }
-        if (factionAPIDeque.isEmpty()){
+        if (source == null){
             return;
         }
 
@@ -104,6 +104,9 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
 
     @Override
     public CampaignFleetAPI spawnFleet(RouteData route) {
+        if (route.getMarket() == null){ // If the market decivilized, spawn nothing
+            return null;
+        }
         // Determine faction from route market
         String factionId = route.getMarket().getFactionId();
         FactionAPI faction = Global.getSector().getFaction(factionId);
