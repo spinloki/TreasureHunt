@@ -111,7 +111,11 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
         String factionId = route.getMarket().getFactionId();
         FactionAPI faction = Global.getSector().getFaction(factionId);
 
-        var fleetDelegate = THScavengerSwarmIntel.getFactionsWithAIAndFleetCreators().get(faction).two;
+        var scavSwarmInfo = THScavengerSwarmIntel.getFactionsWithAIAndFleetCreators().get(faction);
+        THScavengerSwarmIntel.THSwarmFleetCreator fleetDelegate = null;
+        if (scavSwarmInfo != null){
+            fleetDelegate = scavSwarmInfo.two;
+        }
         CampaignFleetAPI fleet;
         if (fleetDelegate != null){
             fleet = fleetDelegate.createFleet(system, route, route.getMarket(), route.getRandom());
@@ -129,7 +133,10 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
 
         if (fleet == null) return null;
 
-        var aiDelegate = THScavengerSwarmIntel.getFactionsWithAIAndFleetCreators().get(faction).one;
+        THScavengerSwarmIntel.THSwarmAICreator aiDelegate = null;
+        if (scavSwarmInfo != null){
+            aiDelegate = scavSwarmInfo.one;
+        }
         if (aiDelegate != null) {
             fleet.addScript(aiDelegate.create(fleet, route));
         } else {
