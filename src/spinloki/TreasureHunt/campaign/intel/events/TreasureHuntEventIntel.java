@@ -95,8 +95,8 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         opportunityPicker.addCandidate(new THStationLeadOpportunity());
         opportunityPicker.addCandidate(new THScavengerSwarmOpportunity());
 
-        if (!Global.getSector().getPlayerFleet().hasAbility(ABANDON_LEAD)){
-            Global.getSector().getPlayerFleet().addAbility(ABANDON_LEAD);
+        if (!Global.getSector().getCharacterData().getAbilities().contains(ABANDON_LEAD)) {
+            Global.getSector().getCharacterData().addAbility(ABANDON_LEAD);
         }
     }
 
