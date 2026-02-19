@@ -4,7 +4,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
+import spinloki.TreasureHunt.campaign.intel.events.THAbandonCarryoverFactor;
 import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
+import spinloki.TreasureHunt.config.THSettings;
 
 public class THResetProgressAbility extends BaseDurationAbility {
     @Override
@@ -23,7 +25,11 @@ public class THResetProgressAbility extends BaseDurationAbility {
     protected void activateImpl() {
         for (IntelInfoPlugin intel : Global.getSector().getIntelManager().getIntel()) {
             if (intel instanceof TreasureHuntEventIntel) {
+                var carryoverProgress = (int) (((TreasureHuntEventIntel) intel).getProgress() * THSettings.TH_ABANDON_CARRYOVER_FACTOR);
                 ((TreasureHuntEventIntel) intel).setProgress(0);
+                if (carryoverProgress > 0){
+                    TreasureHuntEventIntel.addFactorCreateIfNecessary(new THAbandonCarryoverFactor(carryoverProgress), null);
+                }
             }
         }
     }

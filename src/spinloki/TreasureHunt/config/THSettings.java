@@ -27,6 +27,7 @@ public class THSettings {
     public static Integer TH_SECTOR_SPRINT_REWARD;
     public static JSONArray TH_ONE_TIME_ITEMS;
     public static JSONArray TH_REPEAT_ITEMS;
+    public static Float TH_ABANDON_CARRYOVER_FACTOR;
 
     public static void loadSettingsFromJson() throws JSONException, IOException {
         JSONObject json = Global.getSettings().loadJSON("treasurehunt_settings.json", "spinloki_treasurehunt");
@@ -42,6 +43,7 @@ public class THSettings {
         TH_PICK_BLUEPRINT_WEIGHT = (float) json.getDouble("th_pick_blueprint_weight");
         TH_ONE_TIME_ITEMS = Global.getSettings().getJSONArray("th_one_time_items");
         TH_REPEAT_ITEMS = Global.getSettings().getJSONArray("th_repeat_items");
+        TH_ABANDON_CARRYOVER_FACTOR = (float) json.getDouble("th_abandon_carryover_factor");
     }
 
     public static List<String> getOneTimeItems(){
