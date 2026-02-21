@@ -1,6 +1,7 @@
 package spinloki.TreasureHunt.campaign.intel.events;
 
 import com.fs.starfarer.api.EveryFrameScript;
+import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.CargoAPI;
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
@@ -48,6 +49,8 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         return value;
     }
 
+    THRaidTracker mRaidTracker;
+
     public void reportAboutToShowLootToPlayer(CargoAPI loot, InteractionDialogAPI dialog) {
         var entity = dialog.getInteractionTarget();
         if (entity == null){
@@ -73,7 +76,12 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         else if (entity.getMarket() != null){
             var market = entity.getMarket();
             if (Misc.getDaysSinceLastRaided(market) < .3){ // figure .3 should be a reasonable value to determine that the player raided the market
-                mFactors.add(new THSalvageFactor(THSettings.getTHRewardValue("raid"), THSettings.getTHRewardDescription("raid")));
+                if (mRaidTracker == null){
+                    mRaidTracker = new THRaidTracker();
+                }
+                var baseReward = THSettings.getTHRewardValue("raid");
+                var reward = mRaidTracker.calculateRaidReward(baseReward, market, Global.getSector().getClock().getTimestamp());
+                mFactors.add(new THSalvageFactor(reward, THSettings.getTHRewardDescription("raid")));
             }
             else if (Misc.hasRuins(market)){
                 var ruin = Misc.getRuinsType(market);

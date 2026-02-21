@@ -11,5 +11,13 @@
 	"th_colony_tech_mining_progress_multiplier": 2,
     "th_sector_sprint_reward": 60,
     "th_pick_blueprint_weight": 0.5,
-	"th_abandon_carryover_factor": 0.2
+
+	# This value multiplied by your current hunt progress will carry over into the next hunt
+	"th_abandon_carryover_factor": 0.2,
+
+	# When enabled, raiding a market will drop the progress reward for that colony,
+	# to the value * factor, recovering at a linear rate
+	"th_raid_diminishing_returns_enabled": true,
+	"th_raid_diminishing_returns_factor": 0.2,
+	"th_raid_diminishing_returns_recovery_days": 100
 }

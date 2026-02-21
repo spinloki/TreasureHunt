@@ -28,6 +28,9 @@ public class THSettings {
     public static JSONArray TH_ONE_TIME_ITEMS;
     public static JSONArray TH_REPEAT_ITEMS;
     public static Float TH_ABANDON_CARRYOVER_FACTOR;
+    public static boolean TH_RAID_DIMINISHING_RETURNS_ENABLED;
+    public static Float TH_RAID_DIMINISHING_RETURNS_FACTOR;
+    public static Integer TH_RAID_DIMINISHING_RETURNS_RECOVERY_DAYS;
 
     public static void loadSettingsFromJson() throws JSONException, IOException {
         JSONObject json = Global.getSettings().loadJSON("treasurehunt_settings.json", "spinloki_treasurehunt");
@@ -44,6 +47,9 @@ public class THSettings {
         TH_ONE_TIME_ITEMS = Global.getSettings().getJSONArray("th_one_time_items");
         TH_REPEAT_ITEMS = Global.getSettings().getJSONArray("th_repeat_items");
         TH_ABANDON_CARRYOVER_FACTOR = (float) json.getDouble("th_abandon_carryover_factor");
+        TH_RAID_DIMINISHING_RETURNS_ENABLED = json.getBoolean("th_raid_diminishing_returns_enabled");
+        TH_RAID_DIMINISHING_RETURNS_FACTOR = (float) json.getDouble("th_raid_diminishing_returns_factor");
+        TH_RAID_DIMINISHING_RETURNS_RECOVERY_DAYS = json.getInt("th_raid_diminishing_returns_recovery_days");
     }
 
     public static List<String> getOneTimeItems(){
