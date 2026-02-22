@@ -2,18 +2,106 @@ id,trigger,conditions,script,text,options,notes
 scavBuyTHDataOpt,PopulateOptions,"$menuState == fleetConvMain
 $entity.isScavenger
 !$entity.boughtTHData
-TH_CMD computeDataStats",,,buyTHData:Offer to pay for information about the scavenger's recent finds.,
-scavBuyTHDataSel1,DialogOptionSelected,"$option == buyTHData 
+TH_CMD computeDataStats
+TH_CMD determineScavengerVoice",,,buyTHData:Offer to pay for information about the $post's recent finds.,
+scavBuyTHDataSel1_default,DialogOptionSelected,"$option == buyTHData 
 !$th_cant_afford",Highlight $th_dataCost,"You talk through the details with the $post, careful not to ask too directly and getting just enough in return. After a bit of back and forth, you reach a final price of $th_dataCost credits for the data.","buyTHDataConfirm:Transfer the payment
 buyTHDataNeverMind:Never mind",
-scavBuyTHDataSel2,DialogOptionSelected,"$option == buyTHData 
+scavBuyTHDataSel2_default,DialogOptionSelected,"$option == buyTHData 
 $th_cant_afford","Highlight $th_dataCost
 SetEnabled buyTHDataConfirm false","You talk through the details with the $post, careful not to ask too directly and getting just enough in return. After a bit of back and forth, you reach a final price of $th_dataCost credits for the data.
 
 That is more than you can afford, but you are unable to get $himOrHer to go any lower.","buyTHDataConfirm:Transfer the payment
 buyTHDataNeverMind:Never mind",
-buyTHDataConfirmSel,DialogOptionSelected,$option == buyTHDataConfirm,"AddCredits -$th_dataCost
+scavBuyTHDataSel1_pather,DialogOptionSelected,"
+$option == buyTHData 
+!$th_cant_afford
+$th_scav_voice == ""pather""",Highlight $th_dataCost,You speak with the $post of the blasphemous horrors that $heOrShe has witnessed out in the far reaches. $HeOrShe then demands a tithe of $th_dataCost when you press $himOrHer for more details.,"buyTHDataConfirm:Transfer the payment
+buyTHDataNeverMind:Never mind",
+scavBuyTHDataSel2_pather,DialogOptionSelected,"$option == buyTHData 
+$th_cant_afford
+$th_scav_voice == ""pather""","Highlight $th_dataCost
+SetEnabled buyTHDataConfirm false","You speak with the $post of the blasphemous horrors that $heOrShe has witnessed out in the far reaches. $HeOrShe then demands a tithe of $th_dataCost when you press $himOrHer for more details.
+
+That is more than you can afford, but you are unable to get $himOrHer to go any lower.","buyTHDataConfirm:Transfer the payment
+buyTHDataNeverMind:Never mind",
+scavBuyTHDataSel1_pirate,DialogOptionSelected,"
+$option == buyTHData 
+!$th_cant_afford
+$th_scav_voice == ""villain""",Highlight $th_dataCost,"You speak with the $post about $hisOrHer recent ""success"" in nearby systems. When pressed for more details, $heOrShe quotes $th_dataCost without hesitation.","buyTHDataConfirm:Transfer the payment
+buyTHDataNeverMind:Never mind",
+scavBuyTHDataSel2_pirate,DialogOptionSelected,"$option == buyTHData 
+$th_cant_afford
+$th_scav_voice == ""villain""","Highlight $th_dataCost
+SetEnabled buyTHDataConfirm false","You speak with the $post about $hisOrHer recent ""success"" in nearby systems. When pressed for more details, $heOrShe quotes $th_dataCost without hesitation.
+
+That is more than you can afford, but you are unable to get $himOrHer to go any lower.","buyTHDataConfirm:Transfer the payment
+buyTHDataNeverMind:Never mind",
+scavBuyTHDataSel1_official,DialogOptionSelected,"$option == buyTHData 
+!$th_cant_afford
+$th_scav_voice == ""official""",Highlight $th_dataCost,You speak with the $post regarding recent activity logged in the region. $HeOrShe listens patiently before explaining that access to certain official records can be arranged for a fee of $th_dataCost.,"buyTHDataConfirm:Transfer the payment
+buyTHDataNeverMind:Never mind",
+scavBuyTHDataSel2_official,DialogOptionSelected,"$option == buyTHData 
+$th_cant_afford
+$th_scav_voice == ""official""","Highlight $th_dataCost
+SetEnabled buyTHDataConfirm false","You speak with the $post regarding recent activity logged in the region. $HeOrShe listens patiently before explaining that access to certain official records can be arranged for a fee of $th_dataCost.
+
+That is more than you can afford, but you are unable to get $himOrHer to go any lower.","buyTHDataConfirm:Transfer the payment
+buyTHDataNeverMind:Never mind",
+scavBuyTHDataSel1_faithful,DialogOptionSelected,"$option == buyTHData 
+!$th_cant_afford
+$th_scav_voice == ""faithful""",Highlight $th_dataCost,"You speak with the $post about recent discoveries in the region. $HeOrShe frames the discussion in terms of stewardship and proper custodianship of what has been uncovered.
+
+When you request further detail, $heOrShe explains that a tithe of $th_dataCost would ensure access to the relevant records.","buyTHDataConfirm:Transfer the payment
+buyTHDataNeverMind:Never mind",
+scavBuyTHDataSel2_faithful,DialogOptionSelected,"$option == buyTHData 
+$th_cant_afford
+$th_scav_voice == ""faithful""","Highlight $th_dataCost
+SetEnabled buyTHDataConfirm false","
+You speak with the $post about recent discoveries in the region. $HeOrShe frames the discussion in terms of stewardship and proper custodianship of what has been uncovered.
+
+When you request further detail, $heOrShe explains that a tithe of $th_dataCost would ensure access to the relevant records.
+
+That is more than you can afford, but you are unable to get $himOrHer to go any lower.","buyTHDataConfirm:Transfer the payment
+buyTHDataNeverMind:Never mind",
+scavBuyTHDataSel1_business,DialogOptionSelected,"$option == buyTHData 
+!$th_cant_afford
+$th_scav_voice == ""business""",Highlight $th_dataCost,You speak with the $post regarding recent activity in the region. The $post notes a fee of $th_dataCost for licensing proprietary reconnaissance data.,"buyTHDataConfirm:Transfer the payment
+buyTHDataNeverMind:Never mind",
+scavBuyTHDataSel2_business,DialogOptionSelected,"$option == buyTHData 
+$th_cant_afford
+$th_scav_voice == ""business""","Highlight $th_dataCost
+SetEnabled buyTHDataConfirm false","You speak with the $post regarding recent activity in the region. The $post notes a fee of $th_dataCost for licensing proprietary reconnaissance data.
+
+That is more than you can afford, but you are unable to get $himOrHer to go any lower.","buyTHDataConfirm:Transfer the payment
+buyTHDataNeverMind:Never mind",
+buyTHDataConfirmSel_default,DialogOptionSelected,$option == buyTHDataConfirm,"AddCredits -$th_dataCost
 $entity.boughtTHData = true 60
 TH_CMD getScavengerData
 FireAll PopulateOptions","The $post speaks freely about $hisOrHer recent discoveries as soon as the credit transfer completes, and the information helps you narrow down your own search.",,
+buyTHDataConfirmSel_pather,DialogOptionSelected,"$option == buyTHDataConfirm
+$th_scav_voice == ""pather""","AddCredits -$th_dataCost
+$entity.boughtTHData = true 60
+TH_CMD getScavengerData
+FireAll PopulateOptions",The $post rants fervently about the abominations that $heOrShe has seen in this region. Your subordinates translate $hisOrHer oblique metaphors and scriptural references into meaningful data that helps you narrow down your search.,,
+buyTHDataConfirmSel_pirate,DialogOptionSelected,"$option == buyTHDataConfirm
+$th_scav_voice == ""pirate""","AddCredits -$th_dataCost
+$entity.boughtTHData = true 60
+TH_CMD getScavengerData
+FireAll PopulateOptions","The $post grins, then speaks of $hisOrHer recent exploits. You sift through the ensuing barrage of exaggeration and self-congratulation, pulling out useful details that helps you narrow down your search.",,
+buyTHDataConfirmSel_official,DialogOptionSelected,"$option == buyTHDataConfirm
+$th_scav_voice == ""official""","AddCredits -$th_dataCost
+$entity.boughtTHData = true 60
+TH_CMD getScavengerData
+FireAll PopulateOptions","The $post outlines patrol reports, filed salvage claims, and registry updates. Your officers compile the relevant entries into a concise summary of likely points of interest.",,
+buyTHDataConfirmSel_faithful,DialogOptionSelected,"$option == buyTHDataConfirm
+$th_scav_voice == ""faithful""","AddCredits -$th_dataCost
+$entity.boughtTHData = true 60
+TH_CMD getScavengerData
+FireAll PopulateOptions",The $post's account is measured and reflective. Your subordinates translate its theological framing into practical direction for your hunt.,,
+buyTHDataConfirmSel_faithful,DialogOptionSelected,"$option == buyTHDataConfirm
+$th_scav_voice == ""business""","AddCredits -$th_dataCost
+$entity.boughtTHData = true 60
+TH_CMD getScavengerData
+FireAll PopulateOptions","What follows is a concise briefing from the $post, supported by precise timestamps and positional data. Your staff compiles the relevant leads.",,
 buyTHDataNeverMindSel,DialogOptionSelected,$option == buyTHDataNeverMind,FireAll PopulateOptions,"$HeOrShe seems disappointed by your denial, but eventually shrugs it off. ""Anything else?""",,

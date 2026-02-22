@@ -4,6 +4,9 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
+import com.fs.starfarer.api.characters.PersonAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.Voices;
 import com.fs.starfarer.api.impl.campaign.intel.events.ht.HyperspaceTopographyEventIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
@@ -12,6 +15,7 @@ import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class TH_CMD extends BaseCommandPlugin {
 
@@ -32,9 +36,7 @@ public class TH_CMD extends BaseCommandPlugin {
         MemoryAPI memory = memoryMap.get(MemKeys.LOCAL);
         if (memory == null) return false; // should not be possible unless there are other big problems already
 
-        if ("hasRecentReadingsNearby".equals(action)) {
-            return HyperspaceTopographyEventIntel.hasRecentReadingsNearPlayer();
-        } else if ("computeDataStats".equals(action)) {
+        if ("computeDataStats".equals(action)) {
             if (entity instanceof CampaignFleetAPI) {
                 CampaignFleetAPI fleet = (CampaignFleetAPI) entity;
                 float fp = fleet.getFleetPoints();
@@ -61,7 +63,22 @@ public class TH_CMD extends BaseCommandPlugin {
                 return true;
             }
             return false;
+        } else if ("determineScavengerVoice".equals(action)) {
+        if (entity instanceof CampaignFleetAPI) {
+            CampaignFleetAPI fleet = (CampaignFleetAPI) entity;
+
+            String voice = determineScavengerVoice(fleet);
+
+            // Store into LOCAL memory so rules can check $th_scav_voice == soldier, etc.
+            memory.set("$th_scav_voice", voice);
+
+            // Optional: also expose faction for rules if you want combined branching
+            memory.set("$th_scav_faction", fleet.getFaction().getId());
+
+            return true;
         }
+        return false;
+    }
 
         return false;
     }
@@ -80,5 +97,30 @@ public class TH_CMD extends BaseCommandPlugin {
 
         int result = Math.round(min + (max - min) * f);
         return result;
+    }
+
+    public static String determineScavengerVoice(CampaignFleetAPI fleet) {
+        String factionId = (fleet != null && fleet.getFaction() != null) ? fleet.getFaction().getId() : null;
+
+        long seed = 0L;
+        if (fleet != null) {
+            seed = (fleet.getId() != null) ? fleet.getId().hashCode() : System.identityHashCode(fleet);
+        }
+        Random rand = new Random(seed);
+
+        if (factionId == null) return Voices.SPACER;
+
+        return switch (factionId) {
+            case Factions.PIRATES -> Voices.VILLAIN;
+            case Factions.LUDDIC_PATH -> Voices.PATHER;
+            case Factions.LUDDIC_CHURCH, Factions.KOL -> Voices.FAITHFUL;
+            case Factions.HEGEMONY, Factions.PERSEAN -> Voices.OFFICIAL;
+            case Factions.TRITACHYON -> Voices.BUSINESS;
+            default -> Voices.SPACER;
+        };
+    }
+
+    private static String pick(Random rand, String... options) {
+        return options[rand.nextInt(options.length)];
     }
 }
