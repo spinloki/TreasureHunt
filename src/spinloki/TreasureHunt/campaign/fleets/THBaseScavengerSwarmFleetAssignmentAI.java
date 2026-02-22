@@ -74,16 +74,28 @@ public class THBaseScavengerSwarmFleetAssignmentAI extends RouteFleetAssignmentA
         }
     }
 
+    private void updateTravelFlags() {
+        boolean inHyper = fleet.getContainingLocation() != null && fleet.getContainingLocation().isHyperspace();
+
+        if (inHyper) {
+            fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_DO_NOT_GET_SIDETRACKED, true);
+            fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_NON_AGGRESSIVE, true);
+        } else {
+            fleet.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_FLEET_DO_NOT_GET_SIDETRACKED);
+            fleet.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_MAKE_NON_AGGRESSIVE);
+        }
+    }
+
+    @Override
+    protected void pickNext(boolean justSpawned) {
+        super.pickNext(justSpawned);
+        updateTravelFlags();
+    }
+
     @Override
     public void pickNext(){
         super.pickNext();
-        var current = route.getCurrent();
-        if (current.isTravel()){
-            fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_FLEET_DO_NOT_GET_SIDETRACKED, true);
-        }
-        else{
-            fleet.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_FLEET_DO_NOT_GET_SIDETRACKED);
-        }
+        updateTravelFlags();
     }
 
     @Override
