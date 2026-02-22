@@ -104,6 +104,9 @@ public class THFoundTreasureIntel extends BaseIntelPlugin implements ShowLootLis
 
     @Override
     public String getIcon() {
+        if (spec == null){
+            return THUtils.MISSING_IMAGE_FALLBACK;
+        }
         return spec.getIconName();
     }
 

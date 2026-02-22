@@ -19,6 +19,8 @@ public class THUtils {
     public static final String TH_TAG = "Treasure Hunt";
     public static final String MEMORY_KEY_TH_SCAVENGER = "$isThScavenger";
 
+    public static final String MISSING_IMAGE_FALLBACK = "graphics/icons/campaign/major_bad_event.png";
+
     public static boolean isScavenger(CampaignFleetAPI fleet) {
         return fleet.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_TH_SCAVENGER) ||
                 Misc.isScavenger(fleet);
