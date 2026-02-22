@@ -105,3 +105,6 @@ $entity.boughtTHData = true 60
 TH_CMD getScavengerData
 FireAll PopulateOptions","What follows is a concise briefing from the $post, supported by precise timestamps and positional data. Your staff compiles the relevant leads.",,
 buyTHDataNeverMindSel,DialogOptionSelected,$option == buyTHDataNeverMind,FireAll PopulateOptions,"$HeOrShe seems disappointed by your denial, but eventually shrugs it off. ""Anything else?""",,
+THLeadFound_init,THLeadFound,,FireAll PopulateOptions,,,
+THLeadFound_pop,PopulateOptions,TH_CMD leadPickDialog,,,,
+THLeadFound_sel,DialogOptionSelected,TH_CMD leadPickDialog,,,,

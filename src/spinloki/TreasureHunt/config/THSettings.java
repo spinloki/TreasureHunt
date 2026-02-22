@@ -31,6 +31,7 @@ public class THSettings {
     public static boolean TH_RAID_DIMINISHING_RETURNS_ENABLED;
     public static Float TH_RAID_DIMINISHING_RETURNS_FACTOR;
     public static Integer TH_RAID_DIMINISHING_RETURNS_RECOVERY_DAYS;
+    public static Integer TH_NUM_LEAD_CANDIDATES;
 
     public static void loadSettingsFromJson() throws JSONException, IOException {
         JSONObject json = Global.getSettings().loadJSON("treasurehunt_settings.json", "spinloki_treasurehunt");
@@ -50,6 +51,7 @@ public class THSettings {
         TH_RAID_DIMINISHING_RETURNS_ENABLED = json.getBoolean("th_raid_diminishing_returns_enabled");
         TH_RAID_DIMINISHING_RETURNS_FACTOR = (float) json.getDouble("th_raid_diminishing_returns_factor");
         TH_RAID_DIMINISHING_RETURNS_RECOVERY_DAYS = json.getInt("th_raid_diminishing_returns_recovery_days");
+        TH_NUM_LEAD_CANDIDATES = json.getInt("th_num_lead_candidates");
     }
 
     public static List<String> getOneTimeItems(){

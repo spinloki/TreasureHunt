@@ -2,19 +2,12 @@ package spinloki.TreasureHunt.campaign.intel.events;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
-import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
-import com.fs.starfarer.api.impl.campaign.ids.Factions;
-import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.RuinsFleetRouteManager;
-import com.fs.starfarer.api.impl.campaign.procgen.themes.ScavengerFleetAssignmentAI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.campaign.intel.THFoundTreasureIntel;
-import spinloki.TreasureHunt.campaign.intel.THScavengerSwarmIntel;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THScavengerSwarmOpportunity;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THStationLeadOpportunity;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THSectorSprintOpportunity;
@@ -22,6 +15,7 @@ import spinloki.TreasureHunt.util.THUtils;
 
 import java.awt.*;
 import java.util.EnumSet;
+import java.util.Set;
 
 public class TreasureHuntEventIntel extends BaseEventIntel {
     private THTreasurePicker treasurePicker;
@@ -261,9 +255,23 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         }
     }
 
+    void pickTreasureFromCandidates(Set<String> candidates, String picked){
+        if (picked == null || !candidates.contains(picked)){
+            treasurePicker.removeItemsFromPool(candidates);
+            return;
+        }
+        treasurePicker.removeItemFromPool(picked);
+        treasure = picked;
+    }
+
     protected void notifyStageReached(EventStageData stage){
         if (stage.id == Stage.CHOOSE) {
-            treasure = treasurePicker.getRandomUnseenItem();
+            var script = new THChooseLeadScript(
+                    ()->setProgress(0),
+                    (int count)->treasurePicker.getRandomUnseenItems(count),
+                    this::pickTreasureFromCandidates
+            );
+            Global.getSector().addScript(script);
         }
         if (stage.id == Stage.OPPORTUNITY){
             var opportunity = opportunityPicker.pickCandidate();

@@ -3,69 +3,59 @@ package spinloki.TreasureHunt.campaign.intel.events;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
-import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import spinloki.TreasureHunt.config.THSettings;
-import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.*;
 
 public class THTreasurePicker implements ShowLootListener {
     THTreasurePicker(){
-        resetUnseenItems();
+        addRepeatableItems();
         addOneTimeItems();
         Global.getSector().getListenerManager().addListener(this);
     }
 
-    private static final String THTreasurePickerVersionId = "$th_treasure_picker_version";
-    private static final int currentPickerVersion = 1;
+    private Set<String> oneTimeCandidates;
+    private Set<String> repeatableCandidates;
 
-    private Set<String> unseenOneTimeItems;
-    private Set<String> unseenRepeatableItems;
-
-    private void resetUnseenItems() {
-        unseenRepeatableItems = new HashSet<>();
+    private void addRepeatableItems() {
+        repeatableCandidates = new HashSet<>();
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
             if (THSettings.getRepeatItems().contains(item.getId())){
-                unseenRepeatableItems.add(item.getId());
+                repeatableCandidates.add(item.getId());
             }
         }
     }
 
     private void addOneTimeItems(){
-        unseenOneTimeItems = new HashSet<>();
+        oneTimeCandidates = new HashSet<>();
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
             if (THSettings.getOneTimeItems().contains(item.getId())){
-                unseenOneTimeItems.add(item.getId());
+                oneTimeCandidates.add(item.getId());
             }
         }
     }
 
-    public String getRandomUnseenItem() {
-        if (!Global.getSector().getMemoryWithoutUpdate().is(THTreasurePickerVersionId, currentPickerVersion)){
-            Global.getSector().getMemoryWithoutUpdate().set(THTreasurePickerVersionId, currentPickerVersion);
-            resetUnseenItems();
-            addOneTimeItems();
+    public Set<String> getRandomUnseenItems(int count) {
+        Set<String> combinedPool = new HashSet<>();
+        combinedPool.addAll(repeatableCandidates);
+        combinedPool.addAll(oneTimeCandidates);
+
+        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+        picker.addAll(combinedPool);
+
+        Set<String> result = new HashSet<>();
+
+        for (int i = 0; i < count && !picker.isEmpty(); i++) {
+            String pick = picker.pickAndRemove();
+            result.add(pick);
         }
 
-        if (unseenRepeatableItems.isEmpty()){
-            resetUnseenItems();
+        if (picker.isEmpty()){
+            addRepeatableItems();
         }
 
-        Set<String> unseenItems;
-        boolean pickBlueprint = (new Random().nextDouble() <= THSettings.TH_PICK_BLUEPRINT_WEIGHT) && !unseenOneTimeItems.isEmpty();
-        if (pickBlueprint) {
-            unseenItems = unseenOneTimeItems;
-        }
-        else {
-            unseenItems = unseenRepeatableItems;
-        }
-
-        var picker = new WeightedRandomPicker<String>();
-        picker.addAll(unseenItems);
-        var treasure = picker.pick();
-        unseenItems.remove(treasure);
-        return treasure;
+        return result;
     }
 
     @Override
@@ -79,16 +69,22 @@ public class THTreasurePicker implements ShowLootListener {
                 if (stack.isSpecialStack()){
                     SpecialItemData specialItemData = stack.getSpecialDataIfSpecial();
                     if (specialItemData != null){
-                        markItemAsSeen(specialItemData.getId());
+                        removeItemFromPool(specialItemData.getId());
                     }
                 }
-             }
+            }
         }
     }
 
-    public void markItemAsSeen(String itemId) {
-        unseenOneTimeItems.remove(itemId);
-        unseenRepeatableItems.remove(itemId);
+    public void removeItemFromPool(String itemId) {
+        removeItemsFromPool(Collections.singleton(itemId));
+    }
+
+    public void removeItemsFromPool(Collection<String> itemIds) {
+        for (String id : itemIds) {
+            oneTimeCandidates.remove(id);
+            repeatableCandidates.remove(id);
+        }
     }
 }
 

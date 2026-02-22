@@ -19,5 +19,9 @@
 	# to the value * factor, recovering at a linear rate
 	"th_raid_diminishing_returns_enabled": true,
 	"th_raid_diminishing_returns_factor": 0.2,
-	"th_raid_diminishing_returns_recovery_days": 100
+	"th_raid_diminishing_returns_recovery_days": 100,
+
+	# The number of candidates to choose from when you find a lead
+	# Note that fewer than this amount can appear if the existing pool of candidates is too small
+	"th_num_lead_candidates": 3
 }

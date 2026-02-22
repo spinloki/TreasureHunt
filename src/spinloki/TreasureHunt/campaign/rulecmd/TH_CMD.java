@@ -17,6 +17,7 @@ import spinloki.TreasureHunt.util.THUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 public class TH_CMD extends BaseCommandPlugin {
 
