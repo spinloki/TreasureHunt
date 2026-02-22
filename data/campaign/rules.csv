@@ -1,6 +1,6 @@
 id,trigger,conditions,script,text,options,notes
 scavBuyTHDataOpt,PopulateOptions,"$menuState == fleetConvMain
-$entity.isScavenger
+TH_CMD isScavenger
 !$entity.boughtTHData
 TH_CMD computeDataStats
 TH_CMD determineScavengerVoice",,,buyTHData:Offer to pay for information about the $post's recent finds.,
@@ -85,7 +85,7 @@ $entity.boughtTHData = true 60
 TH_CMD getScavengerData
 FireAll PopulateOptions",The $post rants fervently about the abominations that $heOrShe has seen in this region. Your subordinates translate $hisOrHer oblique metaphors and scriptural references into meaningful data that helps you narrow down your search.,,
 buyTHDataConfirmSel_pirate,DialogOptionSelected,"$option == buyTHDataConfirm
-$th_scav_voice == ""pirate""","AddCredits -$th_dataCost
+$th_scav_voice == ""villain""","AddCredits -$th_dataCost
 $entity.boughtTHData = true 60
 TH_CMD getScavengerData
 FireAll PopulateOptions","The $post grins, then speaks of $hisOrHer recent exploits. You sift through the ensuing barrage of exaggeration and self-congratulation, pulling out useful details that helps you narrow down your search.",,
@@ -99,7 +99,7 @@ $th_scav_voice == ""faithful""","AddCredits -$th_dataCost
 $entity.boughtTHData = true 60
 TH_CMD getScavengerData
 FireAll PopulateOptions",The $post's account is measured and reflective. Your subordinates translate its theological framing into practical direction for your hunt.,,
-buyTHDataConfirmSel_faithful,DialogOptionSelected,"$option == buyTHDataConfirm
+buyTHDataConfirmSel_business,DialogOptionSelected,"$option == buyTHDataConfirm
 $th_scav_voice == ""business""","AddCredits -$th_dataCost
 $entity.boughtTHData = true 60
 TH_CMD getScavengerData

@@ -5,6 +5,7 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.campaign.*;
@@ -16,6 +17,12 @@ import java.util.*;
 public class THUtils {
     public static final String TH_TREASURE_HUNT_BOOST = "th_treasure_hunt_boost";
     public static final String TH_TAG = "Treasure Hunt";
+    public static final String MEMORY_KEY_TH_SCAVENGER = "$isThScavenger";
+
+    public static boolean isScavenger(CampaignFleetAPI fleet) {
+        return fleet.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_TH_SCAVENGER) ||
+                Misc.isScavenger(fleet);
+    }
 
     public static boolean hasTechMining(MarketAPI market) {
         boolean techMining = false;

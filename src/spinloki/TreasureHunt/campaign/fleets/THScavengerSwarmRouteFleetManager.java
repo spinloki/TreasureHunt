@@ -15,6 +15,7 @@ import com.fs.starfarer.api.impl.campaign.procgen.themes.RuinsFleetRouteManager;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import spinloki.TreasureHunt.campaign.intel.THScavengerSwarmIntel;
+import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -143,7 +144,7 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
             fleet.addScript(new THBaseScavengerSwarmFleetAssignmentAI(fleet, route));
         }
 
-        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_SCAVENGER, true);
+        fleet.getMemoryWithoutUpdate().set(THUtils.MEMORY_KEY_TH_SCAVENGER, true);
         return fleet;
     }
 

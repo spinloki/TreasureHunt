@@ -12,6 +12,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.campaign.intel.events.THScavengerDataFactor;
 import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
+import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -64,21 +65,26 @@ public class TH_CMD extends BaseCommandPlugin {
             }
             return false;
         } else if ("determineScavengerVoice".equals(action)) {
-        if (entity instanceof CampaignFleetAPI) {
-            CampaignFleetAPI fleet = (CampaignFleetAPI) entity;
+            if (entity instanceof CampaignFleetAPI) {
+                CampaignFleetAPI fleet = (CampaignFleetAPI) entity;
 
-            String voice = determineScavengerVoice(fleet);
+                String voice = determineScavengerVoice(fleet);
 
-            // Store into LOCAL memory so rules can check $th_scav_voice == soldier, etc.
-            memory.set("$th_scav_voice", voice);
+                // Store into LOCAL memory so rules can check $th_scav_voice == soldier, etc.
+                memory.set("$th_scav_voice", voice);
 
-            // Optional: also expose faction for rules if you want combined branching
-            memory.set("$th_scav_faction", fleet.getFaction().getId());
+                // Optional: also expose faction for rules if you want combined branching
+                memory.set("$th_scav_faction", fleet.getFaction().getId());
 
-            return true;
+                return true;
+            }
+            return false;
+        } else if ("isScavenger".equals(action)) {
+            if (entity instanceof CampaignFleetAPI fleet) {
+                return THUtils.isScavenger(fleet);
+            }
+            return false;
         }
-        return false;
-    }
 
         return false;
     }
