@@ -1,7 +1,6 @@
-package spinloki.TreasureHunt.campaign.intel.events;
+package spinloki.TreasureHunt.campaign.intel.opportunities;
 
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import spinloki.TreasureHunt.campaign.intel.opportunities.THOpportunity;
 
 import java.util.ArrayList;
 import java.util.List;

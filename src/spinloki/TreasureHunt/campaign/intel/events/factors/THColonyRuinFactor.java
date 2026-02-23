@@ -1,4 +1,4 @@
-package spinloki.TreasureHunt.campaign.intel.events;
+package spinloki.TreasureHunt.campaign.intel.events.factors;
 
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventFactor;
@@ -17,7 +17,7 @@ public class THColonyRuinFactor extends BaseEventFactor {
     int BASE_PROGRESS;
     String ruins_type;
     boolean ENABLED = true;
-    THColonyRuinFactor(MarketAPI colony){
+    public THColonyRuinFactor(MarketAPI colony){
         super();
         this.colony = colony;
         ruins_type = Misc.getRuinsType(colony);

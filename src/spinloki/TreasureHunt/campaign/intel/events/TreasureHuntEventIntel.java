@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.campaign.intel.THFoundTreasureIntel;
+import spinloki.TreasureHunt.campaign.intel.opportunities.THOpportunityPicker;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THScavengerSwarmOpportunity;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THStationLeadOpportunity;
 import spinloki.TreasureHunt.campaign.intel.opportunities.THSectorSprintOpportunity;

@@ -1,4 +1,4 @@
-package spinloki.TreasureHunt.campaign.intel.events;
+package spinloki.TreasureHunt.campaign.intel.events.factors;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;

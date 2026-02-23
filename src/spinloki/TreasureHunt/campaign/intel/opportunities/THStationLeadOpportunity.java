@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BreadcrumbSpecial;
 import spinloki.TreasureHunt.campaign.intel.THStationLeadIntel;
-import spinloki.TreasureHunt.campaign.intel.events.THStationsRanOutFactor;
+import spinloki.TreasureHunt.campaign.intel.events.factors.THStationsRanOutFactor;
 import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.util.THUtils;
 

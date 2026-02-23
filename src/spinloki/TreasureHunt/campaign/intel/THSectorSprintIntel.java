@@ -1,6 +1,5 @@
 package spinloki.TreasureHunt.campaign.intel;
 
-import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
@@ -10,8 +9,7 @@ import com.fs.starfarer.api.ui.Alignment;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
-import org.apache.log4j.Logger;
-import spinloki.TreasureHunt.campaign.intel.events.THSectorSprintFactor;
+import spinloki.TreasureHunt.campaign.intel.events.factors.THSectorSprintFactor;
 import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.util.THUtils;
 

@@ -4,20 +4,17 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.rules.MemKeys;
 import com.fs.starfarer.api.campaign.rules.MemoryAPI;
-import com.fs.starfarer.api.characters.PersonAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Voices;
-import com.fs.starfarer.api.impl.campaign.intel.events.ht.HyperspaceTopographyEventIntel;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
-import spinloki.TreasureHunt.campaign.intel.events.THScavengerDataFactor;
+import spinloki.TreasureHunt.campaign.intel.events.factors.THScavengerDataFactor;
 import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 
 public class TH_CMD extends BaseCommandPlugin {
 

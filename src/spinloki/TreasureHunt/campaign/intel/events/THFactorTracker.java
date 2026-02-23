@@ -11,6 +11,9 @@ import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.util.Misc;
 import org.json.JSONException;
+import spinloki.TreasureHunt.campaign.intel.events.factors.THColonyRuinFactor;
+import spinloki.TreasureHunt.campaign.intel.events.factors.THSalvageFactor;
+import spinloki.TreasureHunt.campaign.intel.events.factors.THTimeFactor;
 import spinloki.TreasureHunt.config.THSettings;
 import spinloki.TreasureHunt.util.THUtils;
 

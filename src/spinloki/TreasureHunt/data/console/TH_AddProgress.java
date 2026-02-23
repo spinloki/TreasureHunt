@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.CommonStrings;
 import org.lazywizard.console.Console;
-import spinloki.TreasureHunt.campaign.intel.events.THTimeFactor;
+import spinloki.TreasureHunt.campaign.intel.events.factors.THTimeFactor;
 import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
 
 import static org.lazywizard.console.CommandUtils.isInteger;

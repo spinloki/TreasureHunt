@@ -4,7 +4,7 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.comm.IntelInfoPlugin;
 import com.fs.starfarer.api.impl.campaign.abilities.BaseDurationAbility;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import spinloki.TreasureHunt.campaign.intel.events.THAbandonCarryoverFactor;
+import spinloki.TreasureHunt.campaign.intel.events.factors.THAbandonCarryoverFactor;
 import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.config.THSettings;
 
