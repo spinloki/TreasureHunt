@@ -183,5 +183,10 @@ public class THUtils {
 
         return true;
     }
+
+    public static void makeHassler(CampaignFleetAPI fleet, String hassleType) {
+        fleet.getMemoryWithoutUpdate().set(MemFlags.WILL_HASSLE_PLAYER, true);
+        fleet.getMemoryWithoutUpdate().set(MemFlags.HASSLE_TYPE, hassleType);
+    }
 }
 

@@ -10,11 +10,13 @@ import com.fs.starfarer.api.impl.campaign.fleets.RouteManager;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.OptionalFleetData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteData;
 import com.fs.starfarer.api.impl.campaign.fleets.RouteManager.RouteSegment;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.procgen.themes.RuinsFleetRouteManager;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import spinloki.TreasureHunt.campaign.intel.THScavengerSwarmIntel;
+import spinloki.TreasureHunt.config.THSettings;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.ArrayDeque;
@@ -142,6 +144,14 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
             fleet.addScript(aiDelegate.create(fleet, route));
         } else {
             fleet.addScript(new THBaseScavengerSwarmFleetAssignmentAI(fleet, route));
+        }
+
+        if ((factionId.equals(Factions.LUDDIC_CHURCH) ||
+                factionId.equals(Factions.HEGEMONY) ||
+                factionId.equals(Factions.PERSEAN)) &&
+                THSettings.TH_SCAVENGER_SWARM_HASSLING_ENABLED) {
+            THUtils.makeHassler(fleet, "thRestrictedInspection");
+            fleet.getMemoryWithoutUpdate().set("$thRestrictFaction", fleet.getFaction().getId());
         }
 
         fleet.getMemoryWithoutUpdate().set(THUtils.MEMORY_KEY_TH_SCAVENGER, true);

@@ -23,5 +23,8 @@
 
 	# The number of candidates to choose from when you find a lead
 	# Note that fewer than this amount can appear if the existing pool of candidates is too small
-	"th_num_lead_candidates": 3
+	"th_num_lead_candidates": 3,
+
+	# Scavenger swarm fleets from some factions will occasionally stop the player for angry inspections
+	"th_scavenger_swarm_hassling_enabled": true
 }

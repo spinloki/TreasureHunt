@@ -108,3 +108,198 @@ buyTHDataNeverMindSel,DialogOptionSelected,$option == buyTHDataNeverMind,FireAll
 THLeadFound_init,THLeadFound,,FireAll PopulateOptions,,,
 THLeadFound_pop,PopulateOptions,TH_CMD leadPickDialog,,,,
 THLeadFound_sel,DialogOptionSelected,TH_CMD leadPickDialog,,,,
+,,,,,,
+thRestrictInitial,BeginFleetEncounter,"!$hassle_didAlready
+!$isHostile
+$pursuePlayer_hassle score:50
+$hassleType == thRestrictedInspection","$hassle_didAlready = true 0
+$hassleComplete = true
+MakeOtherFleetPreventDisengage hassle true
+unset $ignorePlayerCommRequests
+$thRestrictConv = true 0
+$entity.thRestrictConv = true 0
+$thRestrictMadeHostile = false 0
+HailPlayer",,,
+thRestrictCommsHeg,OpenCommLink,"$entity.thRestrictConv score:300
+$entity.relativeStrength >= 0
+$entity.thRestrictFaction == hegemony","$entity.ignorePlayerCommRequests = true 7
+FireAll THRestrictedOptions","The comms stabilize. The $post appears on-screen, face hard-set.
+
+""Independent fleet: you are operating in a restricted system under Hegemony emergency authority. Cut your drive and prepare for inspection. Resistance will be treated as hostile action.""
+
+A beat. ""Power down weapons and stand by for boarding teams.""",,
+thRestrictCommsLeague,OpenCommLink,"$entity.thRestrictConv score:300
+$entity.relativeStrength >= 0
+$entity.thRestrictFaction == persean","$entity.ignorePlayerCommRequests = true 7
+FireAll THRestrictedOptions","The link snaps to life. A $post leans into frame with practiced impatience.
+
+""This system is under League restriction. You will heave to and submit to an inspection. If you're here on legitimate business, you'll have nothing to worry about.""
+
+""Don't make this difficult, captain.""",,
+thRestrictCommsChurch,OpenCommLink,"$entity.thRestrictConv score:300
+$entity.relativeStrength >= 0
+$entity.thRestrictFaction == luddic_church","$entity.ignorePlayerCommRequests = true 7
+FireAll THRestrictedOptions","A $post appears on the comm, $hisOrHer expression severe but controlled.
+
+""Captain. By order of the Church, this system is restricted. You will submit to inspection and certify your fleet is not carrying proscribed devices or materials.""
+
+""May Ludd guide you to wisdom. Do not test our patience.""",,
+thRestrictCommsHegWk,OpenCommLink,"$entity.thRestrictConv score:250
+$entity.relativeStrength < 0
+$entity.thRestrictFaction == hegemony","$entity.ignorePlayerCommRequests = true 7
+MakeOtherFleetPreventDisengage hassle false
+FireAll THRestrictedOptions","The comms flicker and stabilize. The $post clears $hisOrHer throat.
+
+""Captain. This system is designated restricted under Hegemony authority. I am requesting your cooperation with an inspection.""
+
+A quick glance off-screen. ""Voluntary compliance will be noted.""",,
+thRestrictCommsLeagueWk,OpenCommLink,"$entity.thRestrictConv score:250
+$entity.relativeStrength < 0
+$entity.thRestrictFaction == persean","$entity.ignorePlayerCommRequests = true 7
+MakeOtherFleetPreventDisengage hassle false
+FireAll THRestrictedOptions","The $post appears, posture a touch uncertain.
+
+""Captain. This system is restricted. I'd prefer to handle this professionally. Cut speed and submit to an inspection so we can both get on with our day.""",,
+thRestrictCommsChurchWk,OpenCommLink,"$entity.thRestrictConv score:250
+$entity.relativeStrength < 0
+$entity.thRestrictFaction == luddic_church","$entity.ignorePlayerCommRequests = true 7
+MakeOtherFleetPreventDisengage hassle false
+FireAll THRestrictedOptions","A $post appears, voice measured.
+
+""Captain. This system is restricted. I ask that you submit to inspection so we may confirm there is no grave impropriety aboard your ships.""",,
+thRestrictCommsFallbackStrong,OpenCommLink,"$entity.thRestrictConv score:50
+$entity.relativeStrength >= 0","$entity.ignorePlayerCommRequests = true 7
+FireAll THRestrictedOptions","A $post appears on the comm.
+
+""This system is restricted. Cut your drive and prepare for inspection. Resistance will be treated as hostile action.""",,
+thRestrictCommsFallbackWeak,OpenCommLink,"$entity.thRestrictConv score:40
+$entity.relativeStrength < 0","$entity.ignorePlayerCommRequests = true 7
+MakeOtherFleetPreventDisengage hassle false
+FireAll THRestrictedOptions","A $post appears on the comm.
+
+""Captain. This system is restricted. I request your cooperation with an inspection.""",,
+thRestrictComply,THRestrictedOptions,,,,thRestrict_Comply:Comply with the inspection,
+thRestrictRefuse,THRestrictedOptions,"$entity.relativeStrength >= 0
+!$thRestrictFailedToRefuse",,,"thRestrict_Refuse:""No, you have no right to do this.""",
+thRestrictPlayerStronger,THRestrictedOptions,$entity.relativeStrength < 0,,,"thRestrict_Refuse:""With that fleet? You're not in a position to make demands.""",
+thRestrictCutComms,THRestrictedOptions,,,,cutCommLinkNoText:Cut the comm link and power up weapons,
+thRestrictComplySelWk,DialogOptionSelected,"$option == thRestrict_Comply
+$entity.relativeStrength < 0","ShowImageVisual quartermaster
+MakeOtherFleetPreventDisengage hassle false
+MakeOtherFleetAggressive thRestrictedInspection false 2
+MakeOtherFleetHostile thRestrictedInspection false 2
+ApplyCRDamage $entity.fleetPoints 0.10 1 ""Restricted inspection""","Boarding teams move through your ships with brisk efficiency.
+
+Even so, there’s plenty of careless handling, unnecessary scans, and rough treatment of sensitive components. Your crews bite their tongues and log the damage.
+
+After a tense interval, the inspectors withdraw.",thRestrict_Comply2:Continue,
+thRestrictComplySel,DialogOptionSelected,$option == thRestrict_Comply,"ShowImageVisual quartermaster
+MakeOtherFleetPreventDisengage hassle false
+MakeOtherFleetAggressive thRestrictedInspection false 2
+MakeOtherFleetHostile thRestrictedInspection false 2
+ApplyCRDamage $entity.fleetPoints 0.20 1 ""Restricted inspection""","The inspection teams are thorough to the point of sabotage, hatches forced, compartments dumped, and diagnostic probes jammed into systems that should never be opened, much less subject to active scans.
+
+Your officers protest; the response is bureaucratic stonewalling and thinly veiled threats. The teams take their time, ensuring you feel every second of it.
+
+Eventually, they withdraw, leaving your maintenance crews thoroughly inconvenienced.",thRestrict_Comply2:Continue,
+thRestrictComplySel2Wk,DialogOptionSelected,"$option == thRestrict_Comply2
+$entity.relativeStrength < 0",ShowPersonVisual,"""Thank you for your cooperation, captain,"" the $post says, voice clipped.
+
+""You are cleared to proceed. Remain outside restricted zones and you won't be troubled again.""",cutCommLinkNoText:Cut the comm link,
+thRestrictComplySel2,DialogOptionSelected,$option == thRestrict_Comply2,ShowPersonVisual,"""You're done here,"" the officer says. ""Move along, and don't come back to restricted space without authorization.""",cutCommLinkNoText:Cut the comm link,
+thRestrictRefuseSel_Heg_Strong,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.thRestrictFaction == hegemony
+$entity.relativeStrength >= 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+$thRestrictMadeHostile = true 0
+MakeOtherFleetHostile thRestrictedInspection true 3
+MakeOtherFleetAggressive thRestrictedInspection true 3
+FireAll THRestrictedOptions","The $post’s eyes narrow.
+
+""Your refusal is noted. You are now in violation of a restricted-space security order under Hegemony authority.""
+
+""Last warning, captain: power down and submit, or we will enforce compliance.""",,
+thRestrictRefuseSel_Heg_Weak,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.thRestrictFaction == hegemony
+$entity.relativeStrength < 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+MakeOtherFleetPreventDisengage hassle false
+MakeOtherFleetAggressive thRestrictedInspection false 2
+MakeOtherFleetHostile thRestrictedInspection false 2","The $post’s expression tightens, uncertainty flashing across $hisOrHer face.
+
+""Your refusal is… noted, Captain.""
+
+A short pause. ""This system remains restricted. You are advised to depart immediately.""
+
+The $post cuts the connection without waiting for a reply.",cutCommLinkNoText:Cut the comm link,
+thRestrictRefuseSel_League_Strong,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.thRestrictFaction == persean
+$entity.relativeStrength >= 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+$thRestrictMadeHostile = true 0
+MakeOtherFleetHostile thRestrictedInspection true 3
+MakeOtherFleetAggressive thRestrictedInspection true 3
+FireAll THRestrictedOptions","The $post exhales sharply, $hisOrHer look turning flat.
+
+""Alright. Then you’re choosing to violate a League restriction order in open space.""
+
+You catch a glimpse of hurried movement on their bridge. The $post’s expression does not change.
+
+""Last warning: heave to and submit, or we’re doing this the hard way.""",,
+thRestrictRefuseSel_League_Weak,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.thRestrictFaction == persean
+$entity.relativeStrength < 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+MakeOtherFleetPreventDisengage hassle false
+MakeOtherFleetAggressive thRestrictedInspection false 2
+MakeOtherFleetHostile thRestrictedInspection false 2","The $post stares for a moment, then forces a tight smile.
+
+""Sure. Fine. Your call.""
+
+A quiet aside, barely audible: ""We’re not dying for paperwork.""
+
+Back on comms: ""This system’s restricted. Don’t make trouble and we won’t either.""",cutCommLinkNoText:Cut the comm link,
+thRestrictRefuseSel_Church_Strong,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.thRestrictFaction == luddic_church
+$entity.relativeStrength >= 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+$thRestrictMadeHostile = true 0
+MakeOtherFleetHostile thRestrictedInspection true 3
+MakeOtherFleetAggressive thRestrictedInspection true 3
+FireAll THRestrictedOptions","The $post closes $hisOrHer eyes for a brief moment.
+
+""Then you place yourself in defiance of a lawful restriction, and in suspicion of grave sin.""
+
+$HisOrHer tone hardens. ""If you will not submit, we will compel compliance.""",,
+thRestrictRefuseSel_Church_Weak,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.thRestrictFaction == luddic_church
+$entity.relativeStrength < 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+MakeOtherFleetPreventDisengage hassle false
+MakeOtherFleetAggressive thRestrictedInspection false 2
+MakeOtherFleetHostile thRestrictedInspection false 2","The $post’s gaze flicks to $hisOrHer tactical displays and lingers there a moment too long.
+
+""Then… may Ludd judge the truth in your heart, captain.""
+
+A controlled breath. ""We will not shed blood here today. But understand this: the system is restricted. Depart, and do not return.""",cutCommLinkNoText:Cut the comm link,
+thRestrictRefuseSel_Fallback_Strong,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.relativeStrength >= 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+$thRestrictMadeHostile = true 0
+MakeOtherFleetHostile thRestrictedInspection true 3
+MakeOtherFleetAggressive thRestrictedInspection true 3
+FireAll THRestrictedOptions","""Refusal noted,"" the officer says coldly. ""You are now in violation of a restricted-space order.""
+
+You catch a glimpse of hurried movement on their bridge.
+
+""Last warning: power down and submit, or we will enforce compliance.""",,
+thRestrictRefuseSel_Fallback_Weak,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.relativeStrength < 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+MakeOtherFleetPreventDisengage hassle false
+MakeOtherFleetAggressive thRestrictedInspection false 2
+MakeOtherFleetHostile thRestrictedInspection false 2","A tense pause.
+
+""…Understood, captain. This system is restricted. You are advised to depart immediately.""
+
+The comm link cuts out.",cutCommLinkNoText:Cut the comm link,
