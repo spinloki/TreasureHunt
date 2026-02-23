@@ -14,7 +14,7 @@ public class THSectorSprintOpportunity extends BaseTHOpportunity{
     public void trigger() {
         super.trigger();
         int time = 90;
-        for (var system : THUtils.getRandomUninhabitedSystemsWithStablePoints(numIntelsToCreate)){
+        for (var system : THUtils.getSectorSprintCandidates(numIntelsToCreate)){
             new THSectorSprintIntel(system, time + new Random().nextInt(9) - 4, icon);
             time -= 30;
         }

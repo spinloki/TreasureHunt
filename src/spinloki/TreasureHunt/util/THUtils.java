@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Misc;
+import com.fs.starfarer.api.util.WeightedRandomPicker;
 import com.fs.starfarer.campaign.*;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
@@ -40,39 +41,66 @@ public class THUtils {
         return Math.max(min, Math.min(value, max));
     }
 
-    public static Set<StarSystemAPI> getRandomUninhabitedSystemsWithStablePoints(int count) {
-        List<StarSystemAPI> good_candidates = new ArrayList<>();
-        List<StarSystemAPI> bad_candidates = new ArrayList<>();
+    public static Set<StarSystemAPI> getSectorSprintCandidates(int count) {
+        Random random = new Random();
 
+        List<StarSystemAPI> systemsWithStable = new ArrayList<>();
+        List<StarSystemAPI> systemsWithDomainEraRelay = new ArrayList<>();
+        List<StarSystemAPI> systemsWithPlayerRelay = new ArrayList<>();
         for (StarSystemAPI system : Global.getSector().getStarSystems()) {
-            // skip core worlds or claimed systems
+            // skip core worlds
             if (system.hasTag(Tags.THEME_CORE_POPULATED)) continue;
-            if (system.getCenter() != null){
-                if (Misc.getClaimingFaction(system.getCenter()) != null) continue;
+
+            // skip claimed systems EXCEPT player-claimed
+            if (system.getCenter() != null) {
+                FactionAPI claiming = Misc.getClaimingFaction(system.getCenter());
+                if (claiming != null && claiming != Global.getSector().getPlayerFaction()) continue;
             }
 
-            boolean hasRelay = !system.getEntitiesWithTag(Tags.COMM_RELAY).isEmpty();
             boolean hasStable = !system.getEntitiesWithTag(Tags.STABLE_LOCATION).isEmpty();
 
-            if (hasRelay) {
-                good_candidates.add(system);
+            boolean hasPlayerRelay = hasPlayerOwnedCommRelay(system);
+            boolean hasDomainEraRelay = hasDomainEraCommRelay(system);
+
+            if (hasPlayerRelay){
+                systemsWithPlayerRelay.add(system);
             }
-            else if (hasStable) {
-                bad_candidates.add(system);
+            else if (hasDomainEraRelay){
+                systemsWithDomainEraRelay.add(system);
+            }
+            else if (hasStable){
+                systemsWithStable.add(system);
             }
         }
 
-        Collections.shuffle(good_candidates, new Random());
-        Collections.shuffle(bad_candidates, new Random());
+        Collections.shuffle(systemsWithPlayerRelay);
+        Collections.shuffle(systemsWithDomainEraRelay);
+        Collections.shuffle(systemsWithStable);
 
-        count = Math.min(Math.min(count, good_candidates.size()), bad_candidates.size());
-
-        Set<StarSystemAPI> systems = new HashSet<>();
-        for (int i = 0; i < count; i++) {
-            List<StarSystemAPI> candidates = new Random().nextBoolean() ? good_candidates : bad_candidates;
-            systems.add(candidates.remove(candidates.size() - 1));
+        Set<StarSystemAPI> result = new HashSet<>();
+        if (!systemsWithPlayerRelay.isEmpty()){
+            var sz = systemsWithPlayerRelay.size();
+            result.add(systemsWithPlayerRelay.get(sz-1));
         }
-        return systems;
+        if (!systemsWithDomainEraRelay.isEmpty()){
+            var sz = systemsWithDomainEraRelay.size();
+            result.add(systemsWithDomainEraRelay.remove(sz-1));
+        }
+        while (result.size() < count) {
+            var sz = systemsWithStable.size();
+            result.add(systemsWithStable.remove(sz-1));
+        }
+        return result;
+    }
+
+    public static boolean hasPlayerOwnedCommRelay(StarSystemAPI system) {
+        return system.getEntitiesWithTag(Tags.COMM_RELAY).stream()
+                .anyMatch(r -> r.getFaction() == Global.getSector().getPlayerFaction());
+    }
+
+    public static boolean hasDomainEraCommRelay(StarSystemAPI system) {
+        return system.getEntitiesWithTag(Tags.COMM_RELAY).stream()
+                .anyMatch(r -> !"comm_relay_makeshift".equals(r.getCustomEntityType()));
     }
 
     // Same blacklist logic used in GoTo.getSuggestions()

@@ -56,22 +56,35 @@ public class THSectorSprintFactor  extends BaseEventFactor {
                         starSystem.getName());
 
                 tooltip.addPara("Will contribute %s points per month to the treasure hunt.",
-                        opad,
-                        h,
-                        "" + getProgress(intel));
+                        opad, h, "" + getProgress(intel));
+
+                if (parent != null && parent.isMeddlingActive()) {
+                    tooltip.addPara("Relay interference detected - reduced output until the meddling fleet is dealt with.",
+                            opad, Misc.getNegativeHighlightColor(), "reduced output");
+                }
             }
         };
     }
 
     @Override
     public String getDesc(BaseEventIntel intel){
-        String type = hasDomainEraRelay ? "Domain Era Comm Relay" : "Makeshift Comm Relay";
-        return type + " at " + starSystem.getName();
+        String type = hasDomainEraRelay ? "Domain Era Relay" : "Makeshift Relay";
+        String desc = type + " at " + starSystem.getNameWithNoType();
+        if (parent != null && parent.isMeddlingActive()){
+            desc = "Disrupted " + desc;
+        }
+        return desc;
     }
 
     @Override
     public int getProgress(BaseEventIntel intel) {
-        return hasDomainEraRelay ? BASE_PROGRESS * 2 : BASE_PROGRESS;
+        int base = hasDomainEraRelay ? BASE_PROGRESS * 2 : BASE_PROGRESS;
+
+        if (parent != null && parent.isMeddlingActive()) {
+            base = Math.round(base * THSettings.TH_SECTOR_SPRINT_MEDDLING_MULT);
+        }
+
+        return base;
     }
 
     private boolean relayListChanged(){

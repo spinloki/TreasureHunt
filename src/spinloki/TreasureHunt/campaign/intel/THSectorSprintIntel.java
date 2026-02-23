@@ -3,6 +3,7 @@ package spinloki.TreasureHunt.campaign.intel;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
+import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.Alignment;
@@ -12,6 +13,12 @@ import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.campaign.intel.events.factors.THSectorSprintFactor;
 import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.util.THUtils;
+import com.fs.starfarer.api.campaign.CampaignFleetAPI;
+import com.fs.starfarer.api.campaign.FleetAssignment;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
+import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
+import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 
 import java.awt.*;
 import java.util.*;
@@ -22,12 +29,21 @@ public class THSectorSprintIntel extends BaseIntelPlugin {
     private final StarSystemAPI targetSystem;
     private final String icon;
 
+    private static final String MEDDLER_FLEET_ID_PREFIX = "th_sectorSprint_meddler_";
+    private String meddlerFleetId = null;
+    private boolean meddlingActive = false;
+
+    public boolean isMeddlingActive() {
+        return meddlingActive;
+    }
+
     public THSectorSprintIntel(StarSystemAPI targetSystem, int duration, String icon) {
         this.targetSystem = targetSystem;
         daysRemaining = duration;
         this.icon = icon;
         Global.getSector().getIntelManager().addIntel(this);
         Global.getSector().addScript(this);
+        initMeddlerIfPlayerRelayPresent();
     }
 
     float timePassed = 0f;
@@ -53,6 +69,14 @@ public class THSectorSprintIntel extends BaseIntelPlugin {
                 TreasureHuntEventIntel.addFactorCreateIfNecessary(new THSectorSprintFactor(relays, this), null);
             }
             this.relays = relays;
+            if (meddlerFleetId != null) {
+                SectorEntityToken e = Global.getSector().getEntityById(meddlerFleetId);
+                if (e instanceof CampaignFleetAPI) {
+                    meddlingActive = ((CampaignFleetAPI) e).isAlive();
+                } else {
+                    meddlingActive = false;
+                }
+            }
         }
     }
 
@@ -155,5 +179,68 @@ public class THSectorSprintIntel extends BaseIntelPlugin {
     protected void notifyEnded() {
         super.notifyEnded();
         Global.getSector().removeScript(this);
+
+        if (meddlerFleetId != null) {
+            SectorEntityToken e = Global.getSector().getEntityById(meddlerFleetId);
+            if (e != null) e.setExpired(true);
+        }
+    }
+
+    private void initMeddlerIfPlayerRelayPresent() {
+        // Only spawn if the player ALREADY owns a relay here at the time this intel is created
+        SectorEntityToken relay = targetSystem.getEntitiesWithTag(Tags.COMM_RELAY).stream()
+                .filter(r -> r.getFaction() == Global.getSector().getPlayerFaction())
+                .findFirst()
+                .orElse(null);
+
+        if (relay == null) return;
+
+        String id = MEDDLER_FLEET_ID_PREFIX + targetSystem.getId();
+        SectorEntityToken existing = Global.getSector().getEntityById(id);
+        if (existing instanceof CampaignFleetAPI && existing.getStarSystem() == targetSystem) {
+            meddlerFleetId = id;
+            meddlingActive = ((CampaignFleetAPI) existing).isAlive();
+            return;
+        }
+
+        CampaignFleetAPI fleet = spawnMeddlerFleet(targetSystem, relay, id);
+        if (fleet != null) {
+            meddlerFleetId = id;
+            meddlingActive = true;
+        }
+    }
+
+    private CampaignFleetAPI spawnMeddlerFleet(StarSystemAPI system, SectorEntityToken relay, String fleetId) {
+        float fp = 60f; // tune this (or make it a THSettings value)
+
+        FleetParamsV3 params = new FleetParamsV3(
+                        null,
+                        system.getLocation(),
+                        Factions.PIRATES,
+                        null,
+                        FleetTypes.RAIDER,
+                        40f + new Random().nextFloat() * 60,  // combat
+                        10f,  // freighter
+                        5f,   // tanker
+                        0f, 0f, 0f, 0f
+                );
+
+        CampaignFleetAPI fleet = FleetFactoryV3.createFleet(params);
+        if (fleet == null) return null;
+
+        fleet.setId(fleetId);
+        fleet.setNoAutoDespawn(true);
+
+        // Make it a problem for the player
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
+
+        system.addEntity(fleet);
+
+        // place & assign
+        fleet.setLocation(relay.getLocation().x + 300f, relay.getLocation().y + 300f);
+        fleet.addAssignment(FleetAssignment.ORBIT_AGGRESSIVE, relay, 999999f, "meddling with the comm relay");
+
+        return fleet;
     }
 }

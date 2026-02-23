@@ -33,6 +33,7 @@ public class THSettings {
     public static Integer TH_RAID_DIMINISHING_RETURNS_RECOVERY_DAYS;
     public static Integer TH_NUM_LEAD_CANDIDATES;
     public static boolean TH_SCAVENGER_SWARM_HASSLING_ENABLED;
+    public static Float TH_SECTOR_SPRINT_MEDDLING_MULT;
 
     public static void loadSettingsFromJson() throws JSONException, IOException {
         JSONObject json = Global.getSettings().loadJSON("treasurehunt_settings.json", "spinloki_treasurehunt");
@@ -54,6 +55,7 @@ public class THSettings {
         TH_RAID_DIMINISHING_RETURNS_RECOVERY_DAYS = json.getInt("th_raid_diminishing_returns_recovery_days");
         TH_NUM_LEAD_CANDIDATES = json.getInt("th_num_lead_candidates");
         TH_SCAVENGER_SWARM_HASSLING_ENABLED = json.getBoolean("th_scavenger_swarm_hassling_enabled");
+        TH_SECTOR_SPRINT_MEDDLING_MULT = (float) json.getDouble("th_sector_sprint_meddling_mult");
     }
 
     public static List<String> getOneTimeItems(){

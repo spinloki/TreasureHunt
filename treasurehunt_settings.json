@@ -26,5 +26,7 @@
 	"th_num_lead_candidates": 3,
 
 	# Scavenger swarm fleets from some factions will occasionally stop the player for angry inspections
-	"th_scavenger_swarm_hassling_enabled": true
+	"th_scavenger_swarm_hassling_enabled": true,
+
+	"th_sector_sprint_meddling_mult": 0.25
 }
