@@ -21,6 +21,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class THFactorTracker implements ShowLootListener, PlayerColonizationListener, EveryFrameScript {
+    // Threshold (in days) for determining if a market was recently raided by the player
+    private static final float RAID_DETECTION_THRESHOLD = 0.3f;
+
     public THFactorTracker(){
 
     }
@@ -55,38 +58,38 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
     THRaidTracker mRaidTracker;
 
     public void reportAboutToShowLootToPlayer(CargoAPI loot, InteractionDialogAPI dialog) {
-        var entity = dialog.getInteractionTarget();
-        if (entity == null){
+        if (dialog == null) {
             return;
         }
-        if (entity instanceof CampaignFleetAPI fleet){
-            if (fleet.getBattle() != null){ // Shouldn't be null, but I've seen it be null sometimes when using nuke command
-                for (var enemyFleet : fleet.getBattle().getNonPlayerSide()){
-                    if (THUtils.isScavenger(enemyFleet)){
+        var entity = dialog.getInteractionTarget();
+        if (entity == null) {
+            return;
+        }
+        if (entity instanceof CampaignFleetAPI fleet) {
+            if (fleet.getBattle() != null) { // Shouldn't be null, but I've seen it be null sometimes when using nuke command
+                for (var enemyFleet : fleet.getBattle().getNonPlayerSide()) {
+                    if (THUtils.isScavenger(enemyFleet)) {
                         queueFactorForDestroyingFleet(enemyFleet);
                     }
                 }
-            }
-            else if (THUtils.isScavenger(fleet)){ // Fallback. Unfortunately, player won't get credit for other fleets that participate
+            } else if (THUtils.isScavenger(fleet)) { // Fallback. Unfortunately, player won't get credit for other fleets that participate
                 queueFactorForDestroyingFleet(fleet);
             }
             return;
         }
         var customEntityType = entity.getCustomEntityType();
-        if (THSettings.customEntityTypeHasTHReward(customEntityType)){
+        if (customEntityType != null && THSettings.customEntityTypeHasTHReward(customEntityType)) {
             mFactors.add(new THSalvageFactor(THSettings.getTHRewardValue(customEntityType), THSettings.getTHRewardDescription(customEntityType)));
-        }
-        else if (entity.getMarket() != null){
+        } else if (entity.getMarket() != null) {
             var market = entity.getMarket();
-            if (Misc.getDaysSinceLastRaided(market) < .3){ // figure .3 should be a reasonable value to determine that the player raided the market
-                if (mRaidTracker == null){
+            if (Misc.getDaysSinceLastRaided(market) < RAID_DETECTION_THRESHOLD) {
+                if (mRaidTracker == null) {
                     mRaidTracker = new THRaidTracker();
                 }
                 var baseReward = THSettings.getTHRewardValue("raid");
                 var reward = mRaidTracker.calculateRaidReward(baseReward, market, Global.getSector().getClock().getTimestamp());
                 mFactors.add(new THSalvageFactor(reward, THSettings.getTHRewardDescription("raid")));
-            }
-            else if (Misc.hasRuins(market)){
+            } else if (Misc.hasRuins(market)) {
                 var ruin = Misc.getRuinsType(market);
                 mFactors.add(new THSalvageFactor(THSettings.getTHRewardValue(ruin), THSettings.getTHRewardDescription(ruin)));
             }

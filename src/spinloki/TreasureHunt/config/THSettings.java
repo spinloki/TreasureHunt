@@ -35,6 +35,11 @@ public class THSettings {
     public static boolean TH_SCAVENGER_SWARM_HASSLING_ENABLED;
     public static Float TH_SECTOR_SPRINT_MEDDLING_MULT;
 
+    // Scavenger data trading constants
+    public static Integer TH_SCAVENGER_DATA_CREDITS_PER_POINT = 2000;
+    public static Float TH_SCAVENGER_MIN_FP = 50F;
+    public static Float TH_SCAVENGER_MAX_FP = 150F;
+
     public static void loadSettingsFromJson() throws JSONException, IOException {
         JSONObject json = Global.getSettings().loadJSON("treasurehunt_settings.json", "spinloki_treasurehunt");
         TH_TREASURE_HUNT_PACKAGE_SMOD_PERCENT_BONUS = (float) json.getDouble("th_treasure_hunt_package_smod_percent_bonus");

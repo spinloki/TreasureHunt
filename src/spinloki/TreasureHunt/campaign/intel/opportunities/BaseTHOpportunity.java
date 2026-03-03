@@ -9,7 +9,8 @@ public abstract class BaseTHOpportunity implements THOpportunity{
     // but for this distribution, it's a little over 1 in 100
     @Override
     public float getProbabilityWeight() {
-        return probabilityWeight / (1 + timesTriggered) * (1 + timesTriggered);
+        float denominator = (1 + timesTriggered);
+        return probabilityWeight / (denominator * denominator);
     }
 
     @Override

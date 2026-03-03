@@ -10,6 +10,7 @@ import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.campaign.intel.events.factors.THScavengerDataFactor;
 import spinloki.TreasureHunt.campaign.intel.events.TreasureHuntEventIntel;
+import spinloki.TreasureHunt.config.THSettings;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.List;
@@ -18,10 +19,6 @@ import java.util.Random;
 
 public class TH_CMD extends BaseCommandPlugin {
 
-    public static int CREDITS_PER_TD_POINT = 2000;
-
-    public static float MIN_SCAVENGER_FP = 50;
-    public static float MAX_SCAVENGER_FP = 150;
 
     public boolean execute(String ruleId, InteractionDialogAPI dialog, List<Misc.Token> params, Map<String, MemoryAPI> memoryMap) {
         if (dialog == null) return false;
@@ -88,14 +85,14 @@ public class TH_CMD extends BaseCommandPlugin {
     }
 
     public static int getDataCost(float fp) {
-        return getDataPoints(fp) * CREDITS_PER_TD_POINT;
+        return getDataPoints(fp) * THSettings.TH_SCAVENGER_DATA_CREDITS_PER_POINT;
     }
 
     public static int getDataPoints(float fp) {
         float min = 20;
         float max = 40;
 
-        float f = Math.max(fp - MIN_SCAVENGER_FP, 0) / (MAX_SCAVENGER_FP - MIN_SCAVENGER_FP);
+        float f = Math.max(fp - THSettings.TH_SCAVENGER_MIN_FP, 0) / (THSettings.TH_SCAVENGER_MAX_FP - THSettings.TH_SCAVENGER_MIN_FP);
         if (f > 1f) f = 1f;
         if (f < 0f) f = 0f;
 

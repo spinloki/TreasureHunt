@@ -25,7 +25,7 @@ public class TreasureHunt extends BaseModPlugin {
     public void onNewGame() {
         super.onNewGame();
         factorTracker = new THFactorTracker();
-        Global.getSector().addScript(new THFactorTracker());
+        Global.getSector().addScript(factorTracker);
         Global.getSector().getListenerManager().addListener(factorTracker);
     }
 

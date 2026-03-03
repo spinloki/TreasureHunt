@@ -20,8 +20,9 @@ public class THTreasurePicker implements ShowLootListener {
 
     private void addRepeatableItems() {
         repeatableCandidates = new HashSet<>();
+        Set<String> repeatItems = new HashSet<>(THSettings.getRepeatItems());
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
-            if (THSettings.getRepeatItems().contains(item.getId())){
+            if (repeatItems.contains(item.getId())){
                 repeatableCandidates.add(item.getId());
             }
         }
@@ -29,8 +30,9 @@ public class THTreasurePicker implements ShowLootListener {
 
     private void addOneTimeItems(){
         oneTimeCandidates = new HashSet<>();
+        Set<String> oneTimeItems = new HashSet<>(THSettings.getOneTimeItems());
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
-            if (THSettings.getOneTimeItems().contains(item.getId())){
+            if (oneTimeItems.contains(item.getId())){
                 oneTimeCandidates.add(item.getId());
             }
         }
