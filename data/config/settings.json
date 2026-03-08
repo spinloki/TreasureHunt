@@ -80,6 +80,7 @@
 		"weapons_cache_small": "cache",
 		"weapons_cache_small_low": "cache",
 		"weapons_cache_small_high": "cache",
+		"wreck": "derelict_ship",
 		"weapons_cache_small_remnant": "cache"
 	},
 	"th_blueprints_packages": {

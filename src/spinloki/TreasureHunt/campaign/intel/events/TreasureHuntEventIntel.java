@@ -250,7 +250,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             }
             if (esd.id == Stage.FOUND) {
                 String message = "Treasure found";
-                message += ": " + THUtils.getSpecialItemDisplayName(treasure) + " added to inventory.";
+                message += ": " + THUtils.getSpecialItemDisplayName(treasure) + " location discovered.";
                 info.addPara(message, tc, initPad);
             }
         }
