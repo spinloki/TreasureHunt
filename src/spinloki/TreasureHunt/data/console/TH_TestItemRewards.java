@@ -5,7 +5,7 @@ import com.fs.starfarer.api.campaign.SpecialItemSpecAPI;
 import org.jetbrains.annotations.NotNull;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.Console;
-import spinloki.TreasureHunt.config.THSettings;
+import spinloki.TreasureHunt.internal.registry.THRegistry;
 
 public class TH_TestItemRewards implements BaseCommand {
 
@@ -14,8 +14,8 @@ public class TH_TestItemRewards implements BaseCommand {
 
         Console.showMessage("=== Treasure Hunt Reward Item Validation ===");
 
-        testGroup("One-time Items", THSettings.getOneTimeItems());
-        testGroup("Repeatable Items", THSettings.getRepeatItems());
+        testGroup("One-time Items", THRegistry.getRewardRegistry().getOneTimeItems());
+        testGroup("Repeatable Items", THRegistry.getRewardRegistry().getRepeatItems());
 
         Console.showMessage("=== Done ===");
         return CommandResult.SUCCESS;

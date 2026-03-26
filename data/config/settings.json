@@ -2,7 +2,7 @@
 	"plugins":{
 	},
 	"ruleCommandPackages":[
-		"spinloki.TreasureHunt.campaign.rulecmd"
+		"spinloki.TreasureHunt.internal.rulecmd"
 	],
 	"graphics":{
 		"treasure_hunt_events":{ 
@@ -279,5 +279,37 @@
         "drone_replicator",
         "dealmaker_holosuite",
         "coronal_portal"
-    ]
+    ],
+    "th_factions": {
+        "pirates": {
+            "template": "SCAVENGER"
+        },
+        "independent": {
+            "template": "SCAVENGER"
+        },
+        "persean": {
+            "template": "ENFORCER",
+            "narrativeText": "on an enforcement expedition",
+            "fleetType": "leagueEnforcer"
+        },
+        "hegemony": {
+            "template": "ENFORCER",
+            "narrativeText": "headed to suspicious system",
+            "fleetName": "Inspection Fleet"
+        },
+        "tritachyon": {
+            "template": "PRIVATEER",
+            "fleetName": "Special Procurement Detachment"
+        },
+        "luddic_path": {
+            "template": "INQUISITOR",
+            "narrativeText": "on an expedition to destroy heretical technology",
+            "fleetName": "Holy Purge Fleet"
+        },
+        "luddic_church": {
+            "template": "INQUISITOR",
+            "narrativeText": "headed to suspicious system",
+            "fleetName": "Inquisition Fleet"
+        }
+    }
 }

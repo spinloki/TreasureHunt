@@ -3,11 +3,13 @@ package spinloki.TreasureHunt;
 import com.fs.starfarer.api.BaseModPlugin;
 import com.fs.starfarer.api.Global;
 import org.apache.log4j.Logger;
-import spinloki.TreasureHunt.campaign.fleets.THScavengerSwarmFactionSetup;
-import spinloki.TreasureHunt.campaign.intel.THScavengerSwarmIntel;
-import spinloki.TreasureHunt.campaign.intel.events.THFactorTracker;
-import spinloki.TreasureHunt.campaign.items.THVanillaItemTagger;
-import spinloki.TreasureHunt.config.THSettings;
+import spinloki.TreasureHunt.api.THApi;
+import spinloki.TreasureHunt.internal.events.THFactorTracker;
+import spinloki.TreasureHunt.internal.items.THVanillaItemTagger;
+import spinloki.TreasureHunt.internal.opportunities.THScavengerSwarmOpportunity;
+import spinloki.TreasureHunt.internal.opportunities.THSectorSprintOpportunity;
+import spinloki.TreasureHunt.internal.opportunities.THStationLeadOpportunity;
+import spinloki.TreasureHunt.internal.registry.THRegistry;
 
 public class TreasureHunt extends BaseModPlugin {
     private static final Logger log = Logger.getLogger(TreasureHunt.class);
@@ -16,8 +18,7 @@ public class TreasureHunt extends BaseModPlugin {
     @Override
     public void onApplicationLoad() throws Exception {
         super.onApplicationLoad();
-        THSettings.loadSettingsFromJson();
-        THSettings.loadTHRewards();
+        THRegistry.initSettings();
         THVanillaItemTagger.tagItems();
     }
 
@@ -39,8 +40,14 @@ public class TreasureHunt extends BaseModPlugin {
         Global.getSector().addScript(factorTracker);
         Global.getSector().getListenerManager().addListener(factorTracker);
 
-        THScavengerSwarmIntel.resetFactionsWithAIAndFleetCreators();
-        THScavengerSwarmFactionSetup.setupScavengerSwarmVanillaFactionBehaviors();
+        THRegistry.reset();
+        registerBuiltInOpportunities();
+    }
+
+    private void registerBuiltInOpportunities() {
+        THApi.registerOpportunity(new THSectorSprintOpportunity());
+        THApi.registerOpportunity(new THStationLeadOpportunity());
+        THApi.registerOpportunity(new THScavengerSwarmOpportunity());
     }
 
     public static THFactorTracker getFactorTrackerForTestOnly(){
