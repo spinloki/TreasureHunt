@@ -303,3 +303,52 @@ MakeOtherFleetHostile thRestrictedInspection false 2","A tense pause.
 ""…Understood, captain. This system is restricted. You are advised to depart immediately.""
 
 The comm link cuts out.",cutCommLinkNoText:Cut the comm link,
+,,,,,,
+,,,,,,
+thExcavation_blockSurvey,PopulateOptions,"$market.isPlanetConditionMarketOnly
+!$market.isSurveyed
+$th_excavation_blocked score:1000",SetEnabled surveyPerform false,An orbital station is preventing survey operations. It will need to be dealt with first.,,
+# Ruin Excavation - defender fleet comm link,,,,,,
+thExcavation_defenderComm,OpenCommLink,"$entity.th_excavation_defender
+!$faction.isHostile score:1000","SetStoryOption thExcConvince 1 thExcConvinceDefender ui_char_spent_story_point ""Convinced excavation fleet to withdraw""
+ShowDefaultVisual","You establish a comm link with the fleet commander. A nervous voice responds:
+
+""We're under contract to guard this operation. I'd advise you to move along.""","thExcConvince:Convince the fleet commander to withdraw
+cutCommLink:Cut the comm link",
+thExcavation_defenderConvince,DialogOptionSelected,$option == thExcConvince,"TH_CMD excavationConvinceDefender
+EndConversation","The $post’s eyes widen in a sudden panic when you imply that the details of this secret operation have been made public. 
+
+""All ships, break orbit! We're leaving!""
+
+The comm link connection abruptly closes.",,
+thExcavation_interceptSurvey,DialogOptionSelected,"$option == surveyPerform
+$market.isPlanetConditionMarketOnly
+$th_excavation_ground_ops score:1000","TH_CMD excavationBombardMenu
+SetStoryOption thExcTrick 1 thExcTrickDefenders ui_char_spent_story_point ""Tricked excavation defenders into leaving fortifications""",Your survey teams report being harried by vengeful operatives from the $th_excavation_faction. They are dug into the ruins and will have to be dealt with before you can conduct a proper survey.,"thExcRaid:Raid the excavation site
+thExcBombard:Prepare an orbital bombardment
+thExcTrick:Convince the operatives to leave their fortifications
+thExcGroundOpsGoBack:Go back",
+thExcavation_groundOpsGoBack,DialogOptionSelected,$option == thExcGroundOpsGoBack,FireAll PopulateOptions,,,
+# Ruin Excavation - trick defenders (story point),,,,,,
+thExcavation_trickDefenders,DialogOptionSelected,$option == thExcTrick,,"You make contact with the $th_excavation_faction commander, who is initially hostile but quickly believes your lie that you are a $th_excavation_faction contractor fleet sent to evacuate them.
+
+You instruct them to gather at an open space to await pickup while your crew prepares a bombardment of considerably smaller scale than what would have otherwise been required.
+
+A transmission impatiently asking for the shuttle's ETA arrives just before the small flash of an antimatter explosion at the pickup site.",thExcTrickContinue:Continue,
+thExcavation_trickContinue,DialogOptionSelected,$option == thExcTrickContinue,"TH_CMD excavationTrickDefenders
+FireAll PopulateOptions",,,
+# Ruin Excavation - raid flow,,,,,,
+thExcavation_raidSel,DialogOptionSelected,$option == thExcRaid,"$raidDifficulty = 100 0
+$raidGoBackTrigger = thExcRaidGoBack 0
+$raidContinueTrigger = thExcRaidContinue 0",Your marines prepare to assault the $th_excavation_faction excavation site on the planet's surface. Resistance is expected from dug-in operatives and automated defenses.,mktRaidNonMarket:Continue,
+thExcavation_raidCont,thExcRaidContinue,,"TH_CMD excavationRaidReward
+FireAll PopulateOptions",,,
+thExcavation_raidGoBack,thExcRaidGoBack,,FireAll PopulateOptions,,,
+# Ruin Excavation - bombardment flow,,,,,,
+thExcavation_bombardSelNoFuel,DialogOptionSelected,"$option == thExcBombard
+$th_bombard_cant_afford",TH_CMD excavationBombardShowText,,thExcBombardGoBack:Go back,
+thExcavation_bombardSel,DialogOptionSelected,$option == thExcBombard,TH_CMD excavationBombardShowText,,"thExcBombardConfirm:Confirm bombardment
+thExcBombardGoBack:Go back",
+thExcavation_bombardConfirm,DialogOptionSelected,$option == thExcBombardConfirm,"TH_CMD excavationBombard
+FireAll PopulateOptions","Your fleet unleashes a sustained bombardment on the excavation site. When the dust settles, nothing remains of the operatives or whatever it was that they were defending.",,
+thExcavation_bombardGoBack,DialogOptionSelected,$option == thExcBombardGoBack,FireAll PopulateOptions,,,

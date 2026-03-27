@@ -81,6 +81,12 @@ public class THFactionRegistry {
             if (entry.has("fleetName")) {
                 builder.fleetName(entry.getString("fleetName"));
             }
+            if (entry.has("stationEntityType")) {
+                builder.stationEntityType(entry.getString("stationEntityType"));
+            }
+            if (entry.has("stationName")) {
+                builder.stationName(entry.getString("stationName"));
+            }
 
             return builder.build();
         } catch (JSONException e) {

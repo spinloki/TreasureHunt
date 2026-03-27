@@ -12,7 +12,8 @@
 			"found_opportunity":"graphics/icons/campaign/event_neutral.png",
  			"sector_sprint":"graphics/icons/abilities/emergency_burn.png",
             "scavenger_swarm":"graphics/icons/campaign/hostile_activity4.png",
-			"station_lead":"graphics/icons/missions/data_retrieval.png"
+			"station_lead":"graphics/icons/missions/data_retrieval.png",
+			"ruin_excavation":"graphics/icons/campaign/hostile_activity4.png"
 		}
 	},
 	"th_rewards": {
@@ -311,5 +312,9 @@
             "narrativeText": "headed to suspicious system",
             "fleetName": "Inquisition Fleet"
         }
-    }
+    },
+	"bonusXP": {
+		"thExcTrickDefenders": 0.5,
+		"thExcConvinceDefender": 0.5
+	}
 }

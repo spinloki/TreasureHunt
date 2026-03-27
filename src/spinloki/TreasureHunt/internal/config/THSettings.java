@@ -25,7 +25,6 @@ public class THSettings {
     private int colonyTechMiningProgressMultiplier;
     private int sectorSprintReward;
     private float pickBlueprintWeight;
-    private float abandonCarryoverFactor;
     private boolean raidDiminishingReturnsEnabled;
     private float raidDiminishingReturnsFactor;
     private int raidDiminishingReturnsRecoveryDays;
@@ -49,7 +48,6 @@ public class THSettings {
         colonyTechMiningProgressMultiplier = json.getInt("th_colony_tech_mining_progress_multiplier");
         sectorSprintReward = json.getInt("th_sector_sprint_reward");
         pickBlueprintWeight = (float) json.getDouble("th_pick_blueprint_weight");
-        abandonCarryoverFactor = (float) json.getDouble("th_abandon_carryover_factor");
         raidDiminishingReturnsEnabled = json.getBoolean("th_raid_diminishing_returns_enabled");
         raidDiminishingReturnsFactor = (float) json.getDouble("th_raid_diminishing_returns_factor");
         raidDiminishingReturnsRecoveryDays = json.getInt("th_raid_diminishing_returns_recovery_days");
@@ -69,7 +67,6 @@ public class THSettings {
     public int getColonyTechMiningProgressMultiplier() { return colonyTechMiningProgressMultiplier; }
     public int getSectorSprintReward() { return sectorSprintReward; }
     public float getPickBlueprintWeight() { return pickBlueprintWeight; }
-    public float getAbandonCarryoverFactor() { return abandonCarryoverFactor; }
     public boolean isRaidDiminishingReturnsEnabled() { return raidDiminishingReturnsEnabled; }
     public float getRaidDiminishingReturnsFactor() { return raidDiminishingReturnsFactor; }
     public int getRaidDiminishingReturnsRecoveryDays() { return raidDiminishingReturnsRecoveryDays; }

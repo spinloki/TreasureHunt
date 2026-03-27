@@ -25,6 +25,8 @@ public class THFactionConfig {
     private final float freighterPts;
     private final float tankerPts;
     private final String fleetName;
+    private final String stationEntityType;
+    private final String stationName;
 
     private THFactionConfig(Builder builder) {
         this.template = builder.template;
@@ -33,6 +35,8 @@ public class THFactionConfig {
         this.freighterPts = builder.freighterPts != null ? builder.freighterPts : template.getDefaultFreighterPts();
         this.tankerPts = builder.tankerPts != null ? builder.tankerPts : template.getDefaultTankerPts();
         this.fleetName = builder.fleetName != null ? builder.fleetName : template.getDefaultFleetName();
+        this.stationEntityType = builder.stationEntityType;
+        this.stationName = builder.stationName;
         this.aiCreator = builder.aiCreator != null ? builder.aiCreator : resolveDefaultAiCreator();
         this.fleetCreator = builder.fleetCreator != null ? builder.fleetCreator : null;
     }
@@ -52,6 +56,19 @@ public class THFactionConfig {
     public float getFreighterPts() { return freighterPts; }
     public float getTankerPts() { return tankerPts; }
     public String getFleetName() { return fleetName; }
+    public String getStationEntityType() { return stationEntityType; }
+    public String getStationName() { return stationName; }
+
+    /**
+     * Returns the station entity type to use when spawning a station for this faction.
+     * If {@link #getStationEntityType()} is set, returns that. Otherwise picks a random
+     * type from the template's defaults.
+     */
+    public String pickStationEntityType(java.util.Random random) {
+        if (stationEntityType != null) return stationEntityType;
+        String[] defaults = template.getDefaultStationTypes();
+        return defaults[random.nextInt(defaults.length)];
+    }
 
     /**
      * Creates a fleet using the configured fleet params. Used as the default
@@ -106,6 +123,8 @@ public class THFactionConfig {
         private Float freighterPts;
         private Float tankerPts;
         private String fleetName;
+        private String stationEntityType;
+        private String stationName;
 
         private Builder() {}
 
@@ -146,6 +165,16 @@ public class THFactionConfig {
 
         public Builder fleetName(String fleetName) {
             this.fleetName = fleetName;
+            return this;
+        }
+
+        public Builder stationEntityType(String stationEntityType) {
+            this.stationEntityType = stationEntityType;
+            return this;
+        }
+
+        public Builder stationName(String stationName) {
+            this.stationName = stationName;
             return this;
         }
 

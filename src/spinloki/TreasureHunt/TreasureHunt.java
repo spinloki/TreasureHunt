@@ -5,7 +5,9 @@ import com.fs.starfarer.api.Global;
 import org.apache.log4j.Logger;
 import spinloki.TreasureHunt.api.THApi;
 import spinloki.TreasureHunt.internal.events.THFactorTracker;
+import spinloki.TreasureHunt.internal.intel.THExcavationRaidListener;
 import spinloki.TreasureHunt.internal.items.THVanillaItemTagger;
+import spinloki.TreasureHunt.internal.opportunities.THRuinExcavationOpportunity;
 import spinloki.TreasureHunt.internal.opportunities.THScavengerSwarmOpportunity;
 import spinloki.TreasureHunt.internal.opportunities.THSectorSprintOpportunity;
 import spinloki.TreasureHunt.internal.opportunities.THStationLeadOpportunity;
@@ -36,9 +38,12 @@ public class TreasureHunt extends BaseModPlugin {
             Global.getSector().removeScriptsOfClass(THFactorTracker.class);
             Global.getSector().getListenerManager().removeListenerOfClass(THFactorTracker.class);
         }
+        Global.getSector().getListenerManager().removeListenerOfClass(THExcavationRaidListener.class);
+
         factorTracker = new THFactorTracker();
         Global.getSector().addScript(factorTracker);
         Global.getSector().getListenerManager().addListener(factorTracker);
+        Global.getSector().getListenerManager().addListener(new THExcavationRaidListener());
 
         THRegistry.reset();
         registerBuiltInOpportunities();
@@ -48,6 +53,7 @@ public class TreasureHunt extends BaseModPlugin {
         THApi.registerOpportunity(new THSectorSprintOpportunity());
         THApi.registerOpportunity(new THStationLeadOpportunity());
         THApi.registerOpportunity(new THScavengerSwarmOpportunity());
+        THApi.registerOpportunity(new THRuinExcavationOpportunity());
     }
 
     public static THFactorTracker getFactorTrackerForTestOnly(){

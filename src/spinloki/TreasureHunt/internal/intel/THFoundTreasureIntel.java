@@ -44,6 +44,7 @@ public class THFoundTreasureIntel extends BaseIntelPlugin implements ShowLootLis
         }
 
         if (lootGiven) return;
+        if (spec == null) return;
         lootGiven = true;
 
         loot.addSpecial(treasure, 1);

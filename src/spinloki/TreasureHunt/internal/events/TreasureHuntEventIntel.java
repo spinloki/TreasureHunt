@@ -28,8 +28,6 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     public static int PROGRESS_1 = 100;
     public static int PROGRESS_2 = 300;
 
-    public static String ABANDON_LEAD = "th_abandon_lead";
-
     public static String KEY = "$treasure_hunt_event_ref";
 
     public static enum Stage {
@@ -81,10 +79,6 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
         treasurePicker = new THTreasurePicker();
         treasure = "";
-
-        if (!Global.getSector().getCharacterData().getAbilities().contains(ABANDON_LEAD)) {
-            Global.getSector().getCharacterData().addAbility(ABANDON_LEAD);
-        }
     }
 
     @Override
@@ -257,6 +251,10 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         treasure = picked;
     }
 
+    public Set<String> getRandomRewardItems(int count) {
+        return treasurePicker.getRandomUnseenItems(count);
+    }
+
     protected void notifyStageReached(EventStageData stage){
         if (stage.id == Stage.CHOOSE) {
             var script = new THChooseLeadScript(
@@ -275,7 +273,9 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         }
         if (stage.id == Stage.FOUND){
             setProgress(0);
-            new THFoundTreasureIntel(treasure);
+            if (!treasure.isEmpty() && Global.getSettings().getSpecialItemSpec(treasure) != null) {
+                new THFoundTreasureIntel(treasure);
+            }
             treasure = "";
         }
     }

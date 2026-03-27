@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Voices;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
+import spinloki.TreasureHunt.internal.factors.THExcavationRaidFactor;
 import spinloki.TreasureHunt.internal.factors.THScavengerDataFactor;
 import spinloki.TreasureHunt.internal.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
@@ -79,6 +80,102 @@ public class TH_CMD extends BaseCommandPlugin {
                 return THUtils.isScavenger(fleet);
             }
             return false;
+        } else if ("excavationRaidReward".equals(action)) {
+            int progressPoints = 50;
+            TreasureHuntEventIntel.addFactorCreateIfNecessary(
+                    new THExcavationRaidFactor(progressPoints), dialog);
+
+            String rewardName = "salvaged materials";
+            TreasureHuntEventIntel intel = TreasureHuntEventIntel.get();
+            if (intel != null) {
+                var items = intel.getRandomRewardItems(1);
+                for (String itemId : items) {
+                    pf.getCargo().addSpecial(new SpecialItemData(itemId, null), 1);
+                    rewardName = THUtils.getSpecialItemDisplayName(itemId);
+                }
+            }
+            dialog.getTextPanel().addPara("Your survey teams explore the excavation site and recover the " +
+                    rewardName + " that the operatives were defending.");
+            dialog.getTextPanel().highlightInLastPara(Misc.getHighlightColor(), rewardName);
+            // Clean up ground ops flags
+            entity.getMemoryWithoutUpdate().unset("$th_excavation_ground_ops");
+            entity.getMemoryWithoutUpdate().unset("$th_excavation_faction");
+            entity.getMemoryWithoutUpdate().unset("$th_bombard_cant_afford");
+            entity.getMemoryWithoutUpdate().unset("$th_bombard_cost_text");
+            return true;
+        } else if ("excavationBombardMenu".equals(action)) {
+            int fuelCost = 100;
+            float playerFuel = Global.getSector().getPlayerFleet().getCargo().getFuel();
+            memory.set("$th_bombard_cost_text", "" + fuelCost);
+            if (playerFuel < fuelCost) {
+                entity.getMemoryWithoutUpdate().set("$th_bombard_cant_afford", true);
+            } else {
+                entity.getMemoryWithoutUpdate().unset("$th_bombard_cant_afford");
+            }
+            return true;
+        } else if ("excavationBombardShowText".equals(action)) {
+            String factionName = entity.getMemoryWithoutUpdate().getString("$th_excavation_faction");
+            if (factionName == null) factionName = "Unknown";
+            int fuelCost = 100;
+            float playerFuel = pf.getCargo().getFuel();
+            if (playerFuel < fuelCost) {
+                dialog.getTextPanel().addPara("You consider bombarding the " + factionName +
+                        " excavation site from orbit, however you lack the " + fuelCost + " fuel it would require. ");
+            } else {
+                dialog.getTextPanel().addPara("You consider bombarding the " + factionName +
+                        " excavation site from orbit. This will cost " + fuelCost + " fuel. " +
+                        "It will eliminate the operatives below, but will also destroy " +
+                        "whatever they have found at their excavation site.");
+            }
+            dialog.getTextPanel().highlightInLastPara(Misc.getHighlightColor(), fuelCost + " fuel");
+            return true;
+        } else if ("excavationBombard".equals(action)) {
+            int fuelCost = 100;
+            pf.getCargo().removeFuel(fuelCost);
+            com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity.addCommodityLossText(
+                    "fuel", fuelCost, dialog.getTextPanel());
+            // Clean up ground ops flags
+            entity.getMemoryWithoutUpdate().unset("$th_excavation_ground_ops");
+            entity.getMemoryWithoutUpdate().unset("$th_excavation_faction");
+            entity.getMemoryWithoutUpdate().unset("$th_bombard_cant_afford");
+            entity.getMemoryWithoutUpdate().unset("$th_bombard_cost_text");
+            return true;
+        } else if ("excavationConvinceDefender".equals(action)) {
+            if (entity instanceof CampaignFleetAPI fleet) {
+                // Find the intel matching this defender fleet
+                for (var intel : Global.getSector().getIntelManager().getIntel(
+                        spinloki.TreasureHunt.internal.intel.THRuinExcavationIntel.class)) {
+                    var excIntel = (spinloki.TreasureHunt.internal.intel.THRuinExcavationIntel) intel;
+                    if (excIntel.getDefenderFleet() == fleet) {
+                        excIntel.convinceDefenderToLeave();
+                        break;
+                    }
+                }
+            }
+            return true;
+        } else if ("excavationTrickDefenders".equals(action)) {
+            int progressPoints = 50;
+            TreasureHuntEventIntel.addFactorCreateIfNecessary(
+                    new THExcavationRaidFactor(progressPoints), dialog);
+
+            String rewardName = "salvaged materials";
+            TreasureHuntEventIntel intel = TreasureHuntEventIntel.get();
+            if (intel != null) {
+                var items = intel.getRandomRewardItems(1);
+                for (String itemId : items) {
+                    pf.getCargo().addSpecial(new SpecialItemData(itemId, null), 1);
+                    rewardName = THUtils.getSpecialItemDisplayName(itemId);
+                }
+            }
+            dialog.getTextPanel().addPara("Your survey teams move through the abandoned " +
+                    "fortifications into the excavation site and find a " + rewardName + ".");
+            dialog.getTextPanel().highlightInLastPara(Misc.getHighlightColor(), rewardName);
+            // Clean up ground ops flags
+            entity.getMemoryWithoutUpdate().unset("$th_excavation_ground_ops");
+            entity.getMemoryWithoutUpdate().unset("$th_excavation_faction");
+            entity.getMemoryWithoutUpdate().unset("$th_bombard_cant_afford");
+            entity.getMemoryWithoutUpdate().unset("$th_bombard_cost_text");
+            return true;
         }
 
         return false;
