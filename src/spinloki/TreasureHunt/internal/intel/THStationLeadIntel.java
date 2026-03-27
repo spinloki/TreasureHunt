@@ -87,7 +87,6 @@ public class THStationLeadIntel extends BaseIntelPlugin {
 
     @Override
     public String getName() {
-        determineLocationName();
         String base = station.getFullName() + " Lead";
         return base + " - " + locationName;
     }

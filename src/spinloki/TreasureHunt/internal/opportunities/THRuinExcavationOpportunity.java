@@ -7,7 +7,7 @@ import com.fs.starfarer.api.campaign.econ.MarketAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import spinloki.TreasureHunt.api.THFactionConfig;
+import spinloki.TreasureHunt.api.BaseTHOpportunity;
 import spinloki.TreasureHunt.internal.intel.THRuinExcavationIntel;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
 

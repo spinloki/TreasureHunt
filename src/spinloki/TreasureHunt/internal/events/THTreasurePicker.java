@@ -12,7 +12,16 @@ public class THTreasurePicker implements ShowLootListener {
     THTreasurePicker(){
         addRepeatableItems();
         addOneTimeItems();
+    }
+
+    /** Must be called after construction and after deserialization to register the loot listener. */
+    void registerListener() {
         Global.getSector().getListenerManager().addListener(this);
+    }
+
+    /** Must be called before discarding this picker to avoid a dangling listener. */
+    void unregisterListener() {
+        Global.getSector().getListenerManager().removeListener(this);
     }
 
     private Set<String> oneTimeCandidates;
@@ -39,11 +48,15 @@ public class THTreasurePicker implements ShowLootListener {
     }
 
     public Set<String> getRandomUnseenItems(int count) {
+        return getRandomUnseenItems(count, new Random());
+    }
+
+    public Set<String> getRandomUnseenItems(int count, Random random) {
         Set<String> combinedPool = new HashSet<>();
         combinedPool.addAll(repeatableCandidates);
         combinedPool.addAll(oneTimeCandidates);
 
-        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
+        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
         picker.addAll(combinedPool);
 
         Set<String> result = new HashSet<>();
@@ -62,7 +75,7 @@ public class THTreasurePicker implements ShowLootListener {
 
     @Override
     public void reportAboutToShowLootToPlayer(CargoAPI loot, InteractionDialogAPI dialog) {
-        if (dialog.getInteractionTarget().getFullName().equals("Cargo Pods")){
+        if ("Cargo Pods".equals(dialog.getInteractionTarget().getFullName())){
             // So if the player puts an item in a cargo pod and then looks at the cargo pod, it doesn't get removed
             return;
         }

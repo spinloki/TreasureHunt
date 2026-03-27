@@ -3,6 +3,7 @@ package spinloki.TreasureHunt.internal.opportunities;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.SectorEntityToken;
 import com.fs.starfarer.api.impl.campaign.rulecmd.salvage.special.BreadcrumbSpecial;
+import spinloki.TreasureHunt.api.BaseTHOpportunity;
 import spinloki.TreasureHunt.internal.intel.THStationLeadIntel;
 import spinloki.TreasureHunt.internal.factors.THStationsRanOutFactor;
 import spinloki.TreasureHunt.internal.events.TreasureHuntEventIntel;

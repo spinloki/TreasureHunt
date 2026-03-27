@@ -4,13 +4,11 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import com.fs.starfarer.coreui.V;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+import spinloki.TreasureHunt.api.BaseTHOpportunity;
 import spinloki.TreasureHunt.internal.intel.THScavengerSwarmIntel;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
-
-import java.util.List;
 
 public class THScavengerSwarmOpportunity extends BaseTHOpportunity {
     private static final String icon = Global.getSettings().getSpriteName("treasure_hunt_events", "scavenger_swarm");

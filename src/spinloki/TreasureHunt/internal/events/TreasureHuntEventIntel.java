@@ -17,6 +17,7 @@ import spinloki.TreasureHunt.util.THUtils;
 
 import java.awt.*;
 import java.util.EnumSet;
+import java.util.Random;
 import java.util.Set;
 
 public class TreasureHuntEventIntel extends BaseEventIntel {
@@ -83,6 +84,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         getDataFor(Stage.FOUND).keepIconBrightWhenLaterStageReached = true;
 
         treasurePicker = new THTreasurePicker();
+        treasurePicker.registerListener();
         treasure = "";
     }
 
@@ -119,25 +121,13 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     }
 
     @Override
-    public Color getBarProgressIndicatorColor() {
-        return super.getBarProgressIndicatorColor();
-    }
-
-    @Override
-    protected int getStageImportance(Object stageId) {
-        return super.getStageImportance(stageId);
-    }
-
-    @Override
     protected String getName() {
         return "Treasure Hunt";
     }
 
     @Override
     public void addStageDescriptionText(TooltipMakerAPI info, float width, Object stageId) {
-        float opad = 10f;
         float small = 0f;
-        Color h = Misc.getHighlightColor();
 
         EventStageData stage = getDataFor(stageId);
         if (stage == null) return;
@@ -258,6 +248,10 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
     public Set<String> getRandomRewardItems(int count) {
         return treasurePicker.getRandomUnseenItems(count);
+    }
+
+    public Set<String> getRandomRewardItems(int count, Random random) {
+        return treasurePicker.getRandomUnseenItems(count, random);
     }
 
     @Override

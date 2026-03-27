@@ -25,5 +25,13 @@
 	# Scavenger swarm fleets from some factions will occasionally stop the player for angry inspections
 	"th_scavenger_swarm_hassling_enabled": true,
 
-	"th_sector_sprint_meddling_mult": 0.25
+	"th_sector_sprint_meddling_mult": 0.25,
+
+	# Excavation opportunity settings
+	"th_excavation_progress_points": 50,
+	"th_excavation_bombard_fuel_cost": 100,
+
+	# Scavenger data purchase: min/max progress points scaled by fleet FP
+	"th_scavenger_data_min_points": 20,
+	"th_scavenger_data_max_points": 40
 }

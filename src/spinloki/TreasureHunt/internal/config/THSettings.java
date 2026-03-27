@@ -34,6 +34,10 @@ public class THSettings {
     private int scavengerDataCreditsPerPoint = 2000;
     private float scavengerMinFp = 50f;
     private float scavengerMaxFp = 150f;
+    private int excavationProgressPoints = 50;
+    private int excavationBombardFuelCost = 100;
+    private int scavengerDataMinPoints = 20;
+    private int scavengerDataMaxPoints = 40;
 
     public THSettings() {}
 
@@ -54,6 +58,10 @@ public class THSettings {
         numLeadCandidates = json.getInt("th_num_lead_candidates");
         scavengerSwarmHasslingEnabled = json.getBoolean("th_scavenger_swarm_hassling_enabled");
         sectorSprintMeddlingMult = (float) json.getDouble("th_sector_sprint_meddling_mult");
+        excavationProgressPoints = json.getInt("th_excavation_progress_points");
+        excavationBombardFuelCost = json.getInt("th_excavation_bombard_fuel_cost");
+        scavengerDataMinPoints = json.getInt("th_scavenger_data_min_points");
+        scavengerDataMaxPoints = json.getInt("th_scavenger_data_max_points");
     }
 
     // --- Getters ---
@@ -76,4 +84,8 @@ public class THSettings {
     public int getScavengerDataCreditsPerPoint() { return scavengerDataCreditsPerPoint; }
     public float getScavengerMinFp() { return scavengerMinFp; }
     public float getScavengerMaxFp() { return scavengerMaxFp; }
+    public int getExcavationProgressPoints() { return excavationProgressPoints; }
+    public int getExcavationBombardFuelCost() { return excavationBombardFuelCost; }
+    public int getScavengerDataMinPoints() { return scavengerDataMinPoints; }
+    public int getScavengerDataMaxPoints() { return scavengerDataMaxPoints; }
 }

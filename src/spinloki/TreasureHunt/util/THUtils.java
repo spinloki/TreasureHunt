@@ -86,7 +86,7 @@ public class THUtils {
             var sz = systemsWithDomainEraRelay.size();
             result.add(systemsWithDomainEraRelay.remove(sz-1));
         }
-        while (result.size() < count) {
+        while (result.size() < count && !systemsWithStable.isEmpty()) {
             var sz = systemsWithStable.size();
             result.add(systemsWithStable.remove(sz-1));
         }
@@ -100,7 +100,7 @@ public class THUtils {
 
     public static boolean hasDomainEraCommRelay(StarSystemAPI system) {
         return system.getEntitiesWithTag(Tags.COMM_RELAY).stream()
-                .anyMatch(r -> !"comm_relay_makeshift".equals(r.getCustomEntityType()));
+                .anyMatch(r -> "comm_relay".equals(r.getCustomEntityType()));
     }
 
     // Same blacklist logic used in GoTo.getSuggestions()

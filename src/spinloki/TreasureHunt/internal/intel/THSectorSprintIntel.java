@@ -211,8 +211,6 @@ public class THSectorSprintIntel extends BaseIntelPlugin {
     }
 
     private CampaignFleetAPI spawnMeddlerFleet(StarSystemAPI system, SectorEntityToken relay, String fleetId) {
-        float fp = 60f; // tune this (or make it a THSettings value)
-
         FleetParamsV3 params = new FleetParamsV3(
                         null,
                         system.getLocation(),

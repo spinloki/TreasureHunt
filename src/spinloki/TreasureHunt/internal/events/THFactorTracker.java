@@ -41,7 +41,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         for (var fleetMember : Misc.getSnapshotMembersLost(fleet)){
             value += fleetMember.getHullSpec().getBaseValue();
         }
-        mFactors.add(new THSalvageFactor((int) calculateProgressFromBaseValue(value), "destroying a scavenger fleet"));
+        factors.add(new THSalvageFactor((int) calculateProgressFromBaseValue(value), "destroying a scavenger fleet"));
 
     }
 
@@ -55,7 +55,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         return value;
     }
 
-    THRaidTracker mRaidTracker;
+    THRaidTracker raidTracker;
 
     public void reportAboutToShowLootToPlayer(CargoAPI loot, InteractionDialogAPI dialog) {
         if (dialog == null) {
@@ -79,24 +79,24 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         }
         var customEntityType = entity.getCustomEntityType();
         if (customEntityType != null && THRegistry.getRewardRegistry().hasReward(customEntityType)) {
-            mFactors.add(new THSalvageFactor(THRegistry.getRewardRegistry().getRewardValue(customEntityType), THRegistry.getRewardRegistry().getRewardDescription(customEntityType)));
+            factors.add(new THSalvageFactor(THRegistry.getRewardRegistry().getRewardValue(customEntityType), THRegistry.getRewardRegistry().getRewardDescription(customEntityType)));
         } else if (entity.getMarket() != null) {
             var market = entity.getMarket();
             if (Misc.getDaysSinceLastRaided(market) < RAID_DETECTION_THRESHOLD) {
-                if (mRaidTracker == null) {
-                    mRaidTracker = new THRaidTracker();
+                if (raidTracker == null) {
+                    raidTracker = new THRaidTracker();
                 }
                 var baseReward = THRegistry.getRewardRegistry().getRewardValue("raid");
-                var reward = mRaidTracker.calculateRaidReward(baseReward, market, Global.getSector().getClock().getTimestamp());
-                mFactors.add(new THSalvageFactor(reward, THRegistry.getRewardRegistry().getRewardDescription("raid")));
+                var reward = raidTracker.calculateRaidReward(baseReward, market, Global.getSector().getClock().getTimestamp());
+                factors.add(new THSalvageFactor(reward, THRegistry.getRewardRegistry().getRewardDescription("raid")));
             } else if (Misc.hasRuins(market)) {
                 var ruin = Misc.getRuinsType(market);
-                mFactors.add(new THSalvageFactor(THRegistry.getRewardRegistry().getRewardValue(ruin), THRegistry.getRewardRegistry().getRewardDescription(ruin)));
+                factors.add(new THSalvageFactor(THRegistry.getRewardRegistry().getRewardValue(ruin), THRegistry.getRewardRegistry().getRewardDescription(ruin)));
             }
         }
     }
 
-    private final Queue<THSalvageFactor> mFactors = new LinkedList<>();
+    private final Queue<THSalvageFactor> factors = new LinkedList<>();
     private float timePassed = 0;
 
     public boolean isDone() {
@@ -116,8 +116,8 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
                 TreasureHuntEventIntel.addFactorCreateIfNecessary(new THTimeFactor(THRegistry.getSettings().getDebugTimeFactorPoints()), null);
             }
         }
-        while (!mFactors.isEmpty()){
-            TreasureHuntEventIntel.addFactorCreateIfNecessary(mFactors.poll(), null);
+        while (!factors.isEmpty()){
+            TreasureHuntEventIntel.addFactorCreateIfNecessary(factors.poll(), null);
         }
     }
 
@@ -134,7 +134,7 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         // No need to do anything. Factor will expire by itself when the player abandons the colony
     }
 
-    public Queue<THSalvageFactor> getmFactors() {
-        return mFactors;
+    public Queue<THSalvageFactor> getFactors() {
+        return factors;
     }
 }

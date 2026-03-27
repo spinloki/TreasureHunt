@@ -1,6 +1,7 @@
 package spinloki.TreasureHunt.internal.opportunities;
 
 import com.fs.starfarer.api.Global;
+import spinloki.TreasureHunt.api.BaseTHOpportunity;
 import spinloki.TreasureHunt.internal.intel.THSectorSprintIntel;
 import spinloki.TreasureHunt.util.THUtils;
 

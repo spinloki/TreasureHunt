@@ -67,6 +67,7 @@ public class THRuinExcavationIntel extends BaseIntelPlugin {
         stationFleet.getMemoryWithoutUpdate().set("$cfai_noJump", true);
 
         // Set up interaction config — comm link available, player can leave
+        // Note: "$fidConifgGen" is vanilla's spelling (typo in the Starsector API)
         stationFleet.getMemoryWithoutUpdate().set("$fidConifgGen",
                 (FleetInteractionDialogPluginImpl.FIDConfigGen) () -> {
                     var fidConfig = new FleetInteractionDialogPluginImpl.FIDConfig();

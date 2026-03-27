@@ -121,8 +121,8 @@ public class TH_TestFactorTracker implements BaseCommand {
     }
 
     private static void showResults() {
-        var mFactors = TreasureHunt.getFactorTrackerForTestOnly().getmFactors();
-        for (var factor : mFactors){
+        var factors = TreasureHunt.getFactorTrackerForTestOnly().getFactors();
+        for (var factor : factors){
             var value = factor.getProgress(null);
             var description = factor.getDesc(null);
             Console.showMessage(value + " points " + description);

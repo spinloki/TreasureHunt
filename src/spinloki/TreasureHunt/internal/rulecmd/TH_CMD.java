@@ -81,7 +81,7 @@ public class TH_CMD extends BaseCommandPlugin {
             }
             return false;
         } else if ("excavationRaidReward".equals(action)) {
-            int progressPoints = 50;
+            int progressPoints = THRegistry.getSettings().getExcavationProgressPoints();
             TreasureHuntEventIntel.addFactorCreateIfNecessary(
                     new THExcavationRaidFactor(progressPoints), dialog);
 
@@ -104,7 +104,7 @@ public class TH_CMD extends BaseCommandPlugin {
             entity.getMemoryWithoutUpdate().unset("$th_bombard_cost_text");
             return true;
         } else if ("excavationBombardMenu".equals(action)) {
-            int fuelCost = 100;
+            int fuelCost = THRegistry.getSettings().getExcavationBombardFuelCost();
             float playerFuel = Global.getSector().getPlayerFleet().getCargo().getFuel();
             memory.set("$th_bombard_cost_text", "" + fuelCost);
             if (playerFuel < fuelCost) {
@@ -116,7 +116,7 @@ public class TH_CMD extends BaseCommandPlugin {
         } else if ("excavationBombardShowText".equals(action)) {
             String factionName = entity.getMemoryWithoutUpdate().getString("$th_excavation_faction");
             if (factionName == null) factionName = "Unknown";
-            int fuelCost = 100;
+            int fuelCost = THRegistry.getSettings().getExcavationBombardFuelCost();
             float playerFuel = pf.getCargo().getFuel();
             if (playerFuel < fuelCost) {
                 dialog.getTextPanel().addPara("You consider bombarding the " + factionName +
@@ -130,7 +130,7 @@ public class TH_CMD extends BaseCommandPlugin {
             dialog.getTextPanel().highlightInLastPara(Misc.getHighlightColor(), fuelCost + " fuel");
             return true;
         } else if ("excavationBombard".equals(action)) {
-            int fuelCost = 100;
+            int fuelCost = THRegistry.getSettings().getExcavationBombardFuelCost();
             pf.getCargo().removeFuel(fuelCost);
             com.fs.starfarer.api.impl.campaign.rulecmd.AddRemoveCommodity.addCommodityLossText(
                     "fuel", fuelCost, dialog.getTextPanel());
@@ -154,14 +154,15 @@ public class TH_CMD extends BaseCommandPlugin {
             }
             return true;
         } else if ("excavationTrickDefenders".equals(action)) {
-            int progressPoints = 50;
+            int progressPoints = THRegistry.getSettings().getExcavationProgressPoints();
             TreasureHuntEventIntel.addFactorCreateIfNecessary(
                     new THExcavationRaidFactor(progressPoints), dialog);
 
             String rewardName = "salvaged materials";
             TreasureHuntEventIntel intel = TreasureHuntEventIntel.get();
             if (intel != null) {
-                var items = intel.getRandomRewardItems(1);
+                Random rewardRng = new Random(entity.getId() != null ? entity.getId().hashCode() : 0);
+                var items = intel.getRandomRewardItems(1, rewardRng);
                 for (String itemId : items) {
                     pf.getCargo().addSpecial(new SpecialItemData(itemId, null), 1);
                     rewardName = THUtils.getSpecialItemDisplayName(itemId);
@@ -186,8 +187,8 @@ public class TH_CMD extends BaseCommandPlugin {
     }
 
     public static int getDataPoints(float fp) {
-        float min = 20;
-        float max = 40;
+        float min = THRegistry.getSettings().getScavengerDataMinPoints();
+        float max = THRegistry.getSettings().getScavengerDataMaxPoints();
 
         float f = Math.max(fp - THRegistry.getSettings().getScavengerMinFp(), 0) / (THRegistry.getSettings().getScavengerMaxFp() - THRegistry.getSettings().getScavengerMinFp());
         if (f > 1f) f = 1f;
@@ -200,12 +201,6 @@ public class TH_CMD extends BaseCommandPlugin {
     public static String determineScavengerVoice(CampaignFleetAPI fleet) {
         String factionId = (fleet != null && fleet.getFaction() != null) ? fleet.getFaction().getId() : null;
 
-        long seed = 0L;
-        if (fleet != null) {
-            seed = (fleet.getId() != null) ? fleet.getId().hashCode() : System.identityHashCode(fleet);
-        }
-        Random rand = new Random(seed);
-
         if (factionId == null) return Voices.SPACER;
 
         return switch (factionId) {
@@ -216,9 +211,5 @@ public class TH_CMD extends BaseCommandPlugin {
             case Factions.TRITACHYON -> Voices.BUSINESS;
             default -> Voices.SPACER;
         };
-    }
-
-    private static String pick(Random rand, String... options) {
-        return options[rand.nextInt(options.length)];
     }
 }
