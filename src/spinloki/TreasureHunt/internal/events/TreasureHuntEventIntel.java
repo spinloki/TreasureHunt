@@ -5,6 +5,9 @@ import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
+import com.fs.starfarer.api.ui.Alignment;
+import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.api.ITHOpportunity;
@@ -20,8 +23,10 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     private THTreasurePicker treasurePicker;
     private String treasure;
     private String opportunityIcon;
+    private transient CustomPanelAPI currentPanel;
 
     private static final String category = "treasure_hunt_events";
+    private static final String BUTTON_ABANDON = "abandon_hunt";
 
     public static Color BAR_COLOR = Global.getSettings().getColor("progressBarFleetPointsColor");
     public static int PROGRESS_MAX = 500;
@@ -253,6 +258,117 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
     public Set<String> getRandomRewardItems(int count) {
         return treasurePicker.getRandomUnseenItems(count);
+    }
+
+    @Override
+    public void createLargeDescription(CustomPanelAPI panel, float width, float height) {
+        currentPanel = panel;
+        super.createLargeDescription(panel, width, height);
+    }
+
+    @Override
+    public void afterStageDescriptions(TooltipMakerAPI info) {
+        float opad = 10f;
+        float rowHeight = 24f;
+
+        Color textColor = new Color(235, 200, 80);
+        Color bgColor = new Color(60, 50, 20);
+
+        Set<String> oneTime = treasurePicker.getOneTimeCandidates();
+        Set<String> repeatable = treasurePicker.getRepeatableCandidates();
+
+        boolean showOneTime = !oneTime.isEmpty();
+        float barWidth = getBarWidth();
+        float gap = 10f;
+
+        if (showOneTime) {
+            float halfWidth = (barWidth - gap) / 2f;
+
+            CustomPanelAPI row = currentPanel.createCustomPanel(barWidth, rowHeight, null);
+
+            TooltipMakerAPI left = row.createUIElement(halfWidth, rowHeight, false);
+            left.addSectionHeading("Remaining one-time treasures (" + oneTime.size() + ")",
+                    textColor, bgColor, Alignment.MID, 0f);
+            left.addTooltipToPrevious(createPoolTooltip("Remaining one-time treasures",
+                    "These treasures can only be awarded once. This pool will not be refilled.", oneTime),
+                    TooltipMakerAPI.TooltipLocation.BELOW);
+            row.addUIElement(left).inTL(0, 0);
+
+            TooltipMakerAPI right = row.createUIElement(halfWidth, rowHeight, false);
+            right.addSectionHeading("Remaining repeatable treasures (" + repeatable.size() + ")",
+                    textColor, bgColor, Alignment.MID, 0f);
+            right.addTooltipToPrevious(createPoolTooltip("Remaining repeatable treasures",
+                    "These treasures can be awarded multiple times. This pool is refilled when emptied.", repeatable),
+                    TooltipMakerAPI.TooltipLocation.BELOW);
+            row.addUIElement(right).inTR(0, 0);
+
+            info.addCustom(row, opad);
+        } else {
+            CustomPanelAPI row = currentPanel.createCustomPanel(barWidth, rowHeight, null);
+
+            TooltipMakerAPI full = row.createUIElement(barWidth, rowHeight, false);
+            full.addSectionHeading("Remaining repeatable treasures (" + repeatable.size() + ")",
+                    textColor, bgColor, Alignment.MID, 0f);
+            full.addTooltipToPrevious(createPoolTooltip("Remaining repeatable treasures",
+                    "These treasures can be awarded multiple times. This pool is refilled when emptied.", repeatable),
+                    TooltipMakerAPI.TooltipLocation.BELOW);
+            row.addUIElement(full).inTL(0, 0);
+
+            info.addCustom(row, opad);
+        }
+
+        if (getProgress() > 0) {
+            Color abandonBase = new Color(150, 50, 50);
+            Color abandonDark = new Color(80, 25, 25);
+            addGenericButton(info, getBarWidth(), abandonBase, abandonDark, "Abandon Hunt", BUTTON_ABANDON);
+        }
+    }
+
+    @Override
+    public boolean doesButtonHaveConfirmDialog(Object buttonId) {
+        if (BUTTON_ABANDON.equals(buttonId)) return true;
+        return super.doesButtonHaveConfirmDialog(buttonId);
+    }
+
+    @Override
+    public void createConfirmationPrompt(Object buttonId, TooltipMakerAPI prompt) {
+        if (BUTTON_ABANDON.equals(buttonId)) {
+            prompt.addPara("This will reset all hunt progress to zero and clear your current lead. Are you sure?", 0f,
+                    Misc.getNegativeHighlightColor(), "reset all hunt progress to zero");
+            return;
+        }
+        super.createConfirmationPrompt(buttonId, prompt);
+    }
+
+    @Override
+    public void buttonPressConfirmed(Object buttonId, IntelUIAPI ui) {
+        if (BUTTON_ABANDON.equals(buttonId)) {
+            setProgress(0);
+            treasure = "";
+            ui.updateUIForItem(this);
+            return;
+        }
+        super.buttonPressConfirmed(buttonId, ui);
+    }
+
+    private TooltipMakerAPI.TooltipCreator createPoolTooltip(String title, String description, Set<String> pool) {
+        return new BaseFactorTooltip() {
+            @Override
+            public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+                tooltip.addTitle(title);
+                tooltip.addPara(description, 10f);
+                if (pool.isEmpty()) {
+                    tooltip.addPara("Pool is empty - will be refilled.", 10f);
+                    return;
+                }
+                java.util.List<String> sorted = new java.util.ArrayList<>(pool);
+                sorted.sort((a, b) -> THUtils.getSpecialItemDisplayName(a)
+                        .compareToIgnoreCase(THUtils.getSpecialItemDisplayName(b)));
+                for (String itemId : sorted) {
+                    tooltip.addPara("  - " + THUtils.getSpecialItemDisplayName(itemId), 2f);
+                }
+            }
+        };
     }
 
     protected void notifyStageReached(EventStageData stage){

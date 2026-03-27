@@ -88,5 +88,13 @@ public class THTreasurePicker implements ShowLootListener {
             repeatableCandidates.remove(id);
         }
     }
+
+    public Set<String> getOneTimeCandidates() {
+        return Collections.unmodifiableSet(oneTimeCandidates);
+    }
+
+    public Set<String> getRepeatableCandidates() {
+        return Collections.unmodifiableSet(repeatableCandidates);
+    }
 }
 
