@@ -352,3 +352,9 @@ thExcBombardGoBack:Go back",
 thExcavation_bombardConfirm,DialogOptionSelected,$option == thExcBombardConfirm,"TH_CMD excavationBombard
 FireAll PopulateOptions","Your fleet unleashes a sustained bombardment on the excavation site. When the dust settles, nothing remains of the operatives or whatever it was that they were defending.",,
 thExcavation_bombardGoBack,DialogOptionSelected,$option == thExcBombardGoBack,FireAll PopulateOptions,,,
+# Salvor Clan bar event,,,,,,
+thSalvor_start,THSalvorClanOption,$option == thSalvorStart,ShowPersonVisual,"You pull up a chair. The Clanners eye you warily at first, but the eldest among them, a scarred $manOrWoman with prosthetic fingers, seems to warm up after you buy a round of drinks. $He or she tells you about...","thSalvorAccept:...an interesting opportunity to advance your Treasure Hunt.
+thSalvorLeave:...some interesting but inconsequential gossip.",
+thSalvor_storyOpt,THSalvorClanOption,$option == thSalvorStart,"SetStoryOption thSalvorAccept 1 thSalvorClanTip ui_char_spent_story_point ""Acquired a salvage lead from a Salvor Clan""",,,
+thSalvor_accept,THSalvorClanOption,$option == thSalvorAccept,"TH_CMD salvorClanTrigger
+Highlight opportunity","The Clanners lips have been thoroughly loosened by drink, and you take detailed mental notes of everything $heOrShe says. By the time you finish your drink, you have learned about a very interesting opportunity.",thSalvorDone:Take your leave,

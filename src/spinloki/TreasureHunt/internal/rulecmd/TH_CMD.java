@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Voices;
 import com.fs.starfarer.api.impl.campaign.rulecmd.BaseCommandPlugin;
 import com.fs.starfarer.api.util.Misc;
+import spinloki.TreasureHunt.api.ITHOpportunity;
 import spinloki.TreasureHunt.internal.factors.THExcavationRaidFactor;
 import spinloki.TreasureHunt.internal.factors.THScavengerDataFactor;
 import spinloki.TreasureHunt.internal.events.TreasureHuntEventIntel;
@@ -176,6 +177,12 @@ public class TH_CMD extends BaseCommandPlugin {
             entity.getMemoryWithoutUpdate().unset("$th_excavation_faction");
             entity.getMemoryWithoutUpdate().unset("$th_bombard_cant_afford");
             entity.getMemoryWithoutUpdate().unset("$th_bombard_cost_text");
+            return true;
+        } else if ("salvorClanTrigger".equals(action)) {
+            ITHOpportunity opportunity = THRegistry.getOpportunityRegistry().pickCandidate();
+            if (opportunity != null) {
+                opportunity.trigger();
+            }
             return true;
         }
 

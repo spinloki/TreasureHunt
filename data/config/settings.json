@@ -315,6 +315,7 @@
     },
 	"bonusXP": {
 		"thExcTrickDefenders": 0.5,
-		"thExcConvinceDefender": 0.5
+		"thExcConvinceDefender": 0.5,
+		"thSalvorClanTip": 1.0
 	}
 }

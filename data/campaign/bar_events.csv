@@ -1,0 +1,2 @@
+bar event id,tags,freq,prob,min dur,max dur,min timeout,max timeout,min accepted timeout,max accepted timeout,plugin
+th_salvor_clan,,10,1,40,60,15,20,60,90,spinloki.TreasureHunt.internal.bar.THSalvorClanBarEvent
