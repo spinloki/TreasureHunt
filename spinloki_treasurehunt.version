@@ -3,12 +3,12 @@
   "modName": "TreasureHunt",
   "modVersion":
     {
-      "major": 1,
-      "minor": 2,
-      "patch": 1
+      "major": 2,
+      "minor": 0,
+      "patch": 0
     },
 
     "modThreadId": 33016,
 
-    "directDownloadURL":"https://github.com/spinloki/TreasureHunt/releases/download/v1.2.1/TreasureHunt.zip"
+    "directDownloadURL":"https://github.com/spinloki/TreasureHunt/releases/download/v2.0.0/TreasureHunt.zip"
 }
