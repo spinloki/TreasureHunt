@@ -22,8 +22,19 @@ public interface ITHOpportunity {
     void trigger();
 
     /**
-     * Returns the sprite path for the icon representing this opportunity in the Treasure Hunt Event Intel
-     * (the one with the progress bar)
+     * Returns a short display name for this opportunity, shown to the player
+     * when the opportunity is found (e.g. "Scavenger Swarm", "Ruin Excavation").
+     */
+    String getDisplayName();
+
+    /**
+     * Returns the sprite ID for this opportunity's icon, registered under the
+     * {@link #ICON_CATEGORY} graphics category in settings.json.
+     * For example, {@code "scavenger_swarm"} resolves via
+     * {@code Global.getSettings().getSpriteName("treasure_hunt_events", "scavenger_swarm")}.
      */
     String getIcon();
+
+    /** The graphics category under which all opportunity icons must be registered. */
+    String ICON_CATEGORY = "treasure_hunt_events";
 }

@@ -14,7 +14,6 @@ import spinloki.TreasureHunt.internal.registry.THRegistry;
 import java.util.*;
 
 public class THRuinExcavationOpportunity extends BaseTHOpportunity {
-    private static final String icon = Global.getSettings().getSpriteName("treasure_hunt_events", "ruin_excavation");
 
     private boolean exhausted = false;
 
@@ -38,12 +37,17 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
             return;
         }
 
-        new THRuinExcavationIntel(planet, factionId, icon);
+        new THRuinExcavationIntel(planet, factionId, getIconPath());
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Ruin Excavation";
     }
 
     @Override
     public String getIcon() {
-        return icon;
+        return "ruin_excavation";
     }
 
     private PlanetAPI pickTargetPlanet() {

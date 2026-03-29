@@ -17,11 +17,7 @@ public class THSalvorClanBarEvent extends BaseBarEventWithPerson {
             "Their jackets bear the sigil of a Salvor Clan — one of the large outfits devoted to " +
             "reclaiming the ruins left by the Domain and the AI wars.";
     private static final String OPT_APPROACH_TEXT = "Approach the Clanners and see what they know";
-
-    @Override public boolean isAlwaysShow() {
-        return true;
-    }
-
+    
     @Override
     protected String getPersonFaction() {
         return "independent";

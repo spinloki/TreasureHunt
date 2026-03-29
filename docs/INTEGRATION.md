@@ -281,26 +281,29 @@ Opportunities are the mid-hunt events that fire when the player accumulates enou
 
 ### Step 1: Extend BaseTHOpportunity
 
-The `BaseTHOpportunity` class handles probability decay and trigger count persistence automatically. You just need to override `trigger()` and `getIcon()`.
+The `BaseTHOpportunity` class handles probability decay and trigger count persistence automatically. You just need to override `trigger()`, `getDisplayName()`, and `getIcon()`.
 
 ```java
-import com.fs.starfarer.api.Global;
 import spinloki.TreasureHunt.api.BaseTHOpportunity;
 
 public class MyOpportunity extends BaseTHOpportunity {
-    private static final String ICON =
-        Global.getSettings().getSpriteName("my_mod_icons", "my_opportunity");
 
     @Override
     public void trigger() {
         super.trigger(); // Required - tracks trigger count and persists it across saves
         // Create your intel, spawn fleets, set up the event, etc.
-        new MyOpportunityIntel(pickTargetSystem(), ICON);
+        // Use getIconPath() to resolve the sprite ID to a full path for intel constructors
+        new MyOpportunityIntel(pickTargetSystem(), getIconPath());
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "My Opportunity";
     }
 
     @Override
     public String getIcon() {
-        return ICON;
+        return "my_opportunity";
     }
 
     private StarSystemAPI pickTargetSystem() {
@@ -334,17 +337,19 @@ Registration happens on every game load - opportunity objects are recreated fres
 
 ### Icon Setup
 
-Opportunity icons are displayed in the Treasure Hunt event intel panel. Register your icon sprite in your mod's `data/config/settings.json`:
+Opportunity icons are displayed in the Treasure Hunt event intel panel and in dialog text when the opportunity is found. Register your icon sprite under the `treasure_hunt_events` category in your mod's `data/config/settings.json`, using the same key returned by your `getIcon()` method:
 
 ```json
 {
     "graphics": {
-        "my_mod_icons": {
+        "treasure_hunt_events": {
             "my_opportunity": "graphics/icons/my_opportunity.png"
         }
     }
 }
 ```
+
+The key must match what `getIcon()` returns (e.g. `"my_opportunity"`). If no matching sprite is found, a generic fallback icon is used.
 
 ---
 
@@ -390,7 +395,9 @@ Recommended base class for custom opportunities. Handles decay and persistence a
 |--------|---------|-------------|
 | `getProbabilityWeight()` | `float` | Returns `1 / (1 + n)^2` decay weight. Override for custom weighting. |
 | `trigger()` | `void` | Increments count and persists. Call `super.trigger()` in overrides. |
-| `getIcon()` | `String` | *(abstract)* Sprite path for the event intel progress panel. |
+| `getDisplayName()` | `String` | *(abstract)* Short name shown to the player (e.g. "Scavenger Swarm"). |
+| `getIcon()` | `String` | *(abstract)* Sprite ID registered under `treasure_hunt_events` in settings.json. |
+| `getIconPath()` | `String` | Resolves `getIcon()` to a full sprite path via `getSpriteName()`. |
 | `getTimesTriggered()` | `int` | Current trigger count (restored from save data). |
 
 ### ITHOpportunity
@@ -401,7 +408,9 @@ Low-level interface for full control. Use `BaseTHOpportunity` instead unless you
 |--------|---------|-------------|
 | `getProbabilityWeight()` | `float` | Selection weight. Must decay to avoid dominating the pool. |
 | `trigger()` | `void` | Called when selected. You are responsible for your own persistence. |
-| `getIcon()` | `String` | Sprite path for the event intel progress panel. |
+| `getDisplayName()` | `String` | Short name shown to the player when the opportunity is found. |
+| `getIcon()` | `String` | Sprite ID registered under `treasure_hunt_events` in settings.json. |
+| `ICON_CATEGORY` | `String` | Constant: `"treasure_hunt_events"`. The graphics category for opportunity icons. |
 
 ### Settings.json Keys
 

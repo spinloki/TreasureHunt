@@ -11,18 +11,22 @@ import spinloki.TreasureHunt.internal.intel.THScavengerSwarmIntel;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
 
 public class THScavengerSwarmOpportunity extends BaseTHOpportunity {
-    private static final String icon = Global.getSettings().getSpriteName("treasure_hunt_events", "scavenger_swarm");
 
     @Override
     public void trigger() {
         super.trigger();
         var system = pickTargetSystem();
-        new THScavengerSwarmIntel(system, icon);
+        new THScavengerSwarmIntel(system, getIconPath());
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Scavenger Swarm";
     }
 
     @Override
     public String getIcon() {
-        return icon;
+        return "scavenger_swarm";
     }
 
     private StarSystemAPI pickTargetSystem() {

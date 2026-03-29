@@ -182,6 +182,17 @@ public class TH_CMD extends BaseCommandPlugin {
             ITHOpportunity opportunity = THRegistry.getOpportunityRegistry().pickCandidate();
             if (opportunity != null) {
                 opportunity.trigger();
+                String iconPath;
+                try {
+                    iconPath = Global.getSettings().getSpriteName(ITHOpportunity.ICON_CATEGORY, opportunity.getIcon());
+                } catch (Exception e) {
+                    iconPath = Global.getSettings().getSpriteName(ITHOpportunity.ICON_CATEGORY, "found_opportunity");
+                }
+                var tooltip = dialog.getTextPanel().beginTooltip();
+                var imgText = tooltip.beginImageWithText(iconPath, 40f);
+                imgText.addPara("Opportunity found: " + opportunity.getDisplayName(), Misc.getHighlightColor(), 0f);
+                tooltip.addImageWithText(0f);
+                dialog.getTextPanel().addTooltip();
             }
             return true;
         }

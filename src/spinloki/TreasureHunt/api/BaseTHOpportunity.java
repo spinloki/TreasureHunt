@@ -49,6 +49,14 @@ public abstract class BaseTHOpportunity implements ITHOpportunity {
         return timesTriggered;
     }
 
+    /**
+     * Resolves the sprite ID returned by {@link #getIcon()} to a full sprite path
+     * via {@code Global.getSettings().getSpriteName(ICON_CATEGORY, getIcon())}.
+     */
+    protected String getIconPath() {
+        return Global.getSettings().getSpriteName(ICON_CATEGORY, getIcon());
+    }
+
     @SuppressWarnings("unchecked")
     private void restoreTriggerCount() {
         try {

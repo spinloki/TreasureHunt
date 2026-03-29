@@ -24,6 +24,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     private THTreasurePicker treasurePicker;
     private String treasure;
     private String opportunityIcon;
+    private String opportunityDisplayName;
     private transient CustomPanelAPI currentPanel;
 
     private static final String category = "treasure_hunt_events";
@@ -105,7 +106,10 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             return Global.getSettings().getSpriteName(category, "found_lead");
         }
         if (stageId == Stage.OPPORTUNITY){
-            return opportunityIcon;
+            if (opportunityIcon != null){
+                return opportunityIcon;
+            }
+            return Global.getSettings().getSpriteName(category, "found_lead");
         }
         if (stageId == Stage.FOUND){
             return Global.getSettings().getSpriteName(category, "found_treasure");
@@ -157,12 +161,13 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             info.addPara("The Hunt awaits!", initPad);
         }
         else if (stageId == Stage.CHOOSE){
-            String displayName = null;
-            displayName = THUtils.getSpecialItemDisplayName(treasure);
+            String displayName = THUtils.getSpecialItemDisplayName(treasure);
             info.addPara(String.format("You have a lead on a %s", displayName), initPad);
         }
         else if (stageId == Stage.OPPORTUNITY){
-            info.addPara("An opportunity has presented itself", initPad);
+            if (opportunityIcon != null && !opportunityIcon.isEmpty()){
+                info.addPara(String.format("Opportunity found: %s", opportunityDisplayName), initPad);
+            }
         }
     }
 
@@ -194,11 +199,9 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
                     float opad = 10f;
 
                     if (esd.id == Stage.CHOOSE) {
-                        String displayName = null;
-                        displayName = THUtils.getSpecialItemDisplayName(treasure);
-                        tooltip.addTitle(String.format("Found a lead on a %s", displayName));
+                        tooltip.addTitle("Lead found");
                     } else if (esd.id == Stage.OPPORTUNITY) {
-                        tooltip.addTitle("Found an opportunity");
+                        tooltip.addTitle("Opportunity found");
                     } else if (esd.id == Stage.FOUND) {
                         tooltip.addTitle("Location discovered");
                     }
@@ -378,7 +381,8 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             ITHOpportunity opportunity = THRegistry.getOpportunityRegistry().pickCandidate();
             if (opportunity != null) {
                 opportunity.trigger();
-                opportunityIcon = opportunity.getIcon();
+                opportunityIcon = Global.getSettings().getSpriteName(ITHOpportunity.ICON_CATEGORY, opportunity.getIcon());
+                opportunityDisplayName = opportunity.getDisplayName();
             }
         }
         if (stage.id == Stage.FOUND){
