@@ -1,0 +1,26 @@
+fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
+th_luna_hullmodHeader,Treasure Hunt Hullmod,Header,Treasure Hunt Hullmod,,,,,Hullmod
+th_luna_smod_bonus,S-mod Bonus Percent,Int,100,,"The percentage bonus to progress points when the Treasure Hunt Package hullmod is built in as an S-mod.",0,500,Hullmod
+th_luna_max_mult,Max Progress Multiplier,Double,3.0,,"The maximum multiplier that the Treasure Hunt Package hullmod can apply to progress points.",1,10,Hullmod
+,,,,,,,,
+th_luna_progressHeader,Progress Tuning,Header,Progress Tuning,,,,,Progress
+th_luna_max_monthly,Max Monthly Progress,Int,30,,"Maximum progress that can be gained per month from recurring factors (colony ruins, sector sprint, etc.). One-time factors (salvaging, scav kills) are not affected.",1,200,Progress
+th_luna_scav_kill_min,Scav Kill Min Points,Int,1,,"Minimum progress points gained from destroying a scavenger fleet.",0,50,Progress
+th_luna_scav_kill_max,Scav Kill Max Points,Int,50,,"Maximum progress points gained from destroying a scavenger fleet. Scales with fleet hull value.",1,200,Progress
+th_luna_colony_tech_mult,Colony Tech Mining Multiplier,Int,2,,"Multiplier to colony ruin progress when the tech mining industry is present.",1,5,Progress
+th_luna_sector_sprint_reward,Sector Sprint Reward,Int,60,,"Monthly progress points per relay from the Sector Sprint opportunity. Domain-era relays give double.",1,200,Progress
+th_luna_sector_sprint_meddling,Sector Sprint Meddling Mult,Double,0.25,,"Multiplier to sector sprint progress when a meddling fleet is active.",0,1,Progress
+th_luna_excavation_points,Excavation Progress Points,Int,50,,"Progress points gained from clearing an excavation site.",1,200,Progress
+th_luna_scav_data_min,Scav Data Min Points,Int,20,,"Minimum progress points from buying scavenger data.",1,100,Progress
+th_luna_scav_data_max,Scav Data Max Points,Int,40,,"Maximum progress points from buying scavenger data. Scales with fleet FP.",1,200,Progress
+th_luna_raid_dr_enabled,Raid Diminishing Returns,Boolean,true,,"When enabled, raiding the same market repeatedly gives diminishing progress.",,,Progress
+th_luna_raid_dr_factor,Raid DR Factor,Double,0.2,,"Multiplier applied to raid progress after diminishing returns kick in.",0,1,Progress
+th_luna_raid_dr_recovery,Raid DR Recovery Days,Int,100,,"Days for a raided market's progress value to recover to full.",1,365,Progress
+,,,,,,,,
+th_luna_rewardsHeader,Treasures,Header,Treasures,,,,,Treasures
+th_luna_num_leads,Lead Candidates,Int,3,,"Number of treasure candidates to choose from when you find a lead. Fewer may appear if the pool is small.",1,10,Treasures
+th_luna_blueprint_weight,Blueprint Weight,Double,0.5,,"Weight for selecting blueprint packages as treasure rewards. Higher values make blueprints more likely.",0,1,Treasures
+,,,,,,,,
+th_luna_miscHeader,Misc,Header,Misc,,,,,Misc
+th_luna_hassling,Enable Hassling,Boolean,true,,"Whether enforcer faction fleets in the scavenger swarm can stop and inspect the player.",,,Misc
+th_luna_bombard_fuel,Excavation Bombard Fuel Cost,Int,100,,"Fuel cost to bombard an excavation site from orbit.",1,500,Misc

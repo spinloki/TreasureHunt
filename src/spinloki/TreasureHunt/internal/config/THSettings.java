@@ -21,8 +21,9 @@ public class THSettings {
     private boolean debugUseTimeFactor = false;
     private int debugTimeFactorPoints = 50;
     private JSONObject explorationValues;
-    private int colonyRuinsBaseProgressDivisor;
+    private JSONObject colonyRuinsBaseProgress;
     private int colonyTechMiningProgressMultiplier;
+    private int maxMonthlyProgress = 30;
     private int sectorSprintReward;
     private float pickBlueprintWeight;
     private boolean raidDiminishingReturnsEnabled;
@@ -39,16 +40,18 @@ public class THSettings {
     private int scavengerDataMinPoints = 20;
     private int scavengerDataMaxPoints = 40;
 
+    private static final String MOD_ID = "spinloki_treasurehunt";
+
     public THSettings() {}
 
     public void load() throws JSONException, IOException {
-        JSONObject json = Global.getSettings().loadJSON("treasurehunt_settings.json", "spinloki_treasurehunt");
+        JSONObject json = Global.getSettings().loadJSON("treasurehunt_settings.json", MOD_ID);
         treasureHuntPackageSmodPercentBonus = (float) json.getDouble("th_treasure_hunt_package_smod_percent_bonus");
         treasureHuntPackageMaxMult = (float) json.getDouble("th_treasure_hunt_package_mult_clamp");
         debugUseTimeFactor = json.getBoolean("th_debug_use_time_factor");
         debugTimeFactorPoints = json.getInt("th_debug_time_factor_points");
         explorationValues = json.getJSONObject("th_exploration_values");
-        colonyRuinsBaseProgressDivisor = json.getInt("th_colony_ruins_base_progress_divisor");
+        colonyRuinsBaseProgress = json.getJSONObject("th_colony_ruins_base_progress");
         colonyTechMiningProgressMultiplier = json.getInt("th_colony_tech_mining_progress_multiplier");
         sectorSprintReward = json.getInt("th_sector_sprint_reward");
         pickBlueprintWeight = (float) json.getDouble("th_pick_blueprint_weight");
@@ -62,6 +65,92 @@ public class THSettings {
         excavationBombardFuelCost = json.getInt("th_excavation_bombard_fuel_cost");
         scavengerDataMinPoints = json.getInt("th_scavenger_data_min_points");
         scavengerDataMaxPoints = json.getInt("th_scavenger_data_max_points");
+        maxMonthlyProgress = json.getInt("th_max_monthly_progress");
+
+        detectLuna();
+    }
+
+    private boolean lunaEnabled = false;
+
+    private void detectLuna() {
+        try {
+            Class.forName("lunalib.lunaSettings.LunaSettings");
+            lunaEnabled = true;
+        } catch (ClassNotFoundException e) {
+            lunaEnabled = false;
+        }
+    }
+
+    /** Reload all LunaSettings values. Called on initial load and when settings change. */
+    public void loadFromLuna() {
+        if (!lunaEnabled) return;
+        try {
+            Integer v;
+            Double d;
+            Boolean b;
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_smod_bonus");
+            if (v != null) treasureHuntPackageSmodPercentBonus = v;
+
+            d = lunalib.lunaSettings.LunaSettings.getDouble(MOD_ID, "th_luna_max_mult");
+            if (d != null) treasureHuntPackageMaxMult = d.floatValue();
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_max_monthly");
+            if (v != null) maxMonthlyProgress = v;
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_scav_kill_min");
+            if (v != null) {
+                try { explorationValues.put("scav_kill_min", v); } catch (JSONException ignored) {}
+            }
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_scav_kill_max");
+            if (v != null) {
+                try { explorationValues.put("scav_kill_max", v); } catch (JSONException ignored) {}
+            }
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_colony_tech_mult");
+            if (v != null) colonyTechMiningProgressMultiplier = v;
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_sector_sprint_reward");
+            if (v != null) sectorSprintReward = v;
+
+            d = lunalib.lunaSettings.LunaSettings.getDouble(MOD_ID, "th_luna_sector_sprint_meddling");
+            if (d != null) sectorSprintMeddlingMult = d.floatValue();
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_excavation_points");
+            if (v != null) excavationProgressPoints = v;
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_scav_data_min");
+            if (v != null) scavengerDataMinPoints = v;
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_scav_data_max");
+            if (v != null) scavengerDataMaxPoints = v;
+
+            b = lunalib.lunaSettings.LunaSettings.getBoolean(MOD_ID, "th_luna_raid_dr_enabled");
+            if (b != null) raidDiminishingReturnsEnabled = b;
+
+            d = lunalib.lunaSettings.LunaSettings.getDouble(MOD_ID, "th_luna_raid_dr_factor");
+            if (d != null) raidDiminishingReturnsFactor = d.floatValue();
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_raid_dr_recovery");
+            if (v != null) raidDiminishingReturnsRecoveryDays = v;
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_num_leads");
+            if (v != null) numLeadCandidates = v;
+
+            d = lunalib.lunaSettings.LunaSettings.getDouble(MOD_ID, "th_luna_blueprint_weight");
+            if (d != null) pickBlueprintWeight = d.floatValue();
+
+            b = lunalib.lunaSettings.LunaSettings.getBoolean(MOD_ID, "th_luna_hassling");
+            if (b != null) scavengerSwarmHasslingEnabled = b;
+
+            v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_bombard_fuel");
+            if (v != null) excavationBombardFuelCost = v;
+
+            log.info("LunaLib settings applied");
+        } catch (Exception e) {
+            log.warn("Failed to load LunaLib settings, using defaults", e);
+        }
     }
 
     // --- Getters ---
@@ -71,8 +160,16 @@ public class THSettings {
     public boolean isDebugUseTimeFactor() { return debugUseTimeFactor; }
     public int getDebugTimeFactorPoints() { return debugTimeFactorPoints; }
     public JSONObject getExplorationValues() { return explorationValues; }
-    public int getColonyRuinsBaseProgressDivisor() { return colonyRuinsBaseProgressDivisor; }
+    public int getColonyRuinsBaseProgress(String ruinsType) {
+        try {
+            return colonyRuinsBaseProgress.getInt(ruinsType);
+        } catch (JSONException e) {
+            log.warn("Unknown ruins type for colony progress: " + ruinsType + ", defaulting to 1");
+            return 1;
+        }
+    }
     public int getColonyTechMiningProgressMultiplier() { return colonyTechMiningProgressMultiplier; }
+    public int getMaxMonthlyProgress() { return maxMonthlyProgress; }
     public int getSectorSprintReward() { return sectorSprintReward; }
     public float getPickBlueprintWeight() { return pickBlueprintWeight; }
     public boolean isRaidDiminishingReturnsEnabled() { return raidDiminishingReturnsEnabled; }

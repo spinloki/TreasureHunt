@@ -1,6 +1,9 @@
 package spinloki.TreasureHunt.api;
 
+import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
 import spinloki.TreasureHunt.internal.config.THSettings;
+import spinloki.TreasureHunt.internal.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
 import spinloki.TreasureHunt.internal.registry.THRewardRegistry;
 
@@ -53,6 +56,22 @@ public class THApi {
      */
     public static void registerOpportunity(ITHOpportunity opportunity) {
         THRegistry.registerOpportunity(opportunity);
+    }
+
+    /**
+     * Add a progress factor to the treasure hunt event.
+     * Creates the event if it doesn't exist yet.
+     *
+     * <p>Use this when your mod detects a player action that should
+     * contribute progress. Create a factor by extending
+     * {@code BaseOneTimeFactor} (for instant progress) or
+     * {@code BaseEventFactor} (for recurring progress).</p>
+     *
+     * @param factor the factor to add (e.g. a {@code BaseOneTimeFactor} subclass)
+     * @param dialog the current interaction dialog, or {@code null} if not in a dialog
+     */
+    public static void addProgress(EventFactor factor, InteractionDialogAPI dialog) {
+        TreasureHuntEventIntel.addFactorCreateIfNecessary(factor, dialog);
     }
 
     /**

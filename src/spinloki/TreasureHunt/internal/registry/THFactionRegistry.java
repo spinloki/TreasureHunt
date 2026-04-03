@@ -32,7 +32,7 @@ public class THFactionRegistry {
      * Loads faction entries from the auto-merged {@code th_factions} key in settings.json.
      * Each entry maps a faction ID to a JSON object with optional fields:
      * <ul>
-     *   <li>{@code template} — one of SCAVENGER, ENFORCER, INQUISITOR, PRIVATEER (default: SCAVENGER)</li>
+     *   <li>{@code template} — one of SCAVENGER, ENFORCER (default: SCAVENGER)</li>
      *   <li>{@code narrativeText} — custom fleet activity text</li>
      *   <li>{@code fleetType} — Starsector fleet type ID override</li>
      *   <li>{@code freighterPts} — freighter fleet points override</li>

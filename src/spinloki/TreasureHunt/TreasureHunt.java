@@ -22,6 +22,7 @@ public class TreasureHunt extends BaseModPlugin {
         super.onApplicationLoad();
         THRegistry.initSettings();
         THVanillaItemTagger.tagItems();
+        registerLunaListener();
     }
 
     @Override
@@ -46,6 +47,7 @@ public class TreasureHunt extends BaseModPlugin {
         Global.getSector().getListenerManager().addListener(new THExcavationRaidListener());
 
         THRegistry.reset();
+        THRegistry.getSettings().loadFromLuna();
         registerBuiltInOpportunities();
     }
 
@@ -58,5 +60,25 @@ public class TreasureHunt extends BaseModPlugin {
 
     public static THFactorTracker getFactorTrackerForTestOnly(){
         return factorTracker;
+    }
+
+    private void registerLunaListener() {
+        try {
+            Class.forName("lunalib.lunaSettings.LunaSettings");
+        } catch (ClassNotFoundException e) {
+            return;
+        }
+        if (!lunalib.lunaSettings.LunaSettings.hasSettingsListenerOfClass(THLunaSettingsListener.class)) {
+            lunalib.lunaSettings.LunaSettings.addSettingsListener(new THLunaSettingsListener());
+        }
+    }
+
+    private static class THLunaSettingsListener implements lunalib.lunaSettings.LunaSettingsListener {
+        @Override
+        public void settingsChanged(String modId) {
+            if ("spinloki_treasurehunt".equals(modId)) {
+                THRegistry.getSettings().loadFromLuna();
+            }
+        }
     }
 }

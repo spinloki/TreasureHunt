@@ -156,7 +156,7 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
 
         if (config != null && THRegistry.getSettings().isScavengerSwarmHasslingEnabled()) {
             THFactionTemplate template = config.getTemplate();
-            if (template == THFactionTemplate.ENFORCER || template == THFactionTemplate.INQUISITOR) {
+            if (template == THFactionTemplate.ENFORCER) {
                 THUtils.makeHassler(fleet, "thRestrictedInspection");
                 fleet.getMemoryWithoutUpdate().set("$thRestrictFaction", fleet.getFaction().getId());
             }

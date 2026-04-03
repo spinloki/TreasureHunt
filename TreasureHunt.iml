@@ -6,6 +6,15 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../LunaLib-2.0.5/jars/LunaLib.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" scope="PROVIDED">
       <library>
@@ -33,6 +42,9 @@
           <root url="file://$MODULE_DIR$/../.." />
         </SOURCES>
         <jarDirectory url="file://$MODULE_DIR$/../.." recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../.." recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../.." recursive="false" type="SOURCES" />
+        <jarDirectory url="file://$MODULE_DIR$/../.." recursive="false" type="SOURCES" />
         <jarDirectory url="file://$MODULE_DIR$/../.." recursive="false" type="SOURCES" />
       </library>
     </orderEntry>

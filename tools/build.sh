@@ -28,7 +28,8 @@ CP=$(printf '%s:' \
   "$SS/webp-imageio-0.1.6.jar" \
   "$SS/xstream-1.4.10.jar" \
   "$SS/mods/Console Commands/jars/lw_Console.jar" \
-  "$SS/mods/LazyLib-3.0.0/jars/LazyLib.jar")
+  "$SS/mods/LazyLib-3.0.0/jars/LazyLib.jar" \
+  "$SS/mods/LunaLib-2.0.5/jars/LunaLib.jar")
 
 # ── Build ──────────────────────────────────────────────────────────────
 OUT_DIR="$PROJECT_DIR/out/production"

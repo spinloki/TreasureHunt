@@ -4,23 +4,21 @@ import com.fs.starfarer.api.impl.campaign.ids.FleetTypes;
 
 /**
  * Preset behavior archetypes for scavenger swarm factions.
- * Each template defines a default fleet type, AI behavior, hassle style, and fleet composition.
+ * <p>
+ * There are two archetypes: {@link #SCAVENGER} (explores only) and {@link #ENFORCER}
+ * (explores and hassles the player). Each provides default fleet parameters that can
+ * be overridden via {@link THFactionConfig.Builder} or JSON.
+ * <p>
  * Use with {@link THApi#registerFaction(String, THFactionTemplate)} for simple registration,
  * or as a starting point in {@link THFactionConfig.Builder#template(THFactionTemplate)}.
  */
 public enum THFactionTemplate {
-    /** Generic salvage fleet, no hassling. (Pirates/Independent style) */
+    /** Explores only, no hassling. */
     SCAVENGER(FleetTypes.SCAVENGER_LARGE, 20f, 10f, null,
             new String[]{"station1_Standard"}),
-    /** Hassle + inspection behavior. (Hegemony/Persean style) */
+    /** Explores and hassles the player with inspections. */
     ENFORCER(FleetTypes.INSPECTION_FLEET, 20f, 10f, null,
-            new String[]{"station1_midline_Standard"}),
-    /** Hassle + purge behavior. (Luddic Path/Church style) */
-    INQUISITOR(FleetTypes.RAIDER, 10f, 5f, null,
-            new String[]{"station1_Standard"}),
-    /** Covert ops / privateer behavior. (Tri-Tachyon style) */
-    PRIVATEER(FleetTypes.MERC_PRIVATEER, 10f, 5f, null,
-            new String[]{"station1_hightech_Standard"});
+            new String[]{"station1_midline_Standard"});
 
     private final String defaultFleetType;
     private final float defaultFreighterPts;

@@ -299,18 +299,28 @@
             "fleetName": "Inspection Fleet"
         },
         "tritachyon": {
-            "template": "PRIVATEER",
-            "fleetName": "Special Procurement Detachment"
+            "template": "SCAVENGER",
+            "fleetType": "mercPrivateer",
+            "fleetName": "Special Procurement Detachment",
+            "freighterPts": 10.0,
+            "tankerPts": 5.0,
+            "stationEntityType": "station1_hightech_Standard"
         },
         "luddic_path": {
-            "template": "INQUISITOR",
+            "template": "ENFORCER",
             "narrativeText": "on an expedition to destroy heretical technology",
-            "fleetName": "Holy Purge Fleet"
+            "fleetType": "raider",
+            "fleetName": "Holy Purge Fleet",
+            "freighterPts": 10.0,
+            "tankerPts": 5.0
         },
         "luddic_church": {
-            "template": "INQUISITOR",
+            "template": "ENFORCER",
             "narrativeText": "headed to suspicious system",
-            "fleetName": "Inquisition Fleet"
+            "fleetType": "raider",
+            "fleetName": "Inquisition Fleet",
+            "freighterPts": 10.0,
+            "tankerPts": 5.0
         }
     },
 	"bonusXP": {

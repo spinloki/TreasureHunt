@@ -21,7 +21,7 @@ public class THColonyRuinFactor extends BaseEventFactor {
         super();
         this.colony = colony;
         ruins_type = Misc.getRuinsType(colony);
-        BASE_PROGRESS = THRegistry.getRewardRegistry().getRewardValue(ruins_type) / THRegistry.getSettings().getColonyRuinsBaseProgressDivisor();
+        BASE_PROGRESS = THRegistry.getSettings().getColonyRuinsBaseProgress(ruins_type);
     }
 
     @Override

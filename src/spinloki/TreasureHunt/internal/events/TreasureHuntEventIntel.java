@@ -95,6 +95,11 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     }
 
     @Override
+    public int getMaxMonthlyProgress() {
+        return THRegistry.getSettings().getMaxMonthlyProgress();
+    }
+
+    @Override
     protected String getStageIconImpl(Object stageId) {
         EventStageData esd = getDataFor(stageId);
         if (esd == null) return null;

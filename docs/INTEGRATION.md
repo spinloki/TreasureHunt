@@ -13,7 +13,9 @@ This guide walks you through integrating your mod with Treasure Hunt, from simpl
 3. [Registering a Scavenger Swarm Faction (JSON only)](#3-registering-a-scavenger-swarm-faction)
 4. [Registering a Faction with Custom Behavior (Java)](#4-registering-a-faction-with-custom-behavior)
 5. [Creating a Custom Opportunity (Java)](#5-creating-a-custom-opportunity)
-6. [API Reference](#6-api-reference)
+6. [Adding Custom Progress Factors (Java)](#6-adding-custom-progress-factors)
+7. [Custom Hassle Dialog (rules.csv)](#7-custom-hassle-dialog)
+8. [API Reference](#8-api-reference)
 
 ---
 
@@ -143,10 +145,10 @@ The `template` field selects a behavior archetype:
 
 | Template | Fleet Type | Behavior |
 |----------|-----------|----------|
-| `SCAVENGER` | Scavenger fleet | Explores, "salvages" (like vanilla scavengers). No hassling. (Pirates/Independents) |
-| `ENFORCER` | Inspection fleet | Explores, hassles the player with inspections. (Hegemony/Persean) |
-| `INQUISITOR` | Raider fleet | Explores, hassles the player with inspections. (Luddic Path/Church) |
-| `PRIVATEER` | Privateer fleet | Explores, no hassling. (Tri-Tachyon) |
+| `SCAVENGER` | Scavenger fleet | Explores only. No hassling. |
+| `ENFORCER` | Inspection fleet | Explores and hassles the player with inspections. |
+
+Fleet type, composition, and other parameters can be overridden per-faction (see below).
 
 ### Optional Overrides
 
@@ -353,7 +355,204 @@ The key must match what `getIcon()` returns (e.g. `"my_opportunity"`). If no mat
 
 ---
 
-## 6. API Reference
+## 6. Adding Custom Progress Factors
+
+If your mod introduces new player activities that should contribute progress toward the treasure hunt, you can create custom factors and add them via the API.
+
+### One-Time Factors
+
+For discrete events (player did a thing, gets progress once):
+
+```java
+import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
+import com.fs.starfarer.api.impl.campaign.intel.events.BaseOneTimeFactor;
+import spinloki.TreasureHunt.api.THApi;
+
+public class MyCustomFactor extends BaseOneTimeFactor {
+    public MyCustomFactor(int points) {
+        super(points);
+    }
+
+    @Override
+    public String getDesc(BaseEventIntel intel) {
+        return "Recovered data from a mysterious artifact";
+    }
+}
+```
+
+Then, wherever your mod detects the relevant player action:
+
+```java
+THApi.addProgress(new MyCustomFactor(25), dialog); // dialog can be null if not in a dialog
+```
+
+### Recurring Factors
+
+For ongoing sources (contributes progress every month while active):
+
+```java
+import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventFactor;
+import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
+import spinloki.TreasureHunt.api.THApi;
+
+public class MyRecurringFactor extends BaseEventFactor {
+    private final String sourceName;
+    private final int monthlyProgress;
+
+    public MyRecurringFactor(String sourceName, int monthlyProgress) {
+        super();
+        this.sourceName = sourceName;
+        this.monthlyProgress = monthlyProgress;
+    }
+
+    @Override
+    public String getDesc(BaseEventIntel intel) {
+        return "Signal intercepts from " + sourceName;
+    }
+
+    @Override
+    public int getProgress(BaseEventIntel intel) {
+        return monthlyProgress;
+    }
+
+    @Override
+    public boolean isExpired() {
+        return false; // return true when this source should stop contributing
+    }
+}
+```
+
+Add it once when the source is established:
+
+```java
+THApi.addProgress(new MyRecurringFactor("Abandoned Relay", 10), null);
+```
+
+### Notes
+
+- `BaseOneTimeFactor` applies its points immediately and then expires. `BaseEventFactor` contributes its `getProgress()` value every month until `isExpired()` returns true.
+- Override `getMainRowTooltip()` to show a custom tooltip when the player hovers over your factor in the Treasure Hunt intel screen.
+- The treasure hunt event is created automatically if it doesn't exist yet when you call `addProgress()`.
+
+---
+
+## 7. Custom Hassle Dialog
+
+When a faction is registered with the `ENFORCER` template, its scavenger swarm fleets will hassle the player with a "restricted system inspection" dialog. By default, factions that don't have faction-specific dialog entries in `rules.csv` will use the generic fallback text.
+
+To add custom dialog text for your faction, add entries to your own mod's `data/campaign/rules.csv`. This is safe even if TreasureHunt is not installed, because the rules gate on memory flags (`$entity.thRestrictConv`, `$entity.thRestrictFaction`) that are only set by TreasureHunt's fleet manager, so they can never fire without TreasureHunt present.
+
+### Dialog Structure
+
+The hassle dialog has three phases:
+
+1. **Opening hail** (`OpenCommLink`) — The fleet commander contacts the player and demands inspection
+2. **Player options** (`THRestrictedOptions`) — Comply, refuse, or cut comms (handled by built-in rules)
+3. **Refuse response** (`DialogOptionSelected`) — Faction-specific reaction when the player refuses
+
+You only need to provide text for phases 1 and 3. Phase 2 (the option buttons) is handled automatically.
+
+### Opening Hail Rules
+
+Each faction needs two opening rules — one for when the fleet is **stronger** than the player, one for when it's **weaker**. The distinction affects both dialog tone and gameplay: strong fleets force disengage prevention, weak fleets don't.
+
+Use a `score` higher than the fallback (`50`/`40`) but lower than the built-in factions (`300`/`250`). A score of `200`/`150` works well.
+
+```csv
+thRestrictComms_MyFaction,OpenCommLink,"$entity.thRestrictConv score:200
+$entity.relativeStrength >= 0
+$entity.thRestrictFaction == my_faction","$entity.ignorePlayerCommRequests = true 7
+FireAll THRestrictedOptions","Your opening hail text when the fleet is STRONGER than the player.",,
+thRestrictComms_MyFactionWk,OpenCommLink,"$entity.thRestrictConv score:150
+$entity.relativeStrength < 0
+$entity.thRestrictFaction == my_faction","$entity.ignorePlayerCommRequests = true 7
+MakeOtherFleetPreventDisengage hassle false
+FireAll THRestrictedOptions","Your opening hail text when the fleet is WEAKER than the player.",,
+```
+
+Key points for opening rules:
+- The **strong** variant omits `MakeOtherFleetPreventDisengage` (the initiator already set it to true)
+- The **weak** variant includes `MakeOtherFleetPreventDisengage hassle false` to let the player leave
+- Both must include `$entity.ignorePlayerCommRequests = true 7` and `FireAll THRestrictedOptions`
+- The text column supports standard Starsector variables: `$post`, `$heOrShe`, `$hisOrHer`, `$himOrHer`, `$manOrWoman`, `$HeOrShe`, `$HisOrHer`
+
+### Refuse Response Rules
+
+Each faction needs two refuse rules — strong (escalates to hostility) and weak (backs down).
+
+```csv
+thRestrictRefuseSel_MyFaction_Strong,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.thRestrictFaction == my_faction
+$entity.relativeStrength >= 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+$thRestrictMadeHostile = true 0
+MakeOtherFleetHostile thRestrictedInspection true 3
+MakeOtherFleetAggressive thRestrictedInspection true 3
+FireAll THRestrictedOptions","Your refusal text when the fleet is STRONGER (they escalate).",,
+thRestrictRefuseSel_MyFaction_Weak,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.thRestrictFaction == my_faction
+$entity.relativeStrength < 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+MakeOtherFleetPreventDisengage hassle false
+MakeOtherFleetAggressive thRestrictedInspection false 2
+MakeOtherFleetHostile thRestrictedInspection false 2","Your refusal text when the fleet is WEAKER (they back down).",cutCommLinkNoText:Cut the comm link,
+```
+
+Key points for refuse rules:
+- The **strong** variant sets `$thRestrictMadeHostile = true 0` and makes the fleet hostile+aggressive, then calls `FireAll THRestrictedOptions` to re-present options (the refuse button is removed, so the player must comply or cut comms)
+- The **weak** variant releases the disengage lock and de-escalates, then provides the `cutCommLinkNoText` option
+- Both must set `$thRestrictFailedToRefuse = true 0` and `RemoveOption thRestrict_Refuse`
+
+### Complete Example
+
+A four-rule set for a hypothetical "Shadowguard" faction:
+
+```csv
+thRestrictComms_Shadow,OpenCommLink,"$entity.thRestrictConv score:200
+$entity.relativeStrength >= 0
+$entity.thRestrictFaction == shadowguard","$entity.ignorePlayerCommRequests = true 7
+FireAll THRestrictedOptions","A masked $post materializes on screen.
+
+""You have entered a restricted zone. Submit to scan protocol immediately. Non-compliance will be met with lethal force.""",,
+thRestrictComms_ShadowWk,OpenCommLink,"$entity.thRestrictConv score:150
+$entity.relativeStrength < 0
+$entity.thRestrictFaction == shadowguard","$entity.ignorePlayerCommRequests = true 7
+MakeOtherFleetPreventDisengage hassle false
+FireAll THRestrictedOptions","A masked $post appears, voice tense.
+
+""Captain. This zone is restricted. We... request your cooperation with a scan.""",,
+thRestrictRefuseSel_Shadow_Strong,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.thRestrictFaction == shadowguard
+$entity.relativeStrength >= 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+$thRestrictMadeHostile = true 0
+MakeOtherFleetHostile thRestrictedInspection true 3
+MakeOtherFleetAggressive thRestrictedInspection true 3
+FireAll THRestrictedOptions","The $post tilts $hisOrHer head. ""Unfortunate."" A pause.
+
+""All units: weapons free.""",,
+thRestrictRefuseSel_Shadow_Weak,DialogOptionSelected,"$option == thRestrict_Refuse
+$entity.thRestrictFaction == shadowguard
+$entity.relativeStrength < 0","RemoveOption thRestrict_Refuse
+$thRestrictFailedToRefuse = true 0
+MakeOtherFleetPreventDisengage hassle false
+MakeOtherFleetAggressive thRestrictedInspection false 2
+MakeOtherFleetHostile thRestrictedInspection false 2","A long silence. Then: ""...Acknowledged. But know that you have been logged.""
+
+The comm link drops.",cutCommLinkNoText:Cut the comm link,
+```
+
+### What You Don't Need to Add
+
+The following are handled by built-in rules and work for all factions automatically:
+- The comply flow (inspection, CR damage, dismissal text)
+- The "cut comm link" option (initiates combat)
+- The hassle initiator (`thRestrictInitial`) and its `BeginFleetEncounter` trigger
+- Option population (`THRestrictedOptions`)
+
+---
+
+## 8. API Reference
 
 ### THApi
 
@@ -361,6 +560,7 @@ The public entry point. All methods are static.
 
 | Method | Description |
 |--------|-------------|
+| `addProgress(EventFactor, InteractionDialogAPI)` | Add a progress factor to the treasure hunt. Creates the event if needed. |
 | `registerOpportunity(ITHOpportunity)` | Add a custom opportunity to the weighted pool. Call in `onGameLoad()`. |
 | `registerFaction(String, THFactionConfig)` | Register a faction with full custom config. Call in `onGameLoad()`. |
 | `registerFaction(String, THFactionTemplate)` | Register a faction with a preset template. Call in `onGameLoad()`. |
@@ -369,7 +569,7 @@ The public entry point. All methods are static.
 
 ### THFactionTemplate
 
-Enum of behavior archetypes: `SCAVENGER`, `ENFORCER`, `INQUISITOR`, `PRIVATEER`.
+Enum of behavior archetypes: `SCAVENGER` (explores only), `ENFORCER` (explores and hassles).
 
 ### THFactionConfig.Builder
 
