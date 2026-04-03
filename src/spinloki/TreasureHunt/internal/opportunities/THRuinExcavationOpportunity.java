@@ -15,27 +15,20 @@ import java.util.*;
 
 public class THRuinExcavationOpportunity extends BaseTHOpportunity {
 
-    private boolean exhausted = false;
-
     @Override
     public float getProbabilityWeight() {
-        return exhausted ? 0 : super.getProbabilityWeight();
+        if (!hasValidTargetPlanets()) return 0;
+        return super.getProbabilityWeight();
     }
 
     @Override
     public void trigger() {
         super.trigger();
         PlanetAPI planet = pickTargetPlanet();
-        if (planet == null) {
-            exhausted = true;
-            return;
-        }
+        if (planet == null) return;
 
         String factionId = pickFaction(planet);
-        if (factionId == null) {
-            exhausted = true;
-            return;
-        }
+        if (factionId == null) return;
 
         new THRuinExcavationIntel(planet, factionId, getIconPath());
     }
@@ -53,12 +46,9 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
     private PlanetAPI pickTargetPlanet() {
         WeightedRandomPicker<PlanetAPI> vastPicker = new WeightedRandomPicker<>();
         WeightedRandomPicker<PlanetAPI> extensivePicker = new WeightedRandomPicker<>();
-        WeightedRandomPicker<PlanetAPI> widespreadPicker = new WeightedRandomPicker<>();
-        WeightedRandomPicker<PlanetAPI> scatteredPicker = new WeightedRandomPicker<>();
 
         for (StarSystemAPI system : Global.getSector().getStarSystems()) {
             if (system.isEnteredByPlayer()) continue;
-            // Skip dangerous systems — pulsars and hostile Remnants
             if (system.hasPulsar()) continue;
             if (system.hasTag(Tags.THEME_REMNANT_MAIN)) continue;
             if (system.hasTag(Tags.THEME_REMNANT_SECONDARY)) continue;
@@ -69,30 +59,41 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
                 MarketAPI market = planet.getMarket();
                 if (market == null) continue;
                 if (market.isPlayerOwned()) continue;
-                // Skip colonized planets
                 if (!market.isPlanetConditionMarketOnly()) continue;
-
                 if (!Misc.hasRuins(market)) continue;
 
                 String ruinsType = Misc.getRuinsType(market);
                 switch (ruinsType) {
                     case "ruins_vast" -> vastPicker.add(planet);
                     case "ruins_extensive" -> extensivePicker.add(planet);
-                    case "ruins_widespread" -> widespreadPicker.add(planet);
-                    default -> scatteredPicker.add(planet);
+                    default -> {} // scattered/widespread not eligible
                 }
             }
         }
 
         if (!vastPicker.isEmpty()) return vastPicker.pick();
-        if (!extensivePicker.isEmpty()) return extensivePicker.pick();
-        // Widespread or worse — exhaust this opportunity after this pick
-        if (!widespreadPicker.isEmpty()) {
-            exhausted = true;
-            return widespreadPicker.pick();
+        return extensivePicker.pick(); // returns null if empty
+    }
+
+    private boolean hasValidTargetPlanets() {
+        for (StarSystemAPI system : Global.getSector().getStarSystems()) {
+            if (system.isEnteredByPlayer()) continue;
+            if (system.hasPulsar()) continue;
+            if (system.hasTag(Tags.THEME_REMNANT_MAIN)) continue;
+            if (system.hasTag(Tags.THEME_REMNANT_SECONDARY)) continue;
+
+            for (PlanetAPI planet : system.getPlanets()) {
+                if (planet.isStar() || planet.isGasGiant()) continue;
+                MarketAPI market = planet.getMarket();
+                if (market == null) continue;
+                if (market.isPlayerOwned()) continue;
+                if (!market.isPlanetConditionMarketOnly()) continue;
+                if (!Misc.hasRuins(market)) continue;
+                String ruinsType = Misc.getRuinsType(market);
+                if ("ruins_vast".equals(ruinsType) || "ruins_extensive".equals(ruinsType)) return true;
+            }
         }
-        exhausted = true;
-        return scatteredPicker.pick();
+        return false;
     }
 
     /**

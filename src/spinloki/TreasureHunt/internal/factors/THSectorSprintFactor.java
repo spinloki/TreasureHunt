@@ -14,18 +14,19 @@ import spinloki.TreasureHunt.internal.registry.THRegistry;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class THSectorSprintFactor  extends BaseEventFactor {
-    List<SectorEntityToken> relays;
+    Set<String> relayIds;
     StarSystemAPI starSystem;
     boolean hasDomainEraRelay;
     int BASE_PROGRESS;
-    boolean ENABLED = true;
     THSectorSprintIntel parent;
 
     public THSectorSprintFactor(List<SectorEntityToken> relays, THSectorSprintIntel parent){
         super();
-        this.relays = relays;
+        this.relayIds = relays.stream().map(SectorEntityToken::getId).collect(Collectors.toSet());
         this.parent = parent;
         this.starSystem = relays.get(0).getStarSystem();
         BASE_PROGRESS = THRegistry.getSettings().getSectorSprintReward();
@@ -39,7 +40,7 @@ public class THSectorSprintFactor  extends BaseEventFactor {
 
     @Override
     public boolean shouldShow(BaseEventIntel intel) {
-        return ENABLED;
+        return true;
     }
 
     @Override
@@ -88,12 +89,13 @@ public class THSectorSprintFactor  extends BaseEventFactor {
     }
 
     private boolean relayListChanged(){
-        var currentPlayerOwnedRelays = starSystem
+        Set<String> currentRelayIds = starSystem
                 .getEntitiesWithTag(Tags.COMM_RELAY)
                 .stream()
                 .filter(r -> r.getFaction() == Global.getSector().getPlayerFaction())
-                .toList();
-        return this.relays.size() != currentPlayerOwnedRelays.size();
+                .map(SectorEntityToken::getId)
+                .collect(Collectors.toSet());
+        return !this.relayIds.equals(currentRelayIds);
     }
 
     @Override

@@ -19,7 +19,7 @@ th_luna_raid_dr_recovery,Raid DR Recovery Days,Int,100,,"Days for a raided marke
 ,,,,,,,,
 th_luna_rewardsHeader,Treasures,Header,Treasures,,,,,Treasures
 th_luna_num_leads,Lead Candidates,Int,3,,"Number of treasure candidates to choose from when you find a lead. Fewer may appear if the pool is small.",1,10,Treasures
-th_luna_blueprint_weight,Blueprint Weight,Double,0.5,,"Weight for selecting blueprint packages as treasure rewards. Higher values make blueprints more likely.",0,1,Treasures
+th_luna_one_time_weight,One-Time Item Weight,Double,0.5,,"Chance of selecting a one-time item (e.g. blueprints) as a treasure reward vs. a repeatable item. Higher values make one-time items more likely.",0,1,Treasures
 ,,,,,,,,
 th_luna_miscHeader,Misc,Header,Misc,,,,,Misc
 th_luna_hassling,Enable Hassling,Boolean,true,,"Whether enforcer faction fleets in the scavenger swarm can stop and inspect the player.",,,Misc

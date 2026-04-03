@@ -15,7 +15,7 @@
 	},
 	"th_colony_tech_mining_progress_multiplier": 2,
     "th_sector_sprint_reward": 60,
-    "th_pick_blueprint_weight": 0.5,
+    "th_pick_one_time_weight": 0.5,
 
 	# When enabled, raiding a market will drop the progress reward for that colony,
 	# to the value * factor, recovering at a linear rate

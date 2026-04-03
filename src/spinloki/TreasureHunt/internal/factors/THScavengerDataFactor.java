@@ -1,21 +1,16 @@
 package spinloki.TreasureHunt.internal.factors;
 
-import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseOneTimeFactor;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
-import com.fs.starfarer.api.util.Misc;
-import spinloki.TreasureHunt.internal.registry.THRegistry;
 import spinloki.TreasureHunt.util.THUtils;
 
 public class THScavengerDataFactor extends BaseOneTimeFactor {
 
     public THScavengerDataFactor(int points) {
         super(points);
-        int boost = (int) Misc.getFleetwideTotalMod(Global.getSector().getPlayerFleet(), THUtils.TH_TREASURE_HUNT_BOOST, 0);
-        float mult = THRegistry.getSettings().getTreasureHuntPackageMaxMult();
-        this.points = (int) Math.min(points * mult, points + boost);
+        this.points = THUtils.applyBoost(points);
     }
 
     @Override

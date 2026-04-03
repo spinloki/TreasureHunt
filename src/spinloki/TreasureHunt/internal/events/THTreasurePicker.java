@@ -52,21 +52,33 @@ public class THTreasurePicker implements ShowLootListener {
     }
 
     public Set<String> getRandomUnseenItems(int count, Random random) {
-        Set<String> combinedPool = new HashSet<>();
-        combinedPool.addAll(repeatableCandidates);
-        combinedPool.addAll(oneTimeCandidates);
+        float oneTimeWeight = THRegistry.getRewardRegistry().getPickOneTimeWeight();
 
-        WeightedRandomPicker<String> picker = new WeightedRandomPicker<>(random);
-        picker.addAll(combinedPool);
+        WeightedRandomPicker<String> oneTimePicker = new WeightedRandomPicker<>(random);
+        for (String id : oneTimeCandidates) {
+            oneTimePicker.add(id);
+        }
+        WeightedRandomPicker<String> repeatablePicker = new WeightedRandomPicker<>(random);
+        for (String id : repeatableCandidates) {
+            repeatablePicker.add(id);
+        }
 
         Set<String> result = new HashSet<>();
 
-        for (int i = 0; i < count && !picker.isEmpty(); i++) {
-            String pick = picker.pickAndRemove();
-            result.add(pick);
+        for (int i = 0; i < count; i++) {
+            boolean pickOneTime = !oneTimePicker.isEmpty() && random.nextFloat() < oneTimeWeight;
+            if (pickOneTime) {
+                result.add(oneTimePicker.pickAndRemove());
+            } else if (!repeatablePicker.isEmpty()) {
+                result.add(repeatablePicker.pickAndRemove());
+            } else if (!oneTimePicker.isEmpty()) {
+                result.add(oneTimePicker.pickAndRemove());
+            } else {
+                break;
+            }
         }
 
-        if (picker.isEmpty()){
+        if (repeatablePicker.isEmpty()) {
             addRepeatableItems();
         }
 

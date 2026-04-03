@@ -48,27 +48,48 @@ public class THRuinExcavationIntel extends BaseIntelPlugin {
         THFactionConfig config = THRegistry.getFactionRegistry().get(factionId);
         Random random = new Random();
 
-        // Pick a station variant and name
+        stationFleet = createStationFleet(config, system, random);
+        configureStationInteraction(stationFleet);
+
+        system.addEntity(stationFleet);
+        stationFleet.clearAbilities();
+        stationFleet.addAbility("transponder");
+        stationFleet.getAbility("transponder").activate();
+        stationFleet.getDetectedRangeMod().modifyFlat("th_excavation", 1000f);
+
+        float orbitRadius = planet.getRadius() + 200f;
+        float angle = random.nextFloat() * 360f;
+        stationFleet.setCircularOrbit(planet, angle, orbitRadius, 45f);
+
+        FleetMemberAPI member = stationFleet.getFleetData().getMembersListCopy().get(0);
+        member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
+
+        spawnDefendingFleet(config, system, random);
+
+        stationFleet.getMemoryWithoutUpdate().set(THUtils.MEMORY_KEY_TH_SCAVENGER, true);
+
+        String factionName = Misc.ucFirst(Global.getSector().getFaction(factionId).getDisplayName());
+        planet.getMemoryWithoutUpdate().set("$th_excavation_faction", factionName);
+        planet.getMemoryWithoutUpdate().set("$th_excavation_blocked", true);
+    }
+
+    private CampaignFleetAPI createStationFleet(THFactionConfig config, StarSystemAPI system, Random random) {
         String variantId = config.pickStationEntityType(random);
-        String stationName = "Orbital Station";
-
-        // Create a fleet in station mode (like the Remnant Nexus pattern)
-        stationFleet = FleetFactoryV3.createEmptyFleet(factionId, "battlestation", null);
+        CampaignFleetAPI fleet = FleetFactoryV3.createEmptyFleet(factionId, "battlestation", null);
         FleetMemberAPI member = Global.getFactory().createFleetMember(FleetMemberType.SHIP, variantId);
-        stationFleet.getFleetData().addFleetMember(member);
-        stationFleet.setName(stationName);
+        fleet.getFleetData().addFleetMember(member);
+        fleet.setName("Orbital Station");
+        fleet.setStationMode(true);
+        fleet.setAI(null);
+        fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_LOW_REP_IMPACT, true);
+        fleet.getMemoryWithoutUpdate().set("$cfai_noJump", true);
+        fleet.getMemoryWithoutUpdate().set("$th_excavation_station", true);
+        return fleet;
+    }
 
-        // Station mode: behaves as a static station, not a moving fleet
-        stationFleet.setStationMode(true);
-        stationFleet.setAI(null);
-
-        // Reduced rep penalty when player attacks (not auto-hostile)
-        stationFleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_LOW_REP_IMPACT, true);
-        stationFleet.getMemoryWithoutUpdate().set("$cfai_noJump", true);
-
-        // Set up interaction config — comm link available, player can leave
+    private void configureStationInteraction(CampaignFleetAPI fleet) {
         // Note: "$fidConifgGen" is vanilla's spelling (typo in the Starsector API)
-        stationFleet.getMemoryWithoutUpdate().set("$fidConifgGen",
+        fleet.getMemoryWithoutUpdate().set("$fidConifgGen",
                 (FleetInteractionDialogPluginImpl.FIDConfigGen) () -> {
                     var fidConfig = new FleetInteractionDialogPluginImpl.FIDConfig();
                     fidConfig.leaveAlwaysAvailable = true;
@@ -91,39 +112,6 @@ public class THRuinExcavationIntel extends BaseIntelPlugin {
                     };
                     return fidConfig;
                 });
-
-        // Tag for identification in rules.csv (station itself, no comm link SP)
-        stationFleet.getMemoryWithoutUpdate().set("$th_excavation_station", true);
-
-        // Add to the system
-        system.addEntity(stationFleet);
-
-        // Remove fleet abilities — station doesn't move (stationMode handles that)
-        stationFleet.clearAbilities();
-        stationFleet.addAbility("transponder");
-        stationFleet.getAbility("transponder").activate();
-        stationFleet.getDetectedRangeMod().modifyFlat("th_excavation", 1000f);
-
-        // Orbit the planet
-        float orbitRadius = planet.getRadius() + 200f;
-        float angle = random.nextFloat() * 360f;
-        stationFleet.setCircularOrbit(planet, angle, orbitRadius, 45f);
-
-        // Set max CR on the station ship
-        member.getRepairTracker().setCR(member.getRepairTracker().getMaxCR());
-
-        // Spawn a separate defending fleet that orbits the station
-        spawnDefendingFleet(config, system, random);
-
-        // Tag the station fleet so defeating it gives TH progress
-        stationFleet.getMemoryWithoutUpdate().set(THUtils.MEMORY_KEY_TH_SCAVENGER, true);
-
-        // Store faction name for rules.csv text
-        String factionName = Misc.ucFirst(Global.getSector().getFaction(factionId).getDisplayName());
-        planet.getMemoryWithoutUpdate().set("$th_excavation_faction", factionName);
-
-        // Block survey and ruins exploration while station exists
-        planet.getMemoryWithoutUpdate().set("$th_excavation_blocked", true);
     }
 
     private void spawnDefendingFleet(THFactionConfig config, StarSystemAPI system, Random random) {

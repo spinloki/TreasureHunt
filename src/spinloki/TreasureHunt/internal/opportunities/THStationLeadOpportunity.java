@@ -21,7 +21,6 @@ public class THStationLeadOpportunity extends BaseTHOpportunity{
             "Orbital Habitat"
     ));
     private final Set<String> revealed = new HashSet<>();
-    private final List<String> locations = new ArrayList<>();
 
     @Override
     public float getProbabilityWeight() {

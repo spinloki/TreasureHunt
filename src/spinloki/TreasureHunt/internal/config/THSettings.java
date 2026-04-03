@@ -25,7 +25,7 @@ public class THSettings {
     private int colonyTechMiningProgressMultiplier;
     private int maxMonthlyProgress = 30;
     private int sectorSprintReward;
-    private float pickBlueprintWeight;
+    private float pickOneTimeWeight;
     private boolean raidDiminishingReturnsEnabled;
     private float raidDiminishingReturnsFactor;
     private int raidDiminishingReturnsRecoveryDays;
@@ -54,7 +54,7 @@ public class THSettings {
         colonyRuinsBaseProgress = json.getJSONObject("th_colony_ruins_base_progress");
         colonyTechMiningProgressMultiplier = json.getInt("th_colony_tech_mining_progress_multiplier");
         sectorSprintReward = json.getInt("th_sector_sprint_reward");
-        pickBlueprintWeight = (float) json.getDouble("th_pick_blueprint_weight");
+        pickOneTimeWeight = (float) json.getDouble("th_pick_one_time_weight");
         raidDiminishingReturnsEnabled = json.getBoolean("th_raid_diminishing_returns_enabled");
         raidDiminishingReturnsFactor = (float) json.getDouble("th_raid_diminishing_returns_factor");
         raidDiminishingReturnsRecoveryDays = json.getInt("th_raid_diminishing_returns_recovery_days");
@@ -138,8 +138,8 @@ public class THSettings {
             v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_num_leads");
             if (v != null) numLeadCandidates = v;
 
-            d = lunalib.lunaSettings.LunaSettings.getDouble(MOD_ID, "th_luna_blueprint_weight");
-            if (d != null) pickBlueprintWeight = d.floatValue();
+            d = lunalib.lunaSettings.LunaSettings.getDouble(MOD_ID, "th_luna_one_time_weight");
+            if (d != null) pickOneTimeWeight = d.floatValue();
 
             b = lunalib.lunaSettings.LunaSettings.getBoolean(MOD_ID, "th_luna_hassling");
             if (b != null) scavengerSwarmHasslingEnabled = b;
@@ -171,7 +171,7 @@ public class THSettings {
     public int getColonyTechMiningProgressMultiplier() { return colonyTechMiningProgressMultiplier; }
     public int getMaxMonthlyProgress() { return maxMonthlyProgress; }
     public int getSectorSprintReward() { return sectorSprintReward; }
-    public float getPickBlueprintWeight() { return pickBlueprintWeight; }
+    public float getPickOneTimeWeight() { return pickOneTimeWeight; }
     public boolean isRaidDiminishingReturnsEnabled() { return raidDiminishingReturnsEnabled; }
     public float getRaidDiminishingReturnsFactor() { return raidDiminishingReturnsFactor; }
     public int getRaidDiminishingReturnsRecoveryDays() { return raidDiminishingReturnsRecoveryDays; }

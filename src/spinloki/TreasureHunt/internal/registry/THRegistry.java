@@ -30,7 +30,7 @@ public class THRegistry {
         settings = new THSettings();
         settings.load();
         rewardRegistry = new THRewardRegistry();
-        rewardRegistry.loadFromSettings(settings.getPickBlueprintWeight());
+        rewardRegistry.loadFromSettings(settings.getPickOneTimeWeight());
     }
 
     public static void reset() {

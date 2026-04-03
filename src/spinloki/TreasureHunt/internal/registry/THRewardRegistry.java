@@ -21,10 +21,10 @@ public class THRewardRegistry {
     private JSONArray oneTimeItems;
     private JSONArray repeatItems;
     private JSONObject blueprintPackages;
-    private float pickBlueprintWeight;
+    private float pickOneTimeWeight;
 
     @SuppressWarnings("unchecked")
-    public void loadFromSettings(float pickBlueprintWeight) {
+    public void loadFromSettings(float pickOneTimeWeight) {
         try {
             this.rewards = Global.getSettings().getJSONObject("th_rewards");
         } catch (JSONException e) {
@@ -49,7 +49,7 @@ public class THRewardRegistry {
             log.warn("No th_blueprints_packages found in settings.json", e);
             this.blueprintPackages = new JSONObject();
         }
-        this.pickBlueprintWeight = pickBlueprintWeight;
+        this.pickOneTimeWeight = pickOneTimeWeight;
     }
 
     // --- Reward lookups ---
@@ -116,8 +116,8 @@ public class THRewardRegistry {
 
     // --- Blueprint packages ---
 
-    public float getPickBlueprintWeight() {
-        return pickBlueprintWeight;
+    public float getPickOneTimeWeight() {
+        return pickOneTimeWeight;
     }
 
     @SuppressWarnings("unchecked")

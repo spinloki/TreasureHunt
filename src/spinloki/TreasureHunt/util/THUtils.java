@@ -12,6 +12,7 @@ import com.fs.starfarer.api.util.WeightedRandomPicker;
 import com.fs.starfarer.campaign.*;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
+import spinloki.TreasureHunt.internal.registry.THRegistry;
 
 import java.util.*;
 
@@ -21,6 +22,12 @@ public class THUtils {
     public static final String MEMORY_KEY_TH_SCAVENGER = "$isThScavenger";
 
     public static final String MISSING_IMAGE_FALLBACK = "graphics/icons/campaign/major_bad_event.png";
+
+    public static int applyBoost(int points) {
+        int boost = (int) Misc.getFleetwideTotalMod(Global.getSector().getPlayerFleet(), TH_TREASURE_HUNT_BOOST, 0);
+        float mult = THRegistry.getSettings().getTreasureHuntPackageMaxMult();
+        return (int) Math.min(points * mult, points + boost);
+    }
 
     public static boolean isScavenger(CampaignFleetAPI fleet) {
         return fleet.getMemoryWithoutUpdate().getBoolean(MEMORY_KEY_TH_SCAVENGER) ||

@@ -13,8 +13,12 @@ import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.internal.factors.THSectorSprintFactor;
 import spinloki.TreasureHunt.internal.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.util.THUtils;
+import com.fs.starfarer.api.campaign.BattleAPI;
+import com.fs.starfarer.api.campaign.CampaignEventListener.FleetDespawnReason;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.campaign.FleetAssignment;
+import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.campaign.listeners.FleetEventListener;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetFactoryV3;
 import com.fs.starfarer.api.impl.campaign.fleets.FleetParamsV3;
 import com.fs.starfarer.api.impl.campaign.ids.Factions;
@@ -24,7 +28,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class THSectorSprintIntel extends BaseIntelPlugin {
+public class THSectorSprintIntel extends BaseIntelPlugin implements FleetEventListener {
     private float daysRemaining = 60f;
     private final StarSystemAPI targetSystem;
     private final String icon;
@@ -69,14 +73,6 @@ public class THSectorSprintIntel extends BaseIntelPlugin {
                 TreasureHuntEventIntel.addFactorCreateIfNecessary(new THSectorSprintFactor(relays, this), null);
             }
             this.relays = relays;
-            if (meddlerFleetId != null) {
-                SectorEntityToken e = Global.getSector().getEntityById(meddlerFleetId);
-                if (e instanceof CampaignFleetAPI) {
-                    meddlingActive = ((CampaignFleetAPI) e).isAlive();
-                } else {
-                    meddlingActive = false;
-                }
-            }
         }
     }
 
@@ -182,7 +178,54 @@ public class THSectorSprintIntel extends BaseIntelPlugin {
 
         if (meddlerFleetId != null) {
             SectorEntityToken e = Global.getSector().getEntityById(meddlerFleetId);
-            if (e != null) e.setExpired(true);
+            if (e instanceof CampaignFleetAPI fleet) {
+                dismissMeddlerFleet(fleet);
+            }
+        }
+    }
+
+    @Override
+    public void reportBattleOccurred(CampaignFleetAPI fleet, CampaignFleetAPI primaryWinner, BattleAPI battle) {
+        if (fleet.isAlive()) {
+            dismissMeddlerFleet(fleet);
+        } else {
+            meddlingActive = false;
+            meddlerFleetId = null;
+        }
+    }
+
+    @Override
+    public void reportFleetDespawnedToListener(CampaignFleetAPI fleet, FleetDespawnReason reason, Object param) {
+        meddlingActive = false;
+        meddlerFleetId = null;
+    }
+
+    private void dismissMeddlerFleet(CampaignFleetAPI fleet) {
+        meddlingActive = false;
+        meddlerFleetId = null;
+
+        fleet.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_MAKE_HOSTILE);
+        fleet.getMemoryWithoutUpdate().unset(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE);
+        fleet.setNoAutoDespawn(false);
+        fleet.clearAssignments();
+        fleet.setOrbit(null);
+
+        SectorEntityToken destination = null;
+        for (MarketAPI m : Global.getSector().getEconomy().getMarketsCopy()) {
+            if (m.isHidden() || !Factions.PIRATES.equals(m.getFactionId())) continue;
+            if (destination == null ||
+                    Misc.getDistanceLY(fleet.getLocationInHyperspace(),
+                            m.getLocationInHyperspace())
+                    < Misc.getDistanceLY(fleet.getLocationInHyperspace(),
+                            destination.getLocationInHyperspace())) {
+                destination = m.getPrimaryEntity();
+            }
+        }
+        if (destination != null) {
+            fleet.addAssignment(FleetAssignment.GO_TO_LOCATION_AND_DESPAWN,
+                    destination, 1000f, "returning to port");
+        } else {
+            Misc.fadeAndExpire(fleet);
         }
     }
 
@@ -197,9 +240,10 @@ public class THSectorSprintIntel extends BaseIntelPlugin {
 
         String id = MEDDLER_FLEET_ID_PREFIX + targetSystem.getId();
         SectorEntityToken existing = Global.getSector().getEntityById(id);
-        if (existing instanceof CampaignFleetAPI && existing.getStarSystem() == targetSystem) {
+        if (existing instanceof CampaignFleetAPI existingFleet && existing.getStarSystem() == targetSystem) {
             meddlerFleetId = id;
-            meddlingActive = ((CampaignFleetAPI) existing).isAlive();
+            meddlingActive = existingFleet.isAlive();
+            existingFleet.addEventListener(this);
             return;
         }
 
@@ -232,6 +276,7 @@ public class THSectorSprintIntel extends BaseIntelPlugin {
         // Make it a problem for the player
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_HOSTILE, true);
         fleet.getMemoryWithoutUpdate().set(MemFlags.MEMORY_KEY_MAKE_AGGRESSIVE, true);
+        fleet.addEventListener(this);
 
         system.addEntity(fleet);
 
