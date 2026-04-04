@@ -300,7 +300,7 @@
         },
         "tritachyon": {
             "template": "SCAVENGER",
-            "fleetType": "mercPrivateer",
+            "fleetType": "mercArmada",
             "fleetName": "Special Procurement Detachment",
             "freighterPts": 10.0,
             "tankerPts": 5.0,

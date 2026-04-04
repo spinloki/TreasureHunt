@@ -324,7 +324,7 @@ The comm link connection abruptly closes.",,
 thExcavation_interceptSurvey,DialogOptionSelected,"$option == surveyPerform
 $market.isPlanetConditionMarketOnly
 $th_excavation_ground_ops score:1000","TH_CMD excavationBombardMenu
-SetStoryOption thExcTrick 1 thExcTrickDefenders ui_char_spent_story_point ""Tricked excavation defenders into leaving fortifications""",Your survey teams report being harried by vengeful operatives from the $th_excavation_faction. They are dug into the ruins and will have to be dealt with before you can conduct a proper survey.,"thExcRaid:Raid the excavation site
+SetStoryOption thExcTrick 1 thExcTrickDefenders ui_char_spent_story_point ""Tricked excavation defenders into leaving fortifications""",Your survey teams report being harried by vengeful operatives from $th_excavation_faction_the. They are dug into the ruins and will have to be dealt with before you can conduct a proper survey.,"thExcRaid:Raid the excavation site
 thExcBombard:Prepare an orbital bombardment
 thExcTrick:Convince the operatives to leave their fortifications
 thExcGroundOpsGoBack:Go back",
@@ -340,7 +340,7 @@ FireAll PopulateOptions",,,
 # Ruin Excavation - raid flow,,,,,,
 thExcavation_raidSel,DialogOptionSelected,$option == thExcRaid,"$raidDifficulty = 100 0
 $raidGoBackTrigger = thExcRaidGoBack 0
-$raidContinueTrigger = thExcRaidContinue 0",Your marines prepare to assault the $th_excavation_faction excavation site on the planet's surface. Resistance is expected from dug-in operatives and automated defenses.,mktRaidNonMarket:Continue,
+$raidContinueTrigger = thExcRaidContinue 0",Your marines prepare to assault the excavation site on the planet's surface. Resistance is expected from dug-in operatives and automated defenses.,mktRaidNonMarket:Continue,
 thExcavation_raidCont,thExcRaidContinue,,"TH_CMD excavationRaidReward
 FireAll PopulateOptions",,,
 thExcavation_raidGoBack,thExcRaidGoBack,,FireAll PopulateOptions,,,

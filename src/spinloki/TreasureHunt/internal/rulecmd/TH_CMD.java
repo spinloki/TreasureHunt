@@ -201,6 +201,7 @@ public class TH_CMD extends BaseCommandPlugin {
     private void cleanUpExcavationFlags(SectorEntityToken entity) {
         entity.getMemoryWithoutUpdate().unset("$th_excavation_ground_ops");
         entity.getMemoryWithoutUpdate().unset("$th_excavation_faction");
+        entity.getMemoryWithoutUpdate().unset("$th_excavation_faction_the");
         entity.getMemoryWithoutUpdate().unset("$th_bombard_cant_afford");
         entity.getMemoryWithoutUpdate().unset("$th_bombard_cost_text");
     }

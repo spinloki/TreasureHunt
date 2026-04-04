@@ -68,8 +68,10 @@ public class THRuinExcavationIntel extends BaseIntelPlugin {
 
         stationFleet.getMemoryWithoutUpdate().set(THUtils.MEMORY_KEY_TH_SCAVENGER, true);
 
-        String factionName = Misc.ucFirst(Global.getSector().getFaction(factionId).getDisplayName());
+        String factionName = Global.getSector().getFaction(factionId).getDisplayName();
+        String factionNameWithArticle = Global.getSector().getFaction(factionId).getDisplayNameWithArticle();
         planet.getMemoryWithoutUpdate().set("$th_excavation_faction", factionName);
+        planet.getMemoryWithoutUpdate().set("$th_excavation_faction_the", factionNameWithArticle);
         planet.getMemoryWithoutUpdate().set("$th_excavation_blocked", true);
     }
 
@@ -97,8 +99,8 @@ public class THRuinExcavationIntel extends BaseIntelPlugin {
                     fidConfig.showTransponderStatus = false;
                     fidConfig.impactsAllyReputation = false;
                     fidConfig.impactsEnemyReputation = false;
-                    fidConfig.pullInAllies = false;
-                    fidConfig.pullInEnemies = false;
+                    fidConfig.pullInAllies = true;
+                    fidConfig.pullInEnemies = true;
                     fidConfig.pullInStations = false;
                     fidConfig.firstTimeEngageOptionText = "Attack the station";
                     fidConfig.delegate = new FleetInteractionDialogPluginImpl.BaseFIDDelegate() {
@@ -202,10 +204,10 @@ public class THRuinExcavationIntel extends BaseIntelPlugin {
         float opad = 10f;
         Color h = Misc.getHighlightColor();
 
-        String factionName = Misc.ucFirst(Global.getSector().getFaction(factionId).getDisplayName());
+        String factionNameWithArticle = Misc.ucFirst(Global.getSector().getFaction(factionId).getDisplayNameWithArticle());
 
         if (!(isEnded() || isEnding())) {
-            info.addPara(factionName + " scavengers have discovered an uncharted planet with ruins "
+            info.addPara(factionNameWithArticle + " scavengers have discovered an uncharted planet with ruins "
                     + "in the " + planet.getStarSystem().getNameWithTypeIfNebula()
                     + " and have set up a fortified station to excavate them.", 0f);
 
@@ -214,7 +216,7 @@ public class THRuinExcavationIntel extends BaseIntelPlugin {
 
             info.addPara("The station orbits %s.", opad, h, planet.getFullName());
         } else {
-            info.addPara("The " + factionName + " excavation station has been cleared. "
+            info.addPara("The excavation station has been cleared. "
                     + "The planet's ruins are now open for salvage.", 0f);
         }
     }
