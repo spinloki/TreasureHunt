@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import spinloki.TreasureHunt.api.THApi;
 import spinloki.TreasureHunt.internal.events.THFactorTracker;
 import spinloki.TreasureHunt.internal.intel.THExcavationRaidListener;
+import spinloki.TreasureHunt.internal.intel.THRuinExcavationIntel;
 import spinloki.TreasureHunt.internal.items.THVanillaItemTagger;
 import spinloki.TreasureHunt.internal.opportunities.THRuinExcavationOpportunity;
 import spinloki.TreasureHunt.internal.opportunities.THScavengerSwarmOpportunity;
@@ -49,6 +50,7 @@ public class TreasureHunt extends BaseModPlugin {
         THRegistry.reset();
         THRegistry.getSettings().loadFromLuna();
         registerBuiltInOpportunities();
+        repairExcavationStations();
     }
 
     private void registerBuiltInOpportunities() {
@@ -56,6 +58,23 @@ public class TreasureHunt extends BaseModPlugin {
         THApi.registerOpportunity(new THStationLeadOpportunity());
         THApi.registerOpportunity(new THScavengerSwarmOpportunity());
         THApi.registerOpportunity(new THRuinExcavationOpportunity());
+    }
+
+    /**
+     * Re-apply FIDConfigGen to existing excavation station fleets from old saves
+     * where the lambda couldn't survive XStream deserialization.
+     */
+    private void repairExcavationStations() {
+        for (var intel : Global.getSector().getIntelManager().getIntel(THRuinExcavationIntel.class)) {
+            var excavation = (THRuinExcavationIntel) intel;
+            var fleet = excavation.getStationFleet();
+            if (fleet != null && fleet.isAlive()) {
+                var mem = fleet.getMemoryWithoutUpdate();
+                if (mem.get("$fidConifgGen") == null) {
+                    mem.set("$fidConifgGen", new THRuinExcavationIntel.THExcavationStationFIDConfigGen());
+                }
+            }
+        }
     }
 
     public static THFactorTracker getFactorTrackerForTestOnly(){

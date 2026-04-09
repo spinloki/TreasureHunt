@@ -27,6 +27,7 @@ public class THFoundTreasureIntel extends BaseIntelPlugin implements ShowLootLis
 
         Global.getSector().getIntelManager().addIntel(this);
         Global.getSector().getListenerManager().addListener(this);
+        Global.getSector().addScript(this);
     }
 
     @Override
@@ -122,5 +123,6 @@ public class THFoundTreasureIntel extends BaseIntelPlugin implements ShowLootLis
     protected void notifyEnded() {
         super.notifyEnded();
         Global.getSector().getListenerManager().removeListener(this);
+        Global.getSector().removeScript(this);
     }
 }

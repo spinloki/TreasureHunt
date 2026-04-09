@@ -39,6 +39,7 @@ public class THSettings {
     private int excavationBombardFuelCost = 100;
     private int scavengerDataMinPoints = 20;
     private int scavengerDataMaxPoints = 40;
+    private boolean showFactorNotifications = true;
 
     private static final String MOD_ID = "spinloki_treasurehunt";
 
@@ -66,6 +67,7 @@ public class THSettings {
         scavengerDataMinPoints = json.getInt("th_scavenger_data_min_points");
         scavengerDataMaxPoints = json.getInt("th_scavenger_data_max_points");
         maxMonthlyProgress = json.getInt("th_max_monthly_progress");
+        showFactorNotifications = json.optBoolean("th_show_factor_notifications", true);
 
         detectLuna();
     }
@@ -147,6 +149,9 @@ public class THSettings {
             v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_bombard_fuel");
             if (v != null) excavationBombardFuelCost = v;
 
+            b = lunalib.lunaSettings.LunaSettings.getBoolean(MOD_ID, "th_luna_factor_notifications");
+            if (b != null) showFactorNotifications = b;
+
             log.info("LunaLib settings applied");
         } catch (Exception e) {
             log.warn("Failed to load LunaLib settings, using defaults", e);
@@ -185,4 +190,5 @@ public class THSettings {
     public int getExcavationBombardFuelCost() { return excavationBombardFuelCost; }
     public int getScavengerDataMinPoints() { return scavengerDataMinPoints; }
     public int getScavengerDataMaxPoints() { return scavengerDataMaxPoints; }
+    public boolean isShowFactorNotifications() { return showFactorNotifications; }
 }

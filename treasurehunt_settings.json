@@ -41,5 +41,8 @@
 	"th_scavenger_data_max_points": 40,
 
 	# Maximum monthly progress from recurring factors (colony ruins, sector sprint, etc.)
-	"th_max_monthly_progress": 30
+	"th_max_monthly_progress": 30,
+
+	# Whether factor progress notifications appear in the fleet log
+	"th_show_factor_notifications": true
 }

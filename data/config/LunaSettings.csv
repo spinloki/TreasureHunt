@@ -24,3 +24,4 @@ th_luna_one_time_weight,One-Time Item Weight,Double,0.5,,"Chance of selecting a 
 th_luna_miscHeader,Misc,Header,Misc,,,,,Misc
 th_luna_hassling,Enable Hassling,Boolean,true,,"Whether enforcer faction fleets in the scavenger swarm can stop and inspect the player.",,,Misc
 th_luna_bombard_fuel,Excavation Bombard Fuel Cost,Int,100,,"Fuel cost to bombard an excavation site from orbit.",1,500,Misc
+th_luna_factor_notifications,Factor Notifications,Boolean,true,,"Whether progress factor notifications appear in the fleet log. Disable to reduce fleet log clutter.",,,Misc

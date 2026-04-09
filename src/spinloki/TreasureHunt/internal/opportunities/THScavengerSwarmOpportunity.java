@@ -32,6 +32,7 @@ public class THScavengerSwarmOpportunity extends BaseTHOpportunity {
     private StarSystemAPI pickTargetSystem() {
         WeightedRandomPicker<StarSystemAPI> picker = new WeightedRandomPicker<>();
         for (StarSystemAPI system : Global.getSector().getStarSystems()) {
+            if (!system.isProcgen()) continue;
             boolean interesting = system.hasTag(Tags.THEME_INTERESTING) || system.hasTag(Tags.THEME_INTERESTING_MINOR);
             if (!interesting) continue;
             float value = 1;

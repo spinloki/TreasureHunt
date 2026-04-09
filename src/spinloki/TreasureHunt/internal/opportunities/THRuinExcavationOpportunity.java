@@ -48,6 +48,7 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
         WeightedRandomPicker<PlanetAPI> extensivePicker = new WeightedRandomPicker<>();
 
         for (StarSystemAPI system : Global.getSector().getStarSystems()) {
+            if (!system.isProcgen()) continue;
             if (system.isEnteredByPlayer()) continue;
             if (system.hasPulsar()) continue;
             if (system.hasTag(Tags.THEME_REMNANT_MAIN)) continue;
@@ -61,6 +62,10 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
                 if (market.isPlayerOwned()) continue;
                 if (!market.isPlanetConditionMarketOnly()) continue;
                 if (!Misc.hasRuins(market)) continue;
+
+                // Skip planets already targeted by an active excavation
+                if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_blocked")) continue;
+                if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_ground_ops")) continue;
 
                 String ruinsType = Misc.getRuinsType(market);
                 switch (ruinsType) {
@@ -77,6 +82,7 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
 
     private boolean hasValidTargetPlanets() {
         for (StarSystemAPI system : Global.getSector().getStarSystems()) {
+            if (!system.isProcgen()) continue;
             if (system.isEnteredByPlayer()) continue;
             if (system.hasPulsar()) continue;
             if (system.hasTag(Tags.THEME_REMNANT_MAIN)) continue;
@@ -89,6 +95,8 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
                 if (market.isPlayerOwned()) continue;
                 if (!market.isPlanetConditionMarketOnly()) continue;
                 if (!Misc.hasRuins(market)) continue;
+                if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_blocked")) continue;
+                if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_ground_ops")) continue;
                 String ruinsType = Misc.getRuinsType(market);
                 if ("ruins_vast".equals(ruinsType) || "ruins_extensive".equals(ruinsType)) return true;
             }

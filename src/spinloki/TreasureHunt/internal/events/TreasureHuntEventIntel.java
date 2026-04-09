@@ -53,6 +53,18 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         }
     }
 
+    @Override
+    public void addFactor(EventFactor factor, InteractionDialogAPI dialog) {
+        if (THRegistry.getSettings().isShowFactorNotifications()) {
+            super.addFactor(factor, dialog);
+        } else {
+            // Add factor and adjust progress without sending a fleet log notification.
+            // Stage-reached notifications are still sent by setProgress().
+            factors.add(0, factor);
+            setProgress(getProgress() + factor.getProgress(this));
+        }
+    }
+
     public static TreasureHuntEventIntel get() {
         return (TreasureHuntEventIntel) Global.getSector().getMemoryWithoutUpdate().get(KEY);
     }

@@ -92,28 +92,38 @@ public class THRuinExcavationIntel extends BaseIntelPlugin {
     private void configureStationInteraction(CampaignFleetAPI fleet) {
         // Note: "$fidConifgGen" is vanilla's spelling (typo in the Starsector API)
         fleet.getMemoryWithoutUpdate().set("$fidConifgGen",
-                (FleetInteractionDialogPluginImpl.FIDConfigGen) () -> {
-                    var fidConfig = new FleetInteractionDialogPluginImpl.FIDConfig();
-                    fidConfig.leaveAlwaysAvailable = true;
-                    fidConfig.showFleetAttitude = false;
-                    fidConfig.showTransponderStatus = false;
-                    fidConfig.impactsAllyReputation = false;
-                    fidConfig.impactsEnemyReputation = false;
-                    fidConfig.pullInAllies = true;
-                    fidConfig.pullInEnemies = true;
-                    fidConfig.pullInStations = false;
-                    fidConfig.firstTimeEngageOptionText = "Attack the station";
-                    fidConfig.delegate = new FleetInteractionDialogPluginImpl.BaseFIDDelegate() {
-                        @Override
-                        public void battleContextCreated(
-                                com.fs.starfarer.api.campaign.InteractionDialogAPI dialog,
-                                BattleCreationContext bcc) {
-                            bcc.aiRetreatAllowed = false;
-                            bcc.objectivesAllowed = false;
-                        }
-                    };
-                    return fidConfig;
-                });
+                new THExcavationStationFIDConfigGen());
+    }
+
+    /**
+     * Named static class so XStream can serialize it across save/load.
+     * A lambda here would become null after deserialization and crash vanilla's
+     * FleetInteractionDialogPluginImpl.init().
+     */
+    public static class THExcavationStationFIDConfigGen implements FleetInteractionDialogPluginImpl.FIDConfigGen {
+        @Override
+        public FleetInteractionDialogPluginImpl.FIDConfig createConfig() {
+            var fidConfig = new FleetInteractionDialogPluginImpl.FIDConfig();
+            fidConfig.leaveAlwaysAvailable = true;
+            fidConfig.showFleetAttitude = false;
+            fidConfig.showTransponderStatus = false;
+            fidConfig.impactsAllyReputation = false;
+            fidConfig.impactsEnemyReputation = false;
+            fidConfig.pullInAllies = true;
+            fidConfig.pullInEnemies = true;
+            fidConfig.pullInStations = false;
+            fidConfig.firstTimeEngageOptionText = "Attack the station";
+            fidConfig.delegate = new FleetInteractionDialogPluginImpl.BaseFIDDelegate() {
+                @Override
+                public void battleContextCreated(
+                        com.fs.starfarer.api.campaign.InteractionDialogAPI dialog,
+                        BattleCreationContext bcc) {
+                    bcc.aiRetreatAllowed = false;
+                    bcc.objectivesAllowed = false;
+                }
+            };
+            return fidConfig;
+        }
     }
 
     private void spawnDefendingFleet(THFactionConfig config, StarSystemAPI system, Random random) {

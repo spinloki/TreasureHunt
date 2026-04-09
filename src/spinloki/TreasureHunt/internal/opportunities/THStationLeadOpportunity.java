@@ -10,8 +10,10 @@ import spinloki.TreasureHunt.internal.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.*;
+import java.util.Map;
 
 public class THStationLeadOpportunity extends BaseTHOpportunity{
+    private static final String PERSISTENCE_KEY = "th_station_lead_revealed";
     private final int numStationsToReveal = 3;
     private boolean ranOutOfStuff = false;
     private final int baseProgressReward = 50;
@@ -20,7 +22,17 @@ public class THStationLeadOpportunity extends BaseTHOpportunity{
             "Mining Station",
             "Orbital Habitat"
     ));
-    private final Set<String> revealed = new HashSet<>();
+
+    @SuppressWarnings("unchecked")
+    private Set<String> getRevealed() {
+        Map<String, Object> data = Global.getSector().getPersistentData();
+        Set<String> revealed = (Set<String>) data.get(PERSISTENCE_KEY);
+        if (revealed == null) {
+            revealed = new HashSet<>();
+            data.put(PERSISTENCE_KEY, revealed);
+        }
+        return revealed;
+    }
 
     @Override
     public float getProbabilityWeight() {
@@ -30,6 +42,7 @@ public class THStationLeadOpportunity extends BaseTHOpportunity{
     @Override
     public void trigger() {
         super.trigger();
+        Set<String> revealed = getRevealed();
         List<SectorEntityToken> toReveal = new ArrayList<>();
         for (var findable : findables){
             var entities = THUtils.getNearestEntitiesWithName(Global.getSector().getPlayerFleet(),
