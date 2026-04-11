@@ -27,6 +27,7 @@ public class THFactionConfig {
     private final String fleetName;
     private final String stationEntityType;
     private final String stationName;
+    private final String marketFactionId;
 
     private THFactionConfig(Builder builder) {
         this.template = builder.template;
@@ -37,6 +38,7 @@ public class THFactionConfig {
         this.fleetName = builder.fleetName != null ? builder.fleetName : template.getDefaultFleetName();
         this.stationEntityType = builder.stationEntityType;
         this.stationName = builder.stationName;
+        this.marketFactionId = builder.marketFactionId;
         this.aiCreator = builder.aiCreator != null ? builder.aiCreator : resolveDefaultAiCreator();
         this.fleetCreator = builder.fleetCreator != null ? builder.fleetCreator : null;
     }
@@ -58,6 +60,19 @@ public class THFactionConfig {
     public String getFleetName() { return fleetName; }
     public String getStationEntityType() { return stationEntityType; }
     public String getStationName() { return stationName; }
+
+    /**
+     * Returns the faction ID to use when searching for source markets.
+     * If {@code null}, the registered faction's own ID is used.
+     */
+    public String getMarketFactionId() { return marketFactionId; }
+
+    /**
+     * Returns {@link #getMarketFactionId()} if set, otherwise the given faction ID.
+     */
+    public String getMarketFactionIdOrDefault(String factionId) {
+        return marketFactionId != null ? marketFactionId : factionId;
+    }
 
     /**
      * Returns the station entity type to use when spawning a station for this faction.
@@ -125,6 +140,7 @@ public class THFactionConfig {
         private String fleetName;
         private String stationEntityType;
         private String stationName;
+        private String marketFactionId;
 
         private Builder() {}
 
@@ -175,6 +191,15 @@ public class THFactionConfig {
 
         public Builder stationName(String stationName) {
             this.stationName = stationName;
+            return this;
+        }
+
+        /**
+         * Sets a proxy faction ID whose markets are used as fleet source/destination.
+         * Use this when the registered faction has no markets of its own.
+         */
+        public Builder marketFactionId(String marketFactionId) {
+            this.marketFactionId = marketFactionId;
             return this;
         }
 

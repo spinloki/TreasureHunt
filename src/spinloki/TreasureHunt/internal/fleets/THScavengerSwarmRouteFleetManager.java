@@ -56,10 +56,12 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
         if (factionAPIDeque.isEmpty()) return;
 
         MarketAPI source = null;
+        FactionAPI chosenFaction = null;
         while (source == null && !factionAPIDeque.isEmpty()){
             var faction = factionAPIDeque.removeFirst();
             source = pickSourceMarket(faction);
             if (source != null) {
+                chosenFaction = faction;
                 factionAPIDeque.addLast(faction);
             }
         }
@@ -68,10 +70,12 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
         }
 
         long seed = new Random().nextLong();
+        OptionalFleetData extra = new OptionalFleetData(source);
+        extra.factionId = chosenFaction.getId();
         RouteData route = RouteManager.getInstance().addRoute(getRouteSourceId(),
                 source,
                 seed,
-                new OptionalFleetData(source),
+                extra,
                 this);
 
         float distLY = Misc.getDistanceLY(source.getLocationInHyperspace(), system.getLocation());
@@ -88,6 +92,11 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
 
 
     private MarketAPI pickSourceMarket(FactionAPI faction) {
+        THFactionConfig config = THRegistry.getFactionRegistry().get(faction.getId());
+        String marketFaction = config != null
+                ? config.getMarketFactionIdOrDefault(faction.getId())
+                : faction.getId();
+
         WeightedRandomPicker<MarketAPI> picker = new WeightedRandomPicker<>();
 
         for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
@@ -95,7 +104,7 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
             if (market.isHidden()) continue;
             if (market.getContainingLocation() == null) continue;
 
-            if (!faction.getId().equals(market.getFactionId()))
+            if (!marketFaction.equals(market.getFactionId()))
                 continue;
 
             float distLY = Misc.getDistanceLY(system.getLocation(), market.getLocationInHyperspace());
@@ -115,8 +124,8 @@ public class THScavengerSwarmRouteFleetManager extends BaseRouteFleetManager {
         if (route.getMarket() == null){ // If the market decivilized, spawn nothing
             return null;
         }
-        // Determine faction from route market
-        String factionId = route.getMarket().getFactionId();
+        // Determine faction from route extra (set in addRouteFleetIfPossible), fallback to market
+        String factionId = route.getFactionId();
         FactionAPI faction = Global.getSector().getFaction(factionId);
 
         THFactionConfig config = THRegistry.getFactionRegistry().get(factionId);

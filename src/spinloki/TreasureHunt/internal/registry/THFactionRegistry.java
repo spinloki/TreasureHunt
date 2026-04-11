@@ -87,6 +87,9 @@ public class THFactionRegistry {
             if (entry.has("stationName")) {
                 builder.stationName(entry.getString("stationName"));
             }
+            if (entry.has("marketFactionId")) {
+                builder.marketFactionId(entry.getString("marketFactionId"));
+            }
 
             return builder.build();
         } catch (JSONException e) {

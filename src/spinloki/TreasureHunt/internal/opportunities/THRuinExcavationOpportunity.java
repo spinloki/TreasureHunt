@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
 import spinloki.TreasureHunt.api.BaseTHOpportunity;
+import spinloki.TreasureHunt.api.THFactionConfig;
 import spinloki.TreasureHunt.internal.intel.THRuinExcavationIntel;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
 
@@ -115,14 +116,16 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
         WeightedRandomPicker<String> picker = new WeightedRandomPicker<>();
         for (var entry : allFactions.entrySet()) {
             String factionId = entry.getKey();
+            THFactionConfig config = entry.getValue();
+            String marketFaction = config.getMarketFactionIdOrDefault(factionId);
             // Check that the faction has at least one market to plausibly source from
             boolean hasMarket = Global.getSector().getEconomy().getMarketsCopy().stream()
-                    .anyMatch(m -> !m.isHidden() && factionId.equals(m.getFactionId()));
+                    .anyMatch(m -> !m.isHidden() && marketFaction.equals(m.getFactionId()));
             if (!hasMarket) continue;
 
             float distLY = Misc.getDistanceLY(
                     planet.getStarSystem().getLocation(),
-                    getClosestMarketLocation(factionId, planet));
+                    getClosestMarketLocation(marketFaction, planet));
             // Closer factions get higher weight
             float weight = 1f / Math.max(1f, distLY);
             picker.add(factionId, weight);

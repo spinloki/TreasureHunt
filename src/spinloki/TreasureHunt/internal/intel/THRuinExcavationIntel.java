@@ -266,10 +266,16 @@ public class THRuinExcavationIntel extends BaseIntelPlugin {
     public void convinceDefenderToLeave() {
         if (defenderFleet == null || !defenderFleet.isAlive()) return;
 
+        // Resolve the market faction to search for a return destination
+        THFactionConfig config = THRegistry.getFactionRegistry().get(factionId);
+        String marketFaction = config != null
+                ? config.getMarketFactionIdOrDefault(factionId)
+                : factionId;
+
         // Find the nearest faction market as a return destination
         SectorEntityToken destination = null;
         for (MarketAPI m : Global.getSector().getEconomy().getMarketsCopy()) {
-            if (m.isHidden() || !factionId.equals(m.getFactionId())) continue;
+            if (m.isHidden() || !marketFaction.equals(m.getFactionId())) continue;
             if (destination == null ||
                     Misc.getDistanceLY(defenderFleet.getLocationInHyperspace(),
                             m.getLocationInHyperspace())
