@@ -28,6 +28,9 @@ public class THFactionConfig {
     private final String stationEntityType;
     private final String stationName;
     private final String marketFactionId;
+    private final Float qualityOverride;
+    private final float qualityMod;
+    private final Boolean ignoreMarketFleetSizeMult;
 
     private THFactionConfig(Builder builder) {
         this.template = builder.template;
@@ -39,6 +42,9 @@ public class THFactionConfig {
         this.stationEntityType = builder.stationEntityType;
         this.stationName = builder.stationName;
         this.marketFactionId = builder.marketFactionId;
+        this.qualityOverride = builder.qualityOverride;
+        this.qualityMod = builder.qualityMod != null ? builder.qualityMod : 0f;
+        this.ignoreMarketFleetSizeMult = builder.ignoreMarketFleetSizeMult;
         this.aiCreator = builder.aiCreator != null ? builder.aiCreator : resolveDefaultAiCreator();
         this.fleetCreator = builder.fleetCreator != null ? builder.fleetCreator : null;
     }
@@ -60,6 +66,9 @@ public class THFactionConfig {
     public String getFleetName() { return fleetName; }
     public String getStationEntityType() { return stationEntityType; }
     public String getStationName() { return stationName; }
+    public Float getQualityOverride() { return qualityOverride; }
+    public float getQualityMod() { return qualityMod; }
+    public Boolean getIgnoreMarketFleetSizeMult() { return ignoreMarketFleetSizeMult; }
 
     /**
      * Returns the faction ID to use when searching for source markets.
@@ -91,19 +100,21 @@ public class THFactionConfig {
      */
     public CampaignFleetAPI createDefaultFleet(StarSystemAPI system, RouteData route,
                                                 MarketAPI sourceMarket, Random random, String factionId) {
-        var fleet = FleetFactoryV3.createFleet(
-                new FleetParamsV3(
-                        sourceMarket,
-                        system.getLocation(),
-                        factionId,
-                        null,
-                        fleetType,
-                        40f + random.nextFloat() * 60,
-                        freighterPts,
-                        tankerPts,
-                        0f, 0f, 0f, 0f
-                )
+        var params = new FleetParamsV3(
+                sourceMarket,
+                system.getLocation(),
+                factionId,
+                qualityOverride,
+                fleetType,
+                40f + random.nextFloat() * 60,
+                freighterPts,
+                tankerPts,
+                0f, 0f, 0f, qualityMod
         );
+        if (ignoreMarketFleetSizeMult != null) {
+            params.ignoreMarketFleetSizeMult = ignoreMarketFleetSizeMult;
+        }
+        var fleet = FleetFactoryV3.createFleet(params);
         if (fleet != null && fleetName != null) {
             fleet.setName(fleetName);
         }
@@ -141,6 +152,9 @@ public class THFactionConfig {
         private String stationEntityType;
         private String stationName;
         private String marketFactionId;
+        private Float qualityOverride;
+        private Float qualityMod;
+        private Boolean ignoreMarketFleetSizeMult;
 
         private Builder() {}
 
@@ -200,6 +214,31 @@ public class THFactionConfig {
          */
         public Builder marketFactionId(String marketFactionId) {
             this.marketFactionId = marketFactionId;
+            return this;
+        }
+
+        /**
+         * Overrides the market-derived ship quality with a fixed value.
+         * Typical range: 0.0 (2+ d-mods) to 1.0 (pristine). {@code null} uses market quality.
+         */
+        public Builder qualityOverride(float qualityOverride) {
+            this.qualityOverride = qualityOverride;
+            return this;
+        }
+
+        /**
+         * Additive modifier applied on top of market-derived quality.
+         */
+        public Builder qualityMod(float qualityMod) {
+            this.qualityMod = qualityMod;
+            return this;
+        }
+
+        /**
+         * If {@code true}, fleet size is not scaled by the source market's fleet size multiplier.
+         */
+        public Builder ignoreMarketFleetSizeMult(boolean ignore) {
+            this.ignoreMarketFleetSizeMult = ignore;
             return this;
         }
 
