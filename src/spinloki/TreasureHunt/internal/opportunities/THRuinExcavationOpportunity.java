@@ -84,8 +84,6 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
     private boolean hasValidTargetPlanets() {
         for (StarSystemAPI system : Global.getSector().getStarSystems()) {
             if (!system.isProcgen()) continue;
-            if (system.isEnteredByPlayer()) continue;
-            if (system.hasPulsar()) continue;
             if (system.hasTag(Tags.THEME_REMNANT_MAIN)) continue;
             if (system.hasTag(Tags.THEME_REMNANT_SECONDARY)) continue;
 

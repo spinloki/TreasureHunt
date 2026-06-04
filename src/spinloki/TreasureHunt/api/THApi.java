@@ -1,10 +1,12 @@
 package spinloki.TreasureHunt.api;
 
 import com.fs.starfarer.api.campaign.InteractionDialogAPI;
+import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
 import spinloki.TreasureHunt.internal.config.THSettings;
 import spinloki.TreasureHunt.internal.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
+import spinloki.TreasureHunt.internal.registry.THClaimHandlerRegistry;
 import spinloki.TreasureHunt.internal.registry.THRewardRegistry;
 
 /**
@@ -59,6 +61,20 @@ public class THApi {
     }
 
     /**
+     * Register a claim handler that can intercept treasure delivery at the FOUND stage.
+     * When the hunt finds a treasure, the system picks from registered claim handlers
+     * via weighted random selection. If a handler is picked, it controls how the treasure
+     * is delivered. If none is picked, the default behavior (inject into next loot) is used.
+     *
+     * <p>Call this during {@code onGameLoad()} in your mod plugin.</p>
+     *
+     * @param handler the claim handler to register
+     */
+    public static void registerClaimHandler(ITHClaimHandler handler) {
+        THRegistry.registerClaimHandler(handler);
+    }
+
+    /**
      * Add a progress factor to the treasure hunt event.
      * Creates the event if it doesn't exist yet.
      *
@@ -72,6 +88,15 @@ public class THApi {
      */
     public static void addProgress(EventFactor factor, InteractionDialogAPI dialog) {
         TreasureHuntEventIntel.addFactorCreateIfNecessary(factor, dialog);
+    }
+
+    /**
+     * Returns the active Treasure Hunt event intel, or {@code null} if no hunt is in progress.
+     *
+     * @return the current event, or null
+     */
+    public static BaseEventIntel getEvent() {
+        return TreasureHuntEventIntel.get();
     }
 
     /**

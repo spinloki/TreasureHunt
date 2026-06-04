@@ -11,13 +11,14 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.internal.intel.THSectorSprintIntel;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
+import spinloki.TreasureHunt.api.ITHUncappedFactor;
 
 import java.awt.*;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class THSectorSprintFactor  extends BaseEventFactor {
+public class THSectorSprintFactor  extends BaseEventFactor implements ITHUncappedFactor {
     Set<String> relayIds;
     StarSystemAPI starSystem;
     boolean hasDomainEraRelay;

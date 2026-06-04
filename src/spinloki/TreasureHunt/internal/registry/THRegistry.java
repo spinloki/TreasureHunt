@@ -2,6 +2,7 @@ package spinloki.TreasureHunt.internal.registry;
 
 import com.fs.starfarer.api.Global;
 import org.apache.log4j.Logger;
+import spinloki.TreasureHunt.api.ITHClaimHandler;
 import spinloki.TreasureHunt.api.ITHOpportunity;
 import spinloki.TreasureHunt.api.THFactionConfig;
 import spinloki.TreasureHunt.api.THFactionTemplate;
@@ -17,10 +18,12 @@ public class THRegistry {
     private static THSettings settings;
     private static THRewardRegistry rewardRegistry;
     private static THOpportunityRegistry opportunityRegistry;
+    private static THClaimHandlerRegistry claimHandlerRegistry;
     private static THFactionRegistry factionRegistry;
 
     public static void init() {
         opportunityRegistry = new THOpportunityRegistry();
+        claimHandlerRegistry = new THClaimHandlerRegistry();
         factionRegistry = new THFactionRegistry();
         factionRegistry.loadFromSettings();
         log.info("TreasureHunt registries initialized");
@@ -40,12 +43,17 @@ public class THRegistry {
     public static THSettings getSettings() { return settings; }
     public static THRewardRegistry getRewardRegistry() { return rewardRegistry; }
     public static THOpportunityRegistry getOpportunityRegistry() { return opportunityRegistry; }
+    public static THClaimHandlerRegistry getClaimHandlerRegistry() { return claimHandlerRegistry; }
     public static THFactionRegistry getFactionRegistry() { return factionRegistry; }
 
     // --- Delegation methods used by THApi ---
 
     public static void registerOpportunity(ITHOpportunity opportunity) {
         opportunityRegistry.register(opportunity);
+    }
+
+    public static void registerClaimHandler(ITHClaimHandler handler) {
+        claimHandlerRegistry.register(handler);
     }
 
     public static void registerFaction(String factionId, THFactionConfig config) {

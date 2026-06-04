@@ -10,6 +10,8 @@ import com.fs.starfarer.api.ui.CustomPanelAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import spinloki.TreasureHunt.api.ITHClaimHandler;
+import spinloki.TreasureHunt.api.ITHUncappedFactor;
 import spinloki.TreasureHunt.api.ITHOpportunity;
 import spinloki.TreasureHunt.internal.intel.THFoundTreasureIntel;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
@@ -109,6 +111,40 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     @Override
     public int getMaxMonthlyProgress() {
         return THRegistry.getSettings().getMaxMonthlyProgress();
+    }
+
+    @Override
+    public int getMonthlyProgress() {
+        int capped = 0;
+        int uncapped = 0;
+        float mult = 1f;
+        for (EventFactor factor : factors) {
+            if (factor.isOneTime()) continue;
+            int p = factor.getProgress(this);
+            if (factor instanceof ITHUncappedFactor) {
+                uncapped += p;
+            } else {
+                capped += p;
+            }
+            mult *= factor.getAllProgressMult(this);
+        }
+
+        // Apply mult to capped portion and enforce cap
+        if (capped != 0) {
+            float sign = Math.signum(capped);
+            capped = Math.round(sign * Math.abs(capped) * mult);
+            if (capped == 0) capped = (int) Math.round(sign);
+        }
+        capped = Math.min(capped, getMaxMonthlyProgress());
+
+        // Apply mult to uncapped portion (no cap)
+        if (uncapped != 0) {
+            float sign = Math.signum(uncapped);
+            uncapped = Math.round(sign * Math.abs(uncapped) * mult);
+            if (uncapped == 0) uncapped = (int) Math.round(sign);
+        }
+
+        return capped + uncapped;
     }
 
     @Override
@@ -405,7 +441,12 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         if (stage.id == Stage.FOUND){
             setProgress(0);
             if (!treasure.isEmpty() && Global.getSettings().getSpecialItemSpec(treasure) != null) {
-                new THFoundTreasureIntel(treasure);
+                ITHClaimHandler claimHandler = THRegistry.getClaimHandlerRegistry().pickCandidate();
+                if (claimHandler != null) {
+                    claimHandler.trigger(treasure);
+                } else {
+                    new THFoundTreasureIntel(treasure);
+                }
             }
             treasure = "";
         }
