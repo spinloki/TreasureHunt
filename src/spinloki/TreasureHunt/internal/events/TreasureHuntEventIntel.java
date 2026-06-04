@@ -423,11 +423,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
     protected void notifyStageReached(EventStageData stage){
         if (stage.id == Stage.CHOOSE) {
-            var script = new THChooseLeadScript(
-                    ()->setProgress(0),
-                    (int count)->treasurePicker.getRandomUnseenItems(count),
-                    this::pickTreasureFromCandidates
-            );
+            var script = new THChooseLeadScript(this);
             Global.getSector().addScript(script);
         }
         if (stage.id == Stage.OPPORTUNITY){

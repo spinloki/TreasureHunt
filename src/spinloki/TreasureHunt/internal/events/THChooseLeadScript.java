@@ -4,8 +4,6 @@ import com.fs.starfarer.api.EveryFrameScript;
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
 import com.fs.starfarer.api.util.IntervalUtil;
-import com.fs.starfarer.api.util.Misc;
-import spinloki.TreasureHunt.internal.events.THLeadPickDialogPlugin;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
 
 import java.util.Set;
@@ -20,28 +18,19 @@ public class THChooseLeadScript implements EveryFrameScript {
 
     private Set<String> candidates;
 
-    ResetProgress reset;
-    GetCandidates getCandidates;
-    ChooseCandidate chooseCandidate;
+    private TreasureHuntEventIntel intel;
 
-    public interface ResetProgress {
-        void reset();
+    private THLeadPickDialogPlugin dialogPlugin;
+
+    public THChooseLeadScript(TreasureHuntEventIntel intel) {
+        this.intel = intel;
     }
 
-    public interface GetCandidates {
-        Set<String> getCandidates(int count);
-    }
-
-    public interface ChooseCandidate {
-        void chooseCandidate(Set<String> candidates, String picked);
-    }
-
-    public THChooseLeadScript(ResetProgress reset,
-                              GetCandidates getCandidates,
-                              ChooseCandidate chooseCandidate) {
-        this.reset = reset;
-        this.getCandidates = getCandidates;
-        this.chooseCandidate = chooseCandidate;
+    private TreasureHuntEventIntel resolveIntel() {
+        if (intel == null) {
+            intel = TreasureHuntEventIntel.get();
+        }
+        return intel;
     }
 
     @Override
@@ -51,13 +40,19 @@ public class THChooseLeadScript implements EveryFrameScript {
         interval.advance(amount);
         if (!interval.intervalElapsed()) return;
 
+        TreasureHuntEventIntel intel = resolveIntel();
+        if (intel == null) {
+            done = true;
+            return;
+        }
+
         CampaignFleetAPI pf = Global.getSector().getPlayerFleet();
 
         if (!dialogShown) {
             if (!Global.getSector().getCampaignUI().isShowingDialog() &&
                     !Global.getSector().getCampaignUI().isShowingMenu()) {
 
-                candidates = getCandidates.getCandidates(THRegistry.getSettings().getNumLeadCandidates());
+                candidates = intel.getRandomRewardItems(THRegistry.getSettings().getNumLeadCandidates());
 
                 THLeadPickDialogPlugin plugin =
                         new THLeadPickDialogPlugin(candidates);
@@ -74,12 +69,12 @@ public class THChooseLeadScript implements EveryFrameScript {
         if (waitingForChoice) {
             if (!Global.getSector().getCampaignUI().isShowingDialog()) {
 
-                String choice = dialogPlugin.getChosen();
+                String choice = dialogPlugin == null ? null : dialogPlugin.getChosen();
 
                 if (choice == null) {
-                    reset.reset();
+                    intel.setProgress(0);
                 }
-                chooseCandidate.chooseCandidate(candidates, choice);
+                intel.pickTreasureFromCandidates(candidates, choice);
 
                 waitingForChoice = false;
                 done = true;
@@ -96,6 +91,4 @@ public class THChooseLeadScript implements EveryFrameScript {
     public boolean runWhilePaused() {
         return false;
     }
-
-    private THLeadPickDialogPlugin dialogPlugin;
 }
