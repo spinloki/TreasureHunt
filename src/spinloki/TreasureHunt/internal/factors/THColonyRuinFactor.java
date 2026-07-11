@@ -1,6 +1,8 @@
 package spinloki.TreasureHunt.internal.factors;
 
+import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventFactor;
 
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
@@ -39,9 +41,15 @@ public class THColonyRuinFactor extends BaseEventFactor {
 
                 tooltip.addPara("Information gathered from your colony, %s, built over long-dead ruins.", opad, h, colony.getName());
 
-                String tense = THUtils.hasTechMining(colony) ? "is being" : "can be";
-                tooltip.addPara("Will contribute %s points per month to the treasure hunt, which %s " +
-                        "boosted by the tech mining industry.", opad, h, "" + getProgress(intel), tense);
+                if (isDisrupted()) {
+                    tooltip.addPara("Tech mining has been disrupted by a raid. This colony contributes "
+                            + "nothing to the treasure hunt until the industry recovers.", opad,
+                            Misc.getNegativeHighlightColor(), "disrupted by a raid");
+                } else {
+                    String tense = THUtils.hasTechMining(colony) ? "is being" : "can be";
+                    tooltip.addPara("Will contribute %s points per month to the treasure hunt, which %s " +
+                            "boosted by the tech mining industry.", opad, h, "" + getProgress(intel), tense);
+                }
             }
 
         };
@@ -49,12 +57,18 @@ public class THColonyRuinFactor extends BaseEventFactor {
 
     @Override
     public String getDesc(BaseEventIntel intel){
-        return "Ruins at " + colony.getName();
+        return "Ruins at " + colony.getName() + (isDisrupted() ? " (Disrupted)" : "");
+    }
+
+    private boolean isDisrupted() {
+        Industry techmining = colony.getIndustry(Industries.TECHMINING);
+        return techmining != null && techmining.isDisrupted();
     }
 
     @Override
     public int getProgress(BaseEventIntel intel){
         if (!ENABLED) return 0;
+        if (isDisrupted()) return 0;
         int progress = BASE_PROGRESS;
         if (THUtils.hasTechMining(colony)){
             progress = BASE_PROGRESS * THRegistry.getSettings().getColonyTechMiningProgressMultiplier();
