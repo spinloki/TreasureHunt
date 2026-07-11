@@ -69,7 +69,6 @@
 		"station_research_remnant": "station",
 		"station_mining_remnant": "station",
 		"orbital_habitat_remnant": "station",
-		"makeshift_station": "station",
 		"supply_cache": "cache",
 		"supply_cache_small": "cache",
 		"equipment_cache": "cache",
