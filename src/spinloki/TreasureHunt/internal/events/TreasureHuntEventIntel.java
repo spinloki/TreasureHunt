@@ -310,6 +310,10 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         return treasurePicker.getRandomUnseenItems(count, random);
     }
 
+    public void removeRewardItemFromPool(String itemId) {
+        treasurePicker.removeItemFromPool(itemId);
+    }
+
     @Override
     public void createLargeDescription(CustomPanelAPI panel, float width, float height) {
         currentPanel = panel;

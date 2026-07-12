@@ -92,6 +92,7 @@ public class TH_CMD extends BaseCommandPlugin {
             var items = intel.getRandomRewardItems(1);
             for (String itemId : items) {
                 pf.getCargo().addSpecial(new SpecialItemData(itemId, null), 1);
+                intel.removeRewardItemFromPool(itemId);
                 rewardName = THUtils.getSpecialItemDisplayName(itemId);
             }
         }
@@ -169,6 +170,7 @@ public class TH_CMD extends BaseCommandPlugin {
             var items = intel.getRandomRewardItems(1, rewardRng);
             for (String itemId : items) {
                 pf.getCargo().addSpecial(new SpecialItemData(itemId, null), 1);
+                intel.removeRewardItemFromPool(itemId);
                 rewardName = THUtils.getSpecialItemDisplayName(itemId);
             }
         }
