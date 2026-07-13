@@ -222,6 +222,7 @@ public class THUtils {
     public static void makeHassler(CampaignFleetAPI fleet, String hassleType) {
         fleet.getMemoryWithoutUpdate().set(MemFlags.WILL_HASSLE_PLAYER, true);
         fleet.getMemoryWithoutUpdate().set(MemFlags.HASSLE_TYPE, hassleType);
+        Misc.makeLowRepImpact(fleet, "thHassler");
     }
 }
 
