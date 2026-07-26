@@ -38,13 +38,27 @@ public class THTreasurePicker implements ShowLootListener {
     }
 
     private void addOneTimeItems(){
-        oneTimeCandidates = new HashSet<>();
+        oneTimeCandidates = resolveOneTimeItems();
+    }
+
+    private Set<String> resolveOneTimeItems(){
+        Set<String> result = new HashSet<>();
         Set<String> oneTimeItems = new HashSet<>(THRegistry.getRewardRegistry().getOneTimeItems());
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
             if (oneTimeItems.contains(item.getId())){
-                oneTimeCandidates.add(item.getId());
+                result.add(item.getId());
             }
         }
+        return result;
+    }
+
+    /** Refills the one-time pool with every configured one-time treasure. */
+    public void regenerateOneTimePool(){
+        addOneTimeItems();
+    }
+
+    public int getFullOneTimePoolSize(){
+        return resolveOneTimeItems().size();
     }
 
     public Set<String> getRandomUnseenItems(int count) {

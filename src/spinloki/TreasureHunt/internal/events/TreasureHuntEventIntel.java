@@ -2,11 +2,13 @@ package spinloki.TreasureHunt.internal.events;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
+import com.fs.starfarer.api.impl.campaign.ids.Sounds;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseEventIntel;
 import com.fs.starfarer.api.impl.campaign.intel.events.BaseFactorTooltip;
 import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
-import com.fs.starfarer.api.ui.Alignment;
-import com.fs.starfarer.api.ui.CustomPanelAPI;
+import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.BaseOptionStoryPointActionDelegate;
+import com.fs.starfarer.api.impl.campaign.rulecmd.SetStoryOption.StoryOptionParams;
+import com.fs.starfarer.api.ui.ButtonAPI;
 import com.fs.starfarer.api.ui.IntelUIAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
@@ -27,10 +29,13 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     private String treasure;
     private String opportunityIcon;
     private String opportunityDisplayName;
-    private transient CustomPanelAPI currentPanel;
 
     private static final String category = "treasure_hunt_events";
     private static final String BUTTON_ABANDON = "abandon_hunt";
+    private static final String BUTTON_REGEN_ONE_TIME = "regen_one_time_pool";
+    private static final String POOL_LABEL = "treasure_pool_label";
+
+    private static final Color ABANDON_COLOR = new Color(235, 100, 100);
 
     public static Color BAR_COLOR = Global.getSettings().getColor("progressBarFleetPointsColor");
     public static int PROGRESS_MAX = 500;
@@ -315,67 +320,127 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
     }
 
     @Override
-    public void createLargeDescription(CustomPanelAPI panel, float width, float height) {
-        currentPanel = panel;
-        super.createLargeDescription(panel, width, height);
-    }
-
-    @Override
     public void afterStageDescriptions(TooltipMakerAPI info) {
         float opad = 10f;
         float rowHeight = 24f;
-
-        Color textColor = new Color(235, 200, 80);
-        Color bgColor = new Color(60, 50, 20);
+        float barWidth = getBarWidth();
+        float gap = 10f;
+        float halfWidth = (barWidth - gap) / 2f;
 
         Set<String> oneTime = treasurePicker.getOneTimeCandidates();
         Set<String> repeatable = treasurePicker.getRepeatableCandidates();
+        final int missingOneTime = treasurePicker.getFullOneTimePoolSize() - oneTime.size();
+        final boolean canAbandon = getProgress() > 0;
 
-        boolean showOneTime = !oneTime.isEmpty();
-        float barWidth = getBarWidth();
-        float gap = 10f;
+        TooltipMakerAPI oneTimePool = addBox(info, halfWidth, rowHeight,
+                "Remaining one-time treasures (" + oneTime.size() + ")", POOL_LABEL, outlineColor(), true,
+                createPoolTooltip("Remaining one-time treasures",
+                        "These treasures can only be awarded once. This pool is only refilled by spending a story point.",
+                        oneTime));
+        TooltipMakerAPI repeatablePool = addBox(info, halfWidth, rowHeight,
+                "Remaining repeatable treasures (" + repeatable.size() + ")", POOL_LABEL, outlineColor(), true,
+                createPoolTooltip("Remaining repeatable treasures",
+                        "These treasures can be awarded multiple times. This pool is refilled when emptied.",
+                        repeatable));
+        info.addCustom(oneTimePool, opad);
+        info.addCustomDoNotSetPosition(repeatablePool).getPosition().rightOfTop(oneTimePool, gap);
 
-        if (showOneTime) {
-            float halfWidth = (barWidth - gap) / 2f;
+        TooltipMakerAPI restore = addBox(info, halfWidth, rowHeight,
+                "Restore one-time treasures", BUTTON_REGEN_ONE_TIME, Misc.getStoryOptionColor(),
+                missingOneTime > 0,
+                new BaseFactorTooltip() {
+                    @Override
+                    public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+                        tooltip.addTitle("Restore one-time treasures");
+                        if (missingOneTime <= 0) {
+                            tooltip.addPara("Every one-time treasure is still in the pool.", 10f);
+                            return;
+                        }
+                        tooltip.addPara("Spend a %s to put %s claimed one-time "
+                                        + (missingOneTime == 1 ? "treasure" : "treasures")
+                                        + " back into the pool. Grants %s bonus experience.", 10f,
+                                Misc.getHighlightColor(), "" + Misc.STORY + " point", "" + missingOneTime, "100%");
+                    }
+                });
+        TooltipMakerAPI abandon = addBox(info, halfWidth, rowHeight,
+                "Abandon Hunt", BUTTON_ABANDON, ABANDON_COLOR, canAbandon,
+                new BaseFactorTooltip() {
+                    @Override
+                    public void createTooltip(TooltipMakerAPI tooltip, boolean expanded, Object tooltipParam) {
+                        tooltip.addTitle("Abandon Hunt");
+                        if (!canAbandon) {
+                            tooltip.addPara("There is no progress to abandon.", 10f);
+                            return;
+                        }
+                        tooltip.addPara("Reset all hunt progress to zero and clear your current lead.", 10f);
+                    }
+                });
+        info.addCustom(restore, opad);
+        info.addCustomDoNotSetPosition(abandon).getPosition().rightOfTop(restore, gap);
+    }
 
-            CustomPanelAPI row = currentPanel.createCustomPanel(barWidth, rowHeight, null);
-
-            TooltipMakerAPI left = row.createUIElement(halfWidth, rowHeight, false);
-            left.addSectionHeading("Remaining one-time treasures (" + oneTime.size() + ")",
-                    textColor, bgColor, Alignment.MID, 0f);
-            left.addTooltipToPrevious(createPoolTooltip("Remaining one-time treasures",
-                    "These treasures can only be awarded once. This pool will not be refilled.", oneTime),
-                    TooltipMakerAPI.TooltipLocation.BELOW);
-            row.addUIElement(left).inTL(0, 0);
-
-            TooltipMakerAPI right = row.createUIElement(halfWidth, rowHeight, false);
-            right.addSectionHeading("Remaining repeatable treasures (" + repeatable.size() + ")",
-                    textColor, bgColor, Alignment.MID, 0f);
-            right.addTooltipToPrevious(createPoolTooltip("Remaining repeatable treasures",
-                    "These treasures can be awarded multiple times. This pool is refilled when emptied.", repeatable),
-                    TooltipMakerAPI.TooltipLocation.BELOW);
-            row.addUIElement(right).inTR(0, 0);
-
-            info.addCustom(row, opad);
-        } else {
-            CustomPanelAPI row = currentPanel.createCustomPanel(barWidth, rowHeight, null);
-
-            TooltipMakerAPI full = row.createUIElement(barWidth, rowHeight, false);
-            full.addSectionHeading("Remaining repeatable treasures (" + repeatable.size() + ")",
-                    textColor, bgColor, Alignment.MID, 0f);
-            full.addTooltipToPrevious(createPoolTooltip("Remaining repeatable treasures",
-                    "These treasures can be awarded multiple times. This pool is refilled when emptied.", repeatable),
-                    TooltipMakerAPI.TooltipLocation.BELOW);
-            row.addUIElement(full).inTL(0, 0);
-
-            info.addCustom(row, opad);
+    private TooltipMakerAPI addBox(TooltipMakerAPI info, float width, float height, String text, Object buttonId,
+                                   Color accent, boolean enabled, TooltipMakerAPI.TooltipCreator tooltip) {
+        TooltipMakerAPI cell = info.beginSubTooltip(width);
+        ButtonAPI button = cell.addAreaCheckbox(text, buttonId, outlineColor(), fillColor(), accent,
+                width, height, 0f);
+        button.setChecked(false);
+        button.setEnabled(enabled);
+        button.setShowTooltipWhileInactive(true);
+        if (tooltip != null) {
+            cell.addTooltipToPrevious(tooltip, TooltipMakerAPI.TooltipLocation.BELOW);
         }
+        info.endSubTooltip();
+        return cell;
+    }
 
-        if (getProgress() > 0) {
-            Color abandonBase = new Color(150, 50, 50);
-            Color abandonDark = new Color(80, 25, 25);
-            addGenericButton(info, getBarWidth(), abandonBase, abandonDark, "Abandon Hunt", BUTTON_ABANDON);
+    private static Color outlineColor() {
+        return Misc.interpolateColor(BAR_COLOR, Color.white, 0.3f);
+    }
+
+    private static Color fillColor() {
+        return Misc.interpolateColor(BAR_COLOR, Color.black, 0.9f);
+    }
+
+    @Override
+    public StoryPointActionDelegate getButtonStoryPointActionDelegate(Object buttonId) {
+        if (BUTTON_REGEN_ONE_TIME.equals(buttonId)) {
+            final int restored = treasurePicker.getFullOneTimePoolSize() - treasurePicker.getOneTimeCandidates().size();
+            StoryOptionParams params = new StoryOptionParams(null, 1, "thRestoreOneTimePool",
+                    Sounds.STORY_POINT_SPEND_TECHNOLOGY,
+                    "Renewed the search for treasures already claimed");
+            return new BaseOptionStoryPointActionDelegate(null, params) {
+                @Override
+                public void confirm() {
+                    treasurePicker.regenerateOneTimePool();
+                }
+
+                @Override
+                public String getTitle() {
+                    return null;
+                }
+
+                @Override
+                public void createDescription(TooltipMakerAPI info) {
+                    info.setParaInsigniaLarge();
+                    info.addPara("Chase down fresh rumors about relics already accounted for, returning %s "
+                                    + (restored == 1 ? "treasure" : "treasures") + " to the one-time pool.",
+                            -10f, Misc.getHighlightColor(), "" + restored);
+                    info.addSpacer(20f);
+                    super.createDescription(info);
+                }
+            };
         }
+        return super.getButtonStoryPointActionDelegate(buttonId);
+    }
+
+    @Override
+    public void storyActionConfirmed(Object buttonId, IntelUIAPI ui) {
+        if (BUTTON_REGEN_ONE_TIME.equals(buttonId)) {
+            ui.updateUIForItem(this);
+            return;
+        }
+        super.storyActionConfirmed(buttonId, ui);
     }
 
     @Override
@@ -402,7 +467,17 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             ui.updateUIForItem(this);
             return;
         }
+        if (POOL_LABEL.equals(buttonId)) {
+            ui.updateUIForItem(this);
+            return;
+        }
         super.buttonPressConfirmed(buttonId, ui);
+    }
+
+    @Override
+    public void buttonPressCancelled(Object buttonId, IntelUIAPI ui) {
+        ui.updateUIForItem(this);
+        super.buttonPressCancelled(buttonId, ui);
     }
 
     private TooltipMakerAPI.TooltipCreator createPoolTooltip(String title, String description, Set<String> pool) {
