@@ -49,26 +49,12 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
         WeightedRandomPicker<PlanetAPI> extensivePicker = new WeightedRandomPicker<>();
 
         for (StarSystemAPI system : Global.getSector().getStarSystems()) {
-            if (!system.isProcgen()) continue;
-            if (system.isEnteredByPlayer()) continue;
-            if (system.hasPulsar()) continue;
-            if (system.hasTag(Tags.THEME_REMNANT_MAIN)) continue;
-            if (system.hasTag(Tags.THEME_REMNANT_SECONDARY)) continue;
+            if (!isValidTargetSystem(system)) continue;
 
             for (PlanetAPI planet : system.getPlanets()) {
-                if (planet.isStar() || planet.isGasGiant()) continue;
+                if (!isValidTargetPlanet(planet)) continue;
 
-                MarketAPI market = planet.getMarket();
-                if (market == null) continue;
-                if (market.isPlayerOwned()) continue;
-                if (!market.isPlanetConditionMarketOnly()) continue;
-                if (!Misc.hasRuins(market)) continue;
-
-                // Skip planets already targeted by an active excavation
-                if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_blocked")) continue;
-                if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_ground_ops")) continue;
-
-                String ruinsType = Misc.getRuinsType(market);
+                String ruinsType = Misc.getRuinsType(planet.getMarket());
                 switch (ruinsType) {
                     case "ruins_vast" -> vastPicker.add(planet);
                     case "ruins_extensive" -> extensivePicker.add(planet);
@@ -83,24 +69,43 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
 
     private boolean hasValidTargetPlanets() {
         for (StarSystemAPI system : Global.getSector().getStarSystems()) {
-            if (!system.isProcgen()) continue;
-            if (system.hasTag(Tags.THEME_REMNANT_MAIN)) continue;
-            if (system.hasTag(Tags.THEME_REMNANT_SECONDARY)) continue;
+            if (!isValidTargetSystem(system)) continue;
 
             for (PlanetAPI planet : system.getPlanets()) {
-                if (planet.isStar() || planet.isGasGiant()) continue;
-                MarketAPI market = planet.getMarket();
-                if (market == null) continue;
-                if (market.isPlayerOwned()) continue;
-                if (!market.isPlanetConditionMarketOnly()) continue;
-                if (!Misc.hasRuins(market)) continue;
-                if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_blocked")) continue;
-                if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_ground_ops")) continue;
-                String ruinsType = Misc.getRuinsType(market);
+                if (!isValidTargetPlanet(planet)) continue;
+                String ruinsType = Misc.getRuinsType(planet.getMarket());
                 if ("ruins_vast".equals(ruinsType) || "ruins_extensive".equals(ruinsType)) return true;
             }
         }
         return false;
+    }
+
+    private boolean isValidTargetSystem(StarSystemAPI system) {
+        if (!system.isProcgen()) return false;
+        if (system.isEnteredByPlayer()) return false;
+        if (system.hasPulsar()) return false;
+        if (system.hasTag(Tags.THEME_REMNANT_MAIN)) return false;
+        if (system.hasTag(Tags.THEME_REMNANT_SECONDARY)) return false;
+        // Story-critical systems: red planet, PK system, TT black site, Limbo, etc.
+        if (system.hasTag(Tags.THEME_SPECIAL)) return false;
+        return true;
+    }
+
+    private boolean isValidTargetPlanet(PlanetAPI planet) {
+        if (planet.isStar() || planet.isGasGiant()) return false;
+        // Excludes the planetary shield "red planet" and other story planets
+        if (planet.hasTag(Tags.NOT_RANDOM_MISSION_TARGET)) return false;
+
+        MarketAPI market = planet.getMarket();
+        if (market == null) return false;
+        if (market.isPlayerOwned()) return false;
+        if (!market.isPlanetConditionMarketOnly()) return false;
+        if (!Misc.hasRuins(market)) return false;
+
+        // Skip planets already targeted by an active excavation
+        if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_blocked")) return false;
+        if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_ground_ops")) return false;
+        return true;
     }
 
     /**
