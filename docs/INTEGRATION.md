@@ -98,26 +98,87 @@ The arrays merge across mods - your entries are added alongside the vanilla Trea
 
 ### Blueprint Packages
 
-If your mod adds a blueprint package special item, you also need to register its contents so the tagging system can mark the ships/weapons/fighters appropriately:
+A complete blueprint package can be defined here with no `special_items.csv` row and no `th_one_time_items` entry. Treasure Hunt ships one shared special item spec (`th_bp_package`) that carries the package name in its item data field, the way vanilla's `ship_bp` carries a hull id.
 
 ```json
 {
     "th_blueprints_packages": {
-        "my_mod_weapons_package": {
+        "my_mod_capitals": {
+            "name": "My Mod Capital Ships",
+            "desc": "Enables heavy industry to construct the heaviest hulls of my mod.",
+            "icon": "graphics/icons/cargo/blueprint_shiphull.png",
+            "price": 40000,
+            "oneTime": true,
+            "ships": ["my_capital_1", "my_capital_2"],
             "fighters": [],
-            "ships": [],
-            "weapons": ["my_weapon_1", "my_weapon_2", "my_weapon_3"]
-        },
-        "my_mod_ships_package": {
-            "fighters": ["my_fighter_wing"],
-            "ships": ["my_cruiser", "my_capital"],
             "weapons": []
         }
     }
 }
 ```
 
-The package name should match the convention `<package_id>_package` for the special item ID in `special_items.csv`.
+| Field | Required | Meaning |
+|---|---|---|
+| `ships` / `weapons` / `fighters` | one of these, or `tags` | Content ids. Missing lists default to empty. |
+| `tags` | alternative to the lists | Tag expression selecting contents tagged elsewhere; `"!tag"` negates. |
+| `name` / `desc` / `price` | no | Presentation. Fall back to the shared spec's values. |
+| `icon` | no | Sprite path used for the package's intel entry. |
+| `emblem` | no | Sprite path projected onto the item in the cargo screen. |
+| `emblemColor` | no | `[r,g,b]` or `[r,g,b,a]` tint for the emblem. Untinted by default. |
+| `iconEntry` | no | Pins which content entry is drawn when there is no `emblem`. |
+| `oneTime` | no, defaults `false` | Adds the package to the one-time reward pool. |
+
+`icon` and `emblem` reach different surfaces and are not interchangeable. The cargo-screen icon comes from the shared item spec and cannot be overridden per package, so `icon` only affects the intel entry; `emblem` is drawn by the item's own render pass and only affects the cargo screen.
+
+With no `emblem`, the package draws its largest ship or weapon as a schematic. With one, that sprite is projected instead — a faction crest, a Domain seal, your own emblem, anything. Treasure Hunt loads the texture for you, and falls back to the schematic if the path is bad:
+
+```json
+"emblem": "graphics/factions/crest_hegemony.png"
+```
+
+The sprite is drawn with its own colours and overlaid with holo scanlines. Set `emblemColor` only if your emblem needs tinting — vanilla faction crests and logos are full-bleed images with no alpha channel, so tinting them flattens the artwork into a solid block of colour.
+
+Set `oneTime` to `true` to have the package appear as a hunt reward. That replaces adding an ID to `th_one_time_items`.
+
+### Contents by tag
+
+If your package's contents are already tagged in your own `ship_data.csv` / `weapon_data.csv` / `wing_data.csv`, select them by tag instead of listing ids. Treasure Hunt tags nothing in this case, avoiding a double-tag:
+
+```json
+"my_mod_rare": {
+    "name": "My Mod Rare Hulls",
+    "oneTime": true,
+    "tags": ["my_mod_bp", "!my_mod_common"]
+}
+```
+
+Tags are ANDed, so this selects hulls tagged `my_mod_bp` but not `my_mod_common`. Tag selection cannot filter by hull size — list ids explicitly for that.
+
+### Adding contents to someone else's package
+
+Declaring a package name that already exists **adds** to it. The engine merges same-key objects and concatenates their arrays, so this puts your hull into Treasure Hunt's Hegemony package without touching anything else about it:
+
+```json
+{
+    "th_blueprints_packages": {
+        "th_hegemony_line": {
+            "ships": ["my_hull"]
+        }
+    }
+}
+```
+
+**Declare only the content arrays.** Never repeat `name`, `desc`, `icon`, `emblem`, `price` or `oneTime` in an entry you don't own. Arrays concatenate, but single values cannot — one of them simply wins, decided by mod load order, with no error. Copying an existing definition and editing it means your stale copy of the description may silently override the real one on a later update, and a stray `"oneTime": false` will silently drop the package out of the reward pool for everybody.
+
+Treasure Hunt cannot detect or warn about this: the merge happens inside the engine, so by the time the settings block is read there is no record of which mod contributed what. The convention is the only protection.
+
+### Naming
+
+Package names become global spec tags, so prefix new ones with your mod's identifier. Two mods independently choosing the same name have their contents silently merged into one package — the same mechanism as above, but unintended.
+
+### Packages with their own special item
+
+Registering a package without `oneTime` still works as it did before 2.3: the listed contents get tagged with the package name, so a `MultiBlueprintItemPlugin` item whose `plugin params` column is that name resolves to them. Use this if you want your own item spec with its own icon and drop behaviour. Treasure Hunt's own packages no longer do this, but their `th_*_package` rows are retained so pre-2.3 saves keep resolving.
 
 ---
 
@@ -621,5 +682,5 @@ All keys auto-merge across mods.
 | `th_rewards` | JSONObject | Entity type → `{ value, description }` or alias string |
 | `th_one_time_items` | JSONArray | Special item IDs consumed on first find |
 | `th_repeat_items` | JSONArray | Special item IDs that persist in the pool |
-| `th_blueprints_packages` | JSONObject | Package name → `{ fighters, ships, weapons }` |
+| `th_blueprints_packages` | JSONObject | Package name → definition (contents, presentation, `oneTime`) |
 | `th_factions` | JSONObject | Faction ID → `{ template, narrativeText?, fleetType?, fleetName?, freighterPts?, tankerPts? }` |

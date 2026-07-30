@@ -17,6 +17,21 @@ public class THVanillaItemTagger {
             tagShips(rewards.getShipsFromPackage(blueprintPackage), blueprintPackage);
             tagWeapons(rewards.getWeaponsFromPackage(blueprintPackage), blueprintPackage);
         }
+        loadEmblems(rewards);
+    }
+
+    /** getSprite(path) requires the file to already be loaded, so declared emblems are preloaded. */
+    private static void loadEmblems(THRewardRegistry rewards){
+        for (var key : rewards.getAllBlueprintPackages()){
+            var pkg = rewards.getBlueprintPackage(key);
+            if (pkg == null || pkg.getEmblem() == null) continue;
+            try {
+                Global.getSettings().loadTexture(pkg.getEmblem());
+            } catch (Exception e) {
+                log.warn("Could not load emblem " + pkg.getEmblem() + " for package " + key
+                        + "; it will fall back to a content schematic");
+            }
+        }
     }
 
     private static void tagFighters(List<String> fighters, String blueprintPackage){

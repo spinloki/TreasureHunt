@@ -13,6 +13,7 @@ import spinloki.TreasureHunt.internal.factors.THExcavationRaidFactor;
 import spinloki.TreasureHunt.internal.factors.THScavengerDataFactor;
 import spinloki.TreasureHunt.internal.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
+import spinloki.TreasureHunt.util.THRewardItem;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.List;
@@ -90,10 +91,11 @@ public class TH_CMD extends BaseCommandPlugin {
         TreasureHuntEventIntel intel = TreasureHuntEventIntel.get();
         if (intel != null) {
             var items = intel.getRandomRewardItems(1);
-            for (String itemId : items) {
-                pf.getCargo().addSpecial(new SpecialItemData(itemId, null), 1);
-                intel.removeRewardItemFromPool(itemId);
-                rewardName = THUtils.getSpecialItemDisplayName(itemId);
+            for (String token : items) {
+                THRewardItem reward = THRewardItem.parse(token);
+                pf.getCargo().addSpecial(reward.toSpecialItemData(), 1);
+                intel.removeRewardItemFromPool(token);
+                rewardName = reward.getDisplayName();
             }
         }
         dialog.getTextPanel().addPara("Your survey teams explore the excavation site and recover the " +
@@ -168,10 +170,11 @@ public class TH_CMD extends BaseCommandPlugin {
         if (intel != null) {
             Random rewardRng = new Random(entity.getId() != null ? entity.getId().hashCode() : 0);
             var items = intel.getRandomRewardItems(1, rewardRng);
-            for (String itemId : items) {
-                pf.getCargo().addSpecial(new SpecialItemData(itemId, null), 1);
-                intel.removeRewardItemFromPool(itemId);
-                rewardName = THUtils.getSpecialItemDisplayName(itemId);
+            for (String token : items) {
+                THRewardItem reward = THRewardItem.parse(token);
+                pf.getCargo().addSpecial(reward.toSpecialItemData(), 1);
+                intel.removeRewardItemFromPool(token);
+                rewardName = reward.getDisplayName();
             }
         }
         dialog.getTextPanel().addPara("Your survey teams move through the abandoned " +

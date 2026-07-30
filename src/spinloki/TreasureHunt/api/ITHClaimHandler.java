@@ -1,5 +1,7 @@
 package spinloki.TreasureHunt.api;
 
+import com.fs.starfarer.api.campaign.SpecialItemData;
+
 /**
  * Public interface for treasure claim handlers.
  * A claim handler can intercept the normal treasure delivery (ShowLootListener)
@@ -31,6 +33,15 @@ public interface ITHClaimHandler {
      * @param treasureId the special item ID of the treasure to deliver
      */
     void trigger(String treasureId);
+
+    /**
+     * Called in place of {@link #trigger(String)}. Blueprint packages share one spec and are
+     * distinguished only by the data field, so override this and pass the whole
+     * {@code SpecialItemData} to {@code CargoAPI.addSpecial} rather than rebuilding it from the id.
+     */
+    default void trigger(SpecialItemData treasure) {
+        trigger(treasure.getId());
+    }
 
     /**
      * Returns a short display name for this claim handler,

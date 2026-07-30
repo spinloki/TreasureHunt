@@ -17,6 +17,7 @@ import spinloki.TreasureHunt.api.ITHUncappedFactor;
 import spinloki.TreasureHunt.api.ITHOpportunity;
 import spinloki.TreasureHunt.internal.intel.THFoundTreasureIntel;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
+import spinloki.TreasureHunt.util.THRewardItem;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.awt.*;
@@ -223,7 +224,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             info.addPara("The Hunt awaits!", initPad);
         }
         else if (stageId == Stage.CHOOSE){
-            String displayName = THUtils.getSpecialItemDisplayName(treasure);
+            String displayName = THRewardItem.parse(treasure).getDisplayName();
             info.addPara(String.format("You have a lead on a %s", displayName), initPad);
         }
         else if (stageId == Stage.OPPORTUNITY){
@@ -296,7 +297,7 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
             }
             if (esd.id == Stage.FOUND) {
                 String message = "Treasure found";
-                message += ": " + THUtils.getSpecialItemDisplayName(treasure) + " location discovered.";
+                message += ": " + THRewardItem.parse(treasure).getDisplayName() + " location discovered.";
                 info.addPara(message, tc, initPad);
             }
         }
@@ -321,6 +322,18 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
     public void removeRewardItemFromPool(String itemId) {
         treasurePicker.removeItemFromPool(itemId);
+    }
+
+    public void syncNewOneTimeContent() {
+        treasurePicker.syncNewlyConfigured();
+    }
+
+    public Set<String> getOneTimePool() {
+        return treasurePicker.getOneTimeCandidates();
+    }
+
+    public Set<String> getRepeatablePool() {
+        return treasurePicker.getRepeatableCandidates();
     }
 
     @Override
@@ -495,10 +508,10 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
                     return;
                 }
                 java.util.List<String> sorted = new java.util.ArrayList<>(pool);
-                sorted.sort((a, b) -> THUtils.getSpecialItemDisplayName(a)
-                        .compareToIgnoreCase(THUtils.getSpecialItemDisplayName(b)));
-                for (String itemId : sorted) {
-                    tooltip.addPara("  - " + THUtils.getSpecialItemDisplayName(itemId), 2f);
+                sorted.sort((a, b) -> THRewardItem.parse(a).getDisplayName()
+                        .compareToIgnoreCase(THRewardItem.parse(b).getDisplayName()));
+                for (String token : sorted) {
+                    tooltip.addPara("  - " + THRewardItem.parse(token).getDisplayName(), 2f);
                 }
             }
         };
@@ -519,10 +532,11 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
         }
         if (stage.id == Stage.FOUND){
             setProgress(0);
-            if (!treasure.isEmpty() && Global.getSettings().getSpecialItemSpec(treasure) != null) {
+            THRewardItem reward = THRewardItem.parse(treasure);
+            if (!treasure.isEmpty() && reward.isValid()) {
                 ITHClaimHandler claimHandler = THRegistry.getClaimHandlerRegistry().pickCandidate();
                 if (claimHandler != null) {
-                    claimHandler.trigger(treasure);
+                    claimHandler.trigger(reward.toSpecialItemData());
                 } else {
                     new THFoundTreasureIntel(treasure);
                 }

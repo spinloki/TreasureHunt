@@ -7,8 +7,10 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI;
 import com.fs.starfarer.api.combat.EngagementResultAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import spinloki.TreasureHunt.internal.registry.THBlueprintPackage;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
 import spinloki.TreasureHunt.internal.registry.THRewardRegistry;
+import spinloki.TreasureHunt.util.THRewardItem;
 
 import java.awt.*;
 import java.util.*;
@@ -45,12 +47,12 @@ public class THLeadPickDialogPlugin implements InteractionDialogPlugin {
         text.setFontInsignia();
         text.addPara("You have uncovered several promising leads. You can pick one to follow or ignore them all so that none of them soon reappear.");
 
-        for (String id : candidates) {
+        for (String token : candidates) {
 
-            var spec = Global.getSettings().getSpecialItemSpec(id);
-            if (spec == null) continue;
+            THRewardItem reward = THRewardItem.parse(token);
+            if (!reward.isValid()) continue;
 
-            String name = spec.getName();
+            String name = reward.getDisplayName();
 
             // Smaller font for tighter layout
             text.setFontSmallInsignia();
@@ -58,57 +60,76 @@ public class THLeadPickDialogPlugin implements InteractionDialogPlugin {
             text.addPara(name, Misc.getHighlightColor());
 
             // Shortened description instead of full spec text
-            String desc = spec.getDesc();
+            String desc = reward.getDescription();
             if (desc != null && !desc.isEmpty()) {
                 text.addPara(desc);
             }
-            options.addOption(name, id);
-            addItemTooltip(id);
+            options.addOption(name, token);
+            addItemTooltip(token);
         }
 
         options.addOption("None of these", "cancel");
     }
 
-    private void addItemTooltip(String itemId) {
-        var spec = Global.getSettings().getSpecialItemSpec(itemId);
+    private void addItemTooltip(String token) {
+        THRewardItem reward = THRewardItem.parse(token);
+        var spec = reward.getSpec();
         if (spec == null) return;
 
-        options.addOptionTooltipAppender(itemId, (TooltipMakerAPI tooltip, boolean hadOtherText) -> {
+        options.addOptionTooltipAppender(token, (TooltipMakerAPI tooltip, boolean hadOtherText) -> {
             float pad = hadOtherText ? 10f : 0f;
 
-            String desc = spec.getDescFirstPara();
-            if (desc == null || desc.isEmpty()) desc = spec.getDesc();
+            String desc = reward.getDescription();
+            if (desc == null || desc.isEmpty()) desc = spec.getDescFirstPara();
             if (desc != null && !desc.isEmpty()) {
                 tooltip.addPara(desc, pad);
                 pad = 10f;
             }
 
-            addBlueprintSection(tooltip, itemId, pad);
+            addBlueprintSection(tooltip, token, pad);
         });
     }
 
-    private void addBlueprintSection(TooltipMakerAPI tooltip, String itemId, float pad) {
+    /** Data field, then the legacy {@code <key>_package} convention, then the spec's params tags. */
+    private void addBlueprintSection(TooltipMakerAPI tooltip, String token, float pad) {
         List<String> ships = new ArrayList<>();
         List<String> weapons = new ArrayList<>();
         List<String> fighters = new ArrayList<>();
 
-        // Try mod's registry first
-        if (itemId.endsWith("_package")) {
-            String packageName = itemId.substring(0, itemId.length() - "_package".length());
-            THRewardRegistry rewards = THRegistry.getRewardRegistry();
-            if (rewards.getAllBlueprintPackages().contains(packageName)) {
-                ships = rewards.getShipsFromPackage(packageName);
-                weapons = rewards.getWeaponsFromPackage(packageName);
-                fighters = rewards.getFightersFromPackage(packageName);
+        THRewardItem reward = THRewardItem.parse(token);
+        String itemId = reward.getItemId();
+        THRewardRegistry rewards = THRegistry.getRewardRegistry();
+
+        String packageKey = reward.getData();
+        if (packageKey == null && itemId != null && itemId.endsWith("_package")) {
+            String candidate = itemId.substring(0, itemId.length() - "_package".length());
+            if (rewards.hasBlueprintPackage(candidate)) packageKey = candidate;
+        }
+
+        THBlueprintPackage pkg = packageKey == null ? null : rewards.getBlueprintPackage(packageKey);
+
+        if (pkg != null && !pkg.usesTagExpression()) {
+            ships = pkg.getShips();
+            weapons = pkg.getWeapons();
+            fighters = pkg.getFighters();
+        } else {
+            Set<String> tags = null;
+            if (pkg != null) {
+                tags = pkg.getEffectiveTags();
             } else {
-                // Vanilla/tag-based blueprint packages
-                var spec = Global.getSettings().getSpecialItemSpec(itemId);
-                if (spec != null && spec.getParams() != null && !spec.getParams().isEmpty()) {
-                    Set<String> tags = new HashSet<>(Arrays.asList(spec.getParams().split(",")));
-                    ships = MultiBlueprintItemPlugin.getShipIds(tags);
-                    weapons = MultiBlueprintItemPlugin.getWeaponIds(tags);
-                    fighters = MultiBlueprintItemPlugin.getWingIds(tags);
+                var spec = reward.getSpec();
+                if (spec != null && spec.getParams() != null && !spec.getParams().trim().isEmpty()) {
+                    tags = new LinkedHashSet<>();
+                    for (String tag : spec.getParams().split(",")) {
+                        tag = tag.trim();
+                        if (!tag.isEmpty()) tags.add(tag);
+                    }
                 }
+            }
+            if (tags != null && !tags.isEmpty()) {
+                ships = MultiBlueprintItemPlugin.getShipIds(tags);
+                weapons = MultiBlueprintItemPlugin.getWeaponIds(tags);
+                fighters = MultiBlueprintItemPlugin.getWingIds(tags);
             }
         }
 

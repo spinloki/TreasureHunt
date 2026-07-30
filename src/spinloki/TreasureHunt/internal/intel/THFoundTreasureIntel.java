@@ -8,6 +8,7 @@ import com.fs.starfarer.api.impl.campaign.intel.BaseIntelPlugin;
 import com.fs.starfarer.api.ui.SectorMapAPI;
 import com.fs.starfarer.api.ui.TooltipMakerAPI;
 import com.fs.starfarer.api.util.Misc;
+import spinloki.TreasureHunt.util.THRewardItem;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.awt.*;
@@ -19,11 +20,14 @@ public class THFoundTreasureIntel extends BaseIntelPlugin implements ShowLootLis
     private final String displayName;
     private boolean lootGiven = false;
     private final SpecialItemSpecAPI spec;
+    private final String iconName;
 
     public THFoundTreasureIntel(String treasure) {
-        this.treasure = new SpecialItemData(treasure, null);
-        this.displayName = THUtils.getSpecialItemDisplayName(treasure);
-        this.spec = Global.getSettings().getSpecialItemSpec(treasure);
+        THRewardItem reward = THRewardItem.parse(treasure);
+        this.treasure = reward.toSpecialItemData();
+        this.displayName = reward.getDisplayName();
+        this.spec = reward.getSpec();
+        this.iconName = reward.getIconName();
 
         Global.getSector().getIntelManager().addIntel(this);
         Global.getSector().getListenerManager().addListener(this);
@@ -106,10 +110,10 @@ public class THFoundTreasureIntel extends BaseIntelPlugin implements ShowLootLis
 
     @Override
     public String getIcon() {
-        if (spec == null){
+        if (iconName == null){
             return THUtils.MISSING_IMAGE_FALLBACK;
         }
-        return spec.getIconName();
+        return iconName;
     }
 
     @Override

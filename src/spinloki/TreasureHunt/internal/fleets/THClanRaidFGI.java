@@ -30,6 +30,7 @@ import com.fs.starfarer.api.util.Misc;
 import spinloki.TreasureHunt.internal.events.THFactorTracker;
 import spinloki.TreasureHunt.internal.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.internal.factors.THRaidLossFactor;
+import spinloki.TreasureHunt.util.THRewardItem;
 import spinloki.TreasureHunt.util.THUtils;
 
 import java.util.ArrayList;
@@ -382,9 +383,9 @@ public class THClanRaidFGI extends GenericRaidFGI {
         if (rewarded) return;
         TreasureHuntEventIntel intel = TreasureHuntEventIntel.get();
         if (intel == null) return;
-        for (String itemId : intel.getRandomRewardItems(1)) {
-            salvage.addSpecial(new SpecialItemData(itemId, null), 1);
-            intel.removeRewardItemFromPool(itemId);
+        for (String token : intel.getRandomRewardItems(1)) {
+            salvage.addSpecial(THRewardItem.parse(token).toSpecialItemData(), 1);
+            intel.removeRewardItemFromPool(token);
             rewarded = true;
         }
     }

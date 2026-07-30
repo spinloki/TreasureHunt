@@ -35,6 +35,10 @@ public abstract class BaseTHClaimHandler implements ITHClaimHandler {
     /**
      * Increments the trigger count and persists it.
      * Subclasses must call {@code super.trigger(treasureId)} to maintain correct decay behavior.
+     *
+     * <p>A subclass that overrides {@link #trigger(com.fs.starfarer.api.campaign.SpecialItemData)}
+     * instead must still route through this method — the inherited default does so, but an override
+     * that does not call it will never decay.</p>
      */
     @Override
     public void trigger(String treasureId) {

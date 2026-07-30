@@ -5,6 +5,7 @@ import com.fs.starfarer.api.Global;
 import org.apache.log4j.Logger;
 import spinloki.TreasureHunt.api.THApi;
 import spinloki.TreasureHunt.internal.events.THFactorTracker;
+import spinloki.TreasureHunt.internal.events.TreasureHuntEventIntel;
 import spinloki.TreasureHunt.internal.intel.THExcavationRaidListener;
 import spinloki.TreasureHunt.internal.intel.THRuinExcavationIntel;
 import spinloki.TreasureHunt.internal.items.THVanillaItemTagger;
@@ -52,6 +53,9 @@ public class TreasureHunt extends BaseModPlugin {
         THRegistry.getSettings().loadFromLuna();
         registerBuiltInOpportunities();
         repairExcavationStations();
+
+        TreasureHuntEventIntel intel = TreasureHuntEventIntel.get();
+        if (intel != null) intel.syncNewOneTimeContent();
         THFactorTracker.syncClanRivalryFactors();
     }
 

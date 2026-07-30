@@ -4,11 +4,16 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
+import org.apache.log4j.Logger;
+import spinloki.TreasureHunt.internal.items.THDynamicPackagePlugin;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
+import spinloki.TreasureHunt.util.THRewardItem;
 
 import java.util.*;
 
 public class THTreasurePicker implements ShowLootListener {
+    private static final Logger log = Global.getLogger(THTreasurePicker.class);
+
     THTreasurePicker(){
         addRepeatableItems();
         addOneTimeItems();
@@ -26,27 +31,80 @@ public class THTreasurePicker implements ShowLootListener {
 
     private Set<String> oneTimeCandidates;
     private Set<String> repeatableCandidates;
+    private Set<String> everPooled;
 
     private void addRepeatableItems() {
-        repeatableCandidates = new HashSet<>();
-        Set<String> repeatItems = new HashSet<>(THRegistry.getRewardRegistry().getRepeatItems());
-        for (var item : Global.getSettings().getAllSpecialItemSpecs()){
-            if (repeatItems.contains(item.getId())){
-                repeatableCandidates.add(item.getId());
-            }
-        }
+        repeatableCandidates = resolveConfiguredItems(THRegistry.getRewardRegistry().getRepeatItems(), "th_repeat_items");
     }
 
     private void addOneTimeItems(){
         oneTimeCandidates = resolveOneTimeItems();
+        everPooled = new HashSet<>(oneTimeCandidates);
+    }
+
+    /**
+     * Brings one-time treasures configured since this hunt began into the pool, so that packages
+     * added by an update or a newly installed mod reach a campaign already in progress.
+     * Entries already offered are tracked separately from the live pool so that claimed treasures
+     * are not resurrected.
+     */
+    void syncNewlyConfigured(){
+        Set<String> configured = resolveOneTimeItems();
+
+        if (everPooled == null) {
+            // Saved before this tracking existed. Anything that could have been configured back
+            // then is treated as already offered; only dynamic packages, which could not have
+            // existed in such a save, are genuinely new.
+            everPooled = new HashSet<>(oneTimeCandidates);
+            for (String token : configured) {
+                if (THRewardItem.parse(token).getData() == null) everPooled.add(token);
+            }
+        }
+
+        List<String> added = new ArrayList<>();
+        for (String token : configured) {
+            if (everPooled.add(token)) {
+                oneTimeCandidates.add(token);
+                added.add(token);
+            }
+        }
+        if (!added.isEmpty()) {
+            log.info("Added " + added.size() + " newly configured one-time treasures to the pool: " + added);
+        }
     }
 
     private Set<String> resolveOneTimeItems(){
+        Set<String> result = resolveConfiguredItems(THRegistry.getRewardRegistry().getOneTimeItems(), "th_one_time_items");
+        result.addAll(resolveDynamicPackages());
+        return result;
+    }
+
+    private Set<String> resolveConfiguredItems(List<String> configured, String sourceKey) {
+        Set<String> wanted = new HashSet<>(configured);
         Set<String> result = new HashSet<>();
-        Set<String> oneTimeItems = new HashSet<>(THRegistry.getRewardRegistry().getOneTimeItems());
         for (var item : Global.getSettings().getAllSpecialItemSpecs()){
-            if (oneTimeItems.contains(item.getId())){
+            if (wanted.remove(item.getId())){
                 result.add(item.getId());
+            }
+        }
+        for (String missing : wanted) {
+            log.warn("Item '" + missing + "' listed in " + sourceKey
+                    + " has no special item spec and was skipped");
+        }
+        return result;
+    }
+
+    private Set<String> resolveDynamicPackages() {
+        Set<String> result = new HashSet<>();
+        if (Global.getSettings().getSpecialItemSpec(THDynamicPackagePlugin.ITEM_ID) == null) {
+            log.warn("Missing spec " + THDynamicPackagePlugin.ITEM_ID + "; dynamic blueprint packages unavailable");
+            return result;
+        }
+        var rewards = THRegistry.getRewardRegistry();
+        for (String key : rewards.getAllBlueprintPackages()) {
+            var pkg = rewards.getBlueprintPackage(key);
+            if (pkg != null && pkg.isOneTime()) {
+                result.add(THRewardItem.encode(THDynamicPackagePlugin.ITEM_ID, key));
             }
         }
         return result;
@@ -110,7 +168,11 @@ public class THTreasurePicker implements ShowLootListener {
                 if (stack.isSpecialStack()){
                     SpecialItemData specialItemData = stack.getSpecialDataIfSpecial();
                     if (specialItemData != null){
-                        removeItemFromPool(specialItemData.getId());
+                        // Also match the bare id, for pooled items whose data field isn't part
+                        // of their identity in the pool (a vanilla ship_bp, say).
+                        removeItemsFromPool(List.of(
+                                THRewardItem.from(specialItemData).getToken(),
+                                specialItemData.getId()));
                     }
                 }
             }

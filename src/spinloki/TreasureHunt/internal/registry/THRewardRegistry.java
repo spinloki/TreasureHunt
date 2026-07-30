@@ -7,7 +7,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Registry for reward definitions, item pools, and blueprint packages.
@@ -20,7 +24,7 @@ public class THRewardRegistry {
     private JSONObject rewards;
     private JSONArray oneTimeItems;
     private JSONArray repeatItems;
-    private JSONObject blueprintPackages;
+    private Map<String, THBlueprintPackage> blueprintPackages;
     private float pickOneTimeWeight;
 
     @SuppressWarnings("unchecked")
@@ -43,13 +47,32 @@ public class THRewardRegistry {
             log.warn("No th_repeat_items found in settings.json", e);
             this.repeatItems = new JSONArray();
         }
+        JSONObject packagesJson;
         try {
-            this.blueprintPackages = Global.getSettings().getJSONObject("th_blueprints_packages");
+            packagesJson = Global.getSettings().getJSONObject("th_blueprints_packages");
         } catch (JSONException e) {
             log.warn("No th_blueprints_packages found in settings.json", e);
-            this.blueprintPackages = new JSONObject();
+            packagesJson = new JSONObject();
         }
+        this.blueprintPackages = parsePackages(packagesJson);
         this.pickOneTimeWeight = pickOneTimeWeight;
+    }
+
+    private static Map<String, THBlueprintPackage> parsePackages(JSONObject json) {
+        Map<String, THBlueprintPackage> result = new LinkedHashMap<>();
+        var keys = json.keys();
+        while (keys.hasNext()) {
+            String key = keys.next().toString();
+            JSONObject entry = json.optJSONObject(key);
+            if (entry == null) {
+                log.warn("Blueprint package '" + key + "' is not an object, skipping it");
+                continue;
+            }
+            THBlueprintPackage pkg = THBlueprintPackage.parse(key, entry);
+            if (pkg != null) result.put(key, pkg);
+        }
+        log.info("Loaded " + result.size() + " blueprint packages");
+        return result;
     }
 
     // --- Reward lookups ---
@@ -60,7 +83,12 @@ public class THRewardRegistry {
 
     public JSONObject resolveAliases(String entityTypeId) {
         String currentKey = entityTypeId;
+        Set<String> visited = new HashSet<>();
         while (rewards.has(currentKey)) {
+            if (!visited.add(currentKey)) {
+                log.error("Cyclic alias in th_rewards starting at " + entityTypeId + ", cycle reached " + currentKey);
+                return null;
+            }
             try {
                 Object value = rewards.get(currentKey);
                 if (value instanceof JSONObject) {
@@ -120,44 +148,31 @@ public class THRewardRegistry {
         return pickOneTimeWeight;
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> getAllBlueprintPackages() {
-        var keys = blueprintPackages.keys();
-        List<String> result = new ArrayList<>();
-        while (keys.hasNext()) {
-            result.add(keys.next().toString());
-        }
-        return result;
+        return new ArrayList<>(blueprintPackages.keySet());
     }
 
-    public List<String> getIdsFromPackage(String packageName, String type) {
-        List<String> ids = new ArrayList<>();
-        try {
-            if (blueprintPackages.has(packageName)) {
-                JSONObject pkg = blueprintPackages.getJSONObject(packageName);
-                JSONArray typeArray = pkg.getJSONArray(type);
-                for (int i = 0; i < typeArray.length(); i++) {
-                    ids.add(typeArray.getString(i));
-                }
-            } else {
-                log.error("Blueprint package not found: " + packageName);
-            }
-        } catch (Exception e) {
-            log.error("Error reading from blueprint package: " + e.getMessage());
-        }
-        return ids;
+    public THBlueprintPackage getBlueprintPackage(String packageName) {
+        return blueprintPackages.get(packageName);
+    }
+
+    public boolean hasBlueprintPackage(String packageName) {
+        return blueprintPackages.containsKey(packageName);
     }
 
     public List<String> getFightersFromPackage(String packageName) {
-        return getIdsFromPackage(packageName, "fighters");
+        THBlueprintPackage pkg = blueprintPackages.get(packageName);
+        return pkg == null ? new ArrayList<>() : pkg.getFighters();
     }
 
     public List<String> getShipsFromPackage(String packageName) {
-        return getIdsFromPackage(packageName, "ships");
+        THBlueprintPackage pkg = blueprintPackages.get(packageName);
+        return pkg == null ? new ArrayList<>() : pkg.getShips();
     }
 
     public List<String> getWeaponsFromPackage(String packageName) {
-        return getIdsFromPackage(packageName, "weapons");
+        THBlueprintPackage pkg = blueprintPackages.get(packageName);
+        return pkg == null ? new ArrayList<>() : pkg.getWeapons();
     }
 
     // --- Helpers ---

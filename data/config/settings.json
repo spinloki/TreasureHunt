@@ -84,187 +84,116 @@
 		"wreck": "derelict_ship",
 		"weapons_cache_small_remnant": "cache"
 	},
+	# A package needs no special_items.csv row. "oneTime" defaults to false; "tags":[...] can
+	# replace the content lists to select specs tagged elsewhere. See docs/INTEGRATION.md.
 	"th_blueprints_packages": {
-		"th_ballistics": {
-			"fighters": [],
-			"ships": [],
-			"weapons": [
-				"railgun",
-				"hveldriver",
-				"gauss",
-				"lightneedler",
-				"heavyneedler",
-				"multineedler",
-				"dualflak",
-				"heavymauler"
-			]
+		"th_hegemony_line": {
+			"name": "Hegemony Line Blueprint Package",
+			"desc": "Enables heavy industry to construct many of the specifications favored by the Hegemony.",
+			"icon": "graphics/icons/cargo/blueprint_lowtech.png",
+			"emblem": "graphics/factions/crest_hegemony.png",
+			"price": 25000,
+			"oneTime": true,
+			"ships": ["onslaught", "legion", "eagle", "manticore", "vanguard"],
+			"weapons": ["gauss", "heavyneedler", "multineedler", "lightneedler", "railgun",
+				"hveldriver", "heavymauler", "dualflak", "cyclone", "squall"],
+			"fighters": ["hoplon_wing", "longbow_wing"]
 		},
-		"th_beams": {
-			"fighters": [],
-			"ships": [],
-			"weapons": [
-				"pdburst",
-				"phasebeam",
-				"irautolance",
-				"heavyburst",
-				"ionbeam",
-				"guardian",
-				"tachyonlance"
-			]
+		"th_tritach_prototype": {
+			"name": "Tri-Tachyon Strike Blueprint Package",
+			"desc": "Enables heavy industry to construct many of the specifications favored by the Tri-Tachyon Corporation.",
+			"icon": "graphics/icons/cargo/blueprint_hightech.png",
+			"emblem": "graphics/factions/crest_tritachyon.png",
+			"price": 25000,
+			"oneTime": true,
+			"ships": ["hyperion", "tempest", "scarab", "omen", "medusa", "anubis", "aurora"],
+			"weapons": ["amblaster", "heavyblaster", "ionpulser", "pdburst", "heavyburst", "phasebeam"],
+			"fighters": ["claw_wing", "cobra_wing"]
 		},
-		"th_bolts": {
-			"fighters": [],
-			"ships": [],
-			"weapons": [
-				"amblaster",
-				"heavyblaster",
-				"ionpulser",
-				"plasma",
-				"mjolnir"
-			]
+		"th_tritach_capital": {
+			"name": "Tri-Tachyon Heavy Blueprint Package",
+			"desc": "Enables heavy industry to construct many of the specifications favored by the Tri-Tachyon Corporation.",
+			"icon": "graphics/icons/cargo/blueprint_hightech.png",
+			"emblem": "graphics/factions/crest_tritachyon.png",
+			"price": 30000,
+			"oneTime": true,
+			"ships": ["paragon", "odyssey", "astral"],
+			"weapons": ["tachyonlance", "plasma", "ionbeam", "guardian", "mjolnir"],
+			"fighters": ["trident_wing", "longbow_wing"]
 		},
-		"th_dems": {
-			"fighters": [],
-			"ships": [],
-			"weapons": [
-				"gorgon",
-				"gorgonpod",
-				"gazer",
-				"gazerpod",
-				"dragon",
-				"dragonpod",
-				"hydra"
-			]
+		"th_league_command": {
+			"name": "Persean League Blueprint Package",
+			"desc": "Enables heavy industry to construct specifications favored by the Persean League.",
+			"icon": "graphics/icons/cargo/blueprint_midline.png",
+			"emblem": "graphics/factions/crest_persean_league.png",
+			"price": 25000,
+			"oneTime": true,
+			"ships": ["conquest", "pegasus", "champion", "gryphon", "monitor", "eagle"],
+			"weapons": ["gorgon", "gorgonpod", "gazer", "gazerpod", "dragon", "dragonpod",
+				"hydra", "irautolance", "mjolnir"],
+			"fighters": ["thunder_wing", "claw_wing"]
 		},
-		"th_heavy_missiles": {
-			"fighters": [],
-			"ships": [],
-			"weapons": [
-				"cyclone",
-				"pilum_large",
-				"hurricane",
-				"squall",
-				"locust"
-			]
+		"th_luddic_arsenal": {
+			"name": "Luddic Arsenal",
+			"desc": "Enables heavy industry to construct specifications favored by the faithful of both persuasions.",
+			"icon": "graphics/icons/cargo/blueprint_lowtech.png",
+			"price": 20000,
+			"oneTime": true,
+			"ships": ["invictus", "retribution", "eradicator", "vanguard", "manticore",
+				"prometheus2", "colossus2"],
+			"weapons": ["pilum_large", "hurricane", "breachpod", "sabotpod", "locust"],
+			"fighters": ["perdition_wing", "hoplon_wing"]
 		},
-		"th_frigates": {
-			"fighters": [],
-			"ships": [
-				"vanguard",
-				"hyperion",
-				"omen",
-				"tempest",
-				"monitor",
-				"scarab"
-			],
-			"weapons": []
+		"th_phase_coil": {
+			"name": "Phase Coil Blueprint Package",
+			"desc": "Enables heavy industry to construct specifications that rely on phase coil technologies.",
+			"icon": "graphics/icons/cargo/blueprint_shiphull.png",
+			"price": 30000,
+			"oneTime": true,
+			"ships": ["afflictor", "shade", "harbinger", "doom", "phantom", "revenant", "grendel"],
+			"weapons": ["phasecl", "phasebeam"]
 		},
-		"th_phase": {
-			"fighters": [],
-			"ships": [
-				"afflictor",
-				"shade",
-				"harbinger",
-				"doom",
-				"grendel",
-				"revenant"
-			],
-			"weapons": []
+		"th_free_operators": {
+			"name": "Free Operator Blueprint Package",
+			"desc": "Enables heavy industry to construct various ships and wings.",
+			"icon": "graphics/icons/cargo/blueprint_shiphull.png",
+			"price": 15000,
+			"oneTime": true,
+			"ships": ["atlas", "prometheus", "valkyrie", "apogee", "phantom", "revenant"],
+			"fighters": ["sarissa_wing", "xyphos_wing"]
 		},
-		"th_support": {
-			"fighters": [],
-			"ships": [
-				"phantom",
-				"valkyrie",
-				"atlas",
-				"prometheus",
-				"apogee"
-			],
-			"weapons": []
+		"th_shipbreaker": {
+			"name": "Shipbreaker Conversions Blueprint Package",
+			"desc": "Enables heavy industry to construct specifications favored by fleets of dubious renown.",
+			"icon": "graphics/icons/cargo/blueprint_basic.png",
+			"emblem": "graphics/factions/crest_pirates.png",
+			"price": 15000,
+			"oneTime": true,
+			"ships": ["atlas2", "colossus3", "colossus2", "prometheus2"],
+			"weapons": ["irautolance", "hurricane", "squall", "locust"]
 		},
-		"th_mid_sized": {
-			"fighters": [],
-			"ships": [
-				"manticore",
-				"medusa",
-				"eagle",
-				"champion",
-				"eradicator",
-				"aurora",
-				"gryphon",
-				"anubis"
-			],
-			"weapons": []
-		},
-		"th_modified": {
-			"fighters": [],
-			"ships": [
-				"prometheus2",
-				"atlas2",
-				"colossus2",
-				"colossus3"
-			],
-			"weapons": []
-		},
-		"th_high_tech_capitals": {
-			"fighters": [],
-			"ships": [
-				"paragon",
-				"odyssey",
-				"astral"
-			],
-			"weapons": []
-		},
-		"th_midline_capitals": {
-			"fighters": [],
-			"ships": [
-				"conquest",
-				"pegasus"
-			],
-			"weapons": []
-		},
-		"th_low_tech_capitals": {
-			"fighters": [],
-			"ships": [
-				"onslaught",
-				"legion",
-				"invictus",
-				"retribution"
-			],
-			"weapons": []
-		},
-		"th_fighters": {
-			"fighters": [
-				"thunder_wing",
-				"claw_wing",
-				"hoplon_wing",
-				"trident_wing",
-				"perdition_wing",
-				"longbow_wing"
-			],
-			"ships": [],
-			"weapons": []
-		}
+
+		# Pre-2.3 packages. set the "oneTime" fields to true and remove the packages above (or just their "oneTime" fields) if you prefer the old groupings
+		"th_ballistics": { "weapons": ["railgun", "hveldriver", "gauss", "lightneedler", "heavyneedler", "multineedler", "dualflak", "heavymauler"], "oneTime": false },
+		"th_beams": { "weapons": ["pdburst", "phasebeam", "irautolance", "heavyburst", "ionbeam", "guardian", "tachyonlance"], "oneTime": false },
+		"th_bolts": { "weapons": ["amblaster", "heavyblaster", "ionpulser", "plasma", "mjolnir"], "oneTime": false },
+		"th_dems": { "weapons": ["gorgon", "gorgonpod", "gazer", "gazerpod", "dragon", "dragonpod", "hydra"], "oneTime": false },
+		"th_heavy_missiles": { "weapons": ["cyclone", "pilum_large", "hurricane", "squall", "locust"], "oneTime": false },
+		"th_frigates": { "ships": ["vanguard", "hyperion", "omen", "tempest", "monitor", "scarab"], "oneTime": false },
+		"th_phase": { "ships": ["afflictor", "shade", "harbinger", "doom", "grendel", "revenant"], "oneTime": false },
+		"th_support": { "ships": ["phantom", "valkyrie", "atlas", "prometheus", "apogee"], "oneTime": false },
+		"th_mid_sized": { "ships": ["manticore", "medusa", "eagle", "champion", "eradicator", "aurora", "gryphon", "anubis"], "oneTime": false },
+		"th_modified": { "ships": ["prometheus2", "atlas2", "colossus2", "colossus3"], "oneTime": false },
+		"th_high_tech_capitals": { "ships": ["paragon", "odyssey", "astral"], "oneTime": false },
+		"th_midline_capitals": { "ships": ["conquest", "pegasus"], "oneTime": false },
+		"th_low_tech_capitals": { "ships": ["onslaught", "legion", "invictus", "retribution"], "oneTime": false },
+		"th_fighters": { "fighters": ["thunder_wing", "claw_wing", "hoplon_wing", "trident_wing", "perdition_wing", "longbow_wing"], "oneTime": false }
 	},
     "th_one_time_items": [
 	    "low_tech_package",
 	    "midline_package",
 	    "high_tech_package",
-	    "missile_package",
-	    "th_ballistics_package",
-	    "th_beams_package",
-	    "th_bolts_package",
-	    "th_dems_package",
-	    "th_heavy_missiles_package",
-	    "th_frigates_package",
-	    "th_phase_package",
-	    "th_support_package",
-	    "th_mid_sized_package",
-	    "th_modified_package",
-	    "th_high_tech_capitals_package",
-	    "th_midline_capitals_package",
-	    "th_low_tech_capitals_package",
-	    "th_fighters_package"
+	    "missile_package"
     ],
     "th_repeat_items": [
         "pristine_nanoforge",

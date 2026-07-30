@@ -14,3 +14,4 @@ TH_WarSimStrength,spinloki.TreasureHunt.data.console.TH_WarSimStrength,"cheat,ca
 TH_SpawnRaidFleets,spinloki.TreasureHunt.data.console.TH_SpawnRaidFleets,"cheat,campaign",th_spawnraidfleets [strengthMult=1.0],Spawns the clan raid fleets at your position without running the raid (composition/loot testing)
 TH_ClanRivalry,spinloki.TreasureHunt.data.console.TH_ClanRivalry,"cheat,campaign",th_clanrivalry [status|on|clear],Reports or forces Clanner Rivalry state and its colony crisis factors
 TH_SpawnProwler,spinloki.TreasureHunt.data.console.TH_SpawnProwler,"cheat,campaign",th_spawnprowler [count=1] [near],Spawns ambient clanner prowler fleets via the Clanner Rivalry crisis factor
+TH_SpawnPackage,spinloki.TreasureHunt.data.console.TH_SpawnPackage,"cheat,campaign",th_spawnpackage [package key],Lists blueprint packages or adds one to cargo as a dynamic item (package testing)
