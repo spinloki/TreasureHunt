@@ -2,23 +2,14 @@ package spinloki.TreasureHunt.data.console;
 
 import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.CampaignFleetAPI;
-import com.fs.starfarer.api.campaign.FactionAPI;
-import com.fs.starfarer.api.campaign.RepLevel;
 import com.fs.starfarer.api.campaign.StarSystemAPI;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
-import com.fs.starfarer.api.impl.campaign.ids.Industries;
-import com.fs.starfarer.api.impl.campaign.intel.group.FGRaidAction;
 import com.fs.starfarer.api.impl.campaign.intel.group.GenericRaidFGI;
-import com.fs.starfarer.api.impl.campaign.missions.FleetCreatorMission;
-import com.fs.starfarer.api.impl.campaign.missions.hub.HubMissionWithTriggers;
 import com.fs.starfarer.api.util.Misc;
 import org.lazywizard.console.BaseCommand;
 import org.lazywizard.console.Console;
 import spinloki.TreasureHunt.internal.fleets.THClanRaidFGI;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Dev/testing command: fires a Salvor Clan colony raid at a player colony via the
@@ -57,32 +48,7 @@ public class TH_TriggerColonyRaid implements BaseCommand {
         }
         StarSystemAPI system = target.getStarSystem();
 
-        FactionAPI raiderFaction = Global.getSector().getFaction(RAIDER_FACTION);
-        if (raiderFaction != null && target.getFactionId() != null) {
-            raiderFaction.setRelationship(target.getFactionId(), RepLevel.HOSTILE);
-        }
-
-        GenericRaidFGI.GenericRaidParams p = new GenericRaidFGI.GenericRaidParams(new Random(), true);
-        p.factionId = RAIDER_FACTION;
-        p.source = source;
-        p.style = FleetCreatorMission.FleetStyle.STANDARD;
-        p.makeFleetsHostile = true;
-        p.repImpact = HubMissionWithTriggers.ComplicationRepImpact.NONE;
-        p.prepDays = 2f;
-        p.payloadDays = 60f;
-        p.noun = "raid";
-        p.forcesNoun = "raiders";
-        p.memoryKey = "$th_clan_raid_" + target.getId();
-        p.fleetSizes = computeFleetSizes(target, mult);
-
-        FGRaidAction.FGRaidParams rp = new FGRaidAction.FGRaidParams();
-        rp.where = system;
-        rp.type = FGRaidAction.FGRaidType.CONCURRENT;
-        rp.allowedTargets = new ArrayList<>(List.of(target));
-        rp.maxStabilityLostPerRaid = 3;
-        rp.raidsPerColony = 1;
-        rp.setDisrupt(Industries.TECHMINING);
-        p.raidParams = rp;
+        GenericRaidFGI.GenericRaidParams p = THClanRaidFGI.buildParams(target, source, mult);
 
         THClanRaidFGI raid = new THClanRaidFGI(p);
         Global.getSector().getIntelManager().addIntel(raid);
@@ -91,17 +57,6 @@ public class TH_TriggerColonyRaid implements BaseCommand {
                 "Clan raid launched at %s (size %d) in %s, sourced from %s. Mult %.1f, fleets: %s",
                 target.getName(), target.getSize(), system.getName(), source.getName(), mult, p.fleetSizes));
         return CommandResult.SUCCESS;
-    }
-
-    private List<Integer> computeFleetSizes(MarketAPI m, float mult) {
-        int size = m.getSize();
-        int main = Math.round((100 + size * 30) * mult);
-        List<Integer> sizes = new ArrayList<>();
-        sizes.add(main);
-        int supports = Math.max(0, (size - 2) / 2);
-        for (int i = 0; i < supports; i++) sizes.add(Math.round(main * 0.6f));
-        sizes.add(Math.round(main * 0.3f));
-        return sizes;
     }
 
     private MarketAPI pickTargetColony() {

@@ -8,6 +8,7 @@ import spinloki.TreasureHunt.internal.events.THFactorTracker;
 import spinloki.TreasureHunt.internal.intel.THExcavationRaidListener;
 import spinloki.TreasureHunt.internal.intel.THRuinExcavationIntel;
 import spinloki.TreasureHunt.internal.items.THVanillaItemTagger;
+import spinloki.TreasureHunt.internal.opportunities.THClanRivalryOpportunity;
 import spinloki.TreasureHunt.internal.opportunities.THRuinExcavationOpportunity;
 import spinloki.TreasureHunt.internal.opportunities.THScavengerSwarmOpportunity;
 import spinloki.TreasureHunt.internal.opportunities.THSectorSprintOpportunity;
@@ -51,6 +52,7 @@ public class TreasureHunt extends BaseModPlugin {
         THRegistry.getSettings().loadFromLuna();
         registerBuiltInOpportunities();
         repairExcavationStations();
+        THFactorTracker.syncClanRivalryFactors();
     }
 
     private void registerBuiltInOpportunities() {
@@ -58,6 +60,7 @@ public class TreasureHunt extends BaseModPlugin {
         THApi.registerOpportunity(new THStationLeadOpportunity());
         THApi.registerOpportunity(new THScavengerSwarmOpportunity());
         THApi.registerOpportunity(new THRuinExcavationOpportunity());
+        THApi.registerOpportunity(new THClanRivalryOpportunity());
     }
 
     /**

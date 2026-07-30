@@ -115,7 +115,11 @@ public class TreasureHuntEventIntel extends BaseEventIntel {
 
     @Override
     public int getMaxMonthlyProgress() {
-        return THRegistry.getSettings().getMaxMonthlyProgress();
+        int base = THRegistry.getSettings().getMaxMonthlyProgress();
+        if (THUtils.isClanRivalryActive()) {
+            return Math.round(base * THRegistry.getSettings().getClanRivalryCapMult());
+        }
+        return base;
     }
 
     @Override

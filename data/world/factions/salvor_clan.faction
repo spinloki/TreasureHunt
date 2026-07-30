@@ -231,5 +231,10 @@
 		"mercPrivateer":"Privateer",
 		"mercPatrol":"Mercenary Patrol",
 		"mercArmada":"Mercenary Company",
+		"patrolSmall":"Clan Posse",
+		"patrolMedium":"Clan Pack",
+		"patrolLarge":"Clan Host",
+		"supplyFleet":"Clan Caravan",
+		"raider":"Clan Reavers",
 	},
 }

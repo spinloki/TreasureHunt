@@ -5,6 +5,7 @@ th_luna_max_mult,Max Progress Multiplier,Double,3.0,,"The maximum multiplier tha
 ,,,,,,,,
 th_luna_progressHeader,Progress Tuning,Header,Progress Tuning,,,,,Progress
 th_luna_max_monthly,Max Monthly Progress,Int,30,,"Maximum progress that can be gained per month from recurring factors (colony ruins, sector sprint, etc.). One-time factors (salvaging, scav kills) are not affected.",1,200,Progress
+th_luna_clan_rivalry_mult,Clanner Rivalry Cap Multiplier,Double,1.5,,"Multiplier applied to the monthly progress cap once the Clanner Rivalry opportunity has fired.",1.0,5.0,Progress
 th_luna_scav_kill_min,Scav Kill Min Points,Int,1,,"Minimum progress points gained from destroying a scavenger fleet.",0,50,Progress
 th_luna_scav_kill_max,Scav Kill Max Points,Int,50,,"Maximum progress points gained from destroying a scavenger fleet. Scales with fleet hull value.",1,200,Progress
 th_luna_colony_tech_mult,Colony Tech Mining Multiplier,Int,2,,"Multiplier to colony ruin progress when the tech mining industry is present.",1,5,Progress

@@ -65,6 +65,12 @@ public class TH_MakeTestColony implements BaseCommand {
         }
 
         MarketAPI oldMarket = planet.getMarket();
+        if (!THUtils.isUncolonizedRuinsWorld(oldMarket)) {
+            Console.showMessage("Error: " + planet.getName() + " is not an uninhabited ruins world "
+                    + "(faction=" + oldMarket.getFactionId() + ", size=" + oldMarket.getSize()
+                    + ", inEconomy=" + oldMarket.isInEconomy() + "). Refusing to replace its market.");
+            return CommandResult.ERROR;
+        }
         String ruinsType = Misc.getRuinsType(oldMarket);
 
         // Capture the planet's conditions (ruins, resources, hazard) to carry over.
@@ -146,10 +152,7 @@ public class TH_MakeTestColony implements BaseCommand {
             for (PlanetAPI planet : system.getPlanets()) {
                 if (planet.isStar() || planet.isGasGiant()) continue;
                 MarketAPI m = planet.getMarket();
-                if (m == null) continue;
-                if (!m.isPlanetConditionMarketOnly()) continue; // uncolonized only
-                if (m.isPlayerOwned()) continue;
-                if (!Misc.hasRuins(m)) continue;
+                if (!THUtils.isUncolonizedRuinsWorld(m)) continue;
                 anyRuins.add(planet);
                 if ("ruins_vast".equals(Misc.getRuinsType(m))) vast.add(planet);
             }

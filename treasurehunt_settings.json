@@ -43,6 +43,9 @@
 	# Maximum monthly progress from recurring factors (colony ruins, sector sprint, etc.)
 	"th_max_monthly_progress": 30,
 
+	# Multiplier applied to the monthly progress cap once Clanner Rivalry is active.
+	"th_clan_rivalry_cap_mult": 1.5,
+
 	# Whether factor progress notifications appear in the fleet log
 	"th_show_factor_notifications": true
 }

@@ -88,23 +88,16 @@ public class THRuinExcavationOpportunity extends BaseTHOpportunity {
         if (Global.getSector().getPlayerFleet().getContainingLocation() == system) return false;
         if (system.hasTag(Tags.THEME_REMNANT_MAIN)) return false;
         if (system.hasTag(Tags.THEME_REMNANT_SECONDARY)) return false;
-        // Story-critical systems: red planet, PK system, TT black site, Limbo, etc.
-        if (system.hasTag(Tags.THEME_SPECIAL)) return false;
+        if (system.hasTag(Tags.THEME_SPECIAL)) return false; // red planet, PK, black site, Limbo
         return true;
     }
 
     private boolean isValidTargetPlanet(PlanetAPI planet) {
         if (planet.isStar() || planet.isGasGiant()) return false;
-        // Excludes the planetary shield "red planet" and other story planets
         if (planet.hasTag(Tags.NOT_RANDOM_MISSION_TARGET)) return false;
 
-        MarketAPI market = planet.getMarket();
-        if (market == null) return false;
-        if (market.isPlayerOwned()) return false;
-        if (!market.isPlanetConditionMarketOnly()) return false;
-        if (!Misc.hasRuins(market)) return false;
+        if (!THUtils.isUncolonizedRuinsWorld(planet.getMarket())) return false;
 
-        // Skip planets already targeted by an active excavation, or already excavated once
         if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_blocked")) return false;
         if (planet.getMemoryWithoutUpdate().getBoolean("$th_excavation_ground_ops")) return false;
         if (planet.getMemoryWithoutUpdate().getBoolean(THUtils.MEMORY_KEY_EXCAVATION_DONE)) return false;

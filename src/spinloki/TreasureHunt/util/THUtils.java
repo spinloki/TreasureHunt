@@ -4,6 +4,8 @@ import com.fs.starfarer.api.Global;
 import com.fs.starfarer.api.campaign.*;
 import com.fs.starfarer.api.campaign.econ.Industry;
 import com.fs.starfarer.api.campaign.econ.MarketAPI;
+import com.fs.starfarer.api.impl.campaign.ids.Conditions;
+import com.fs.starfarer.api.impl.campaign.ids.Factions;
 import com.fs.starfarer.api.impl.campaign.ids.Industries;
 import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
@@ -23,6 +25,47 @@ public class THUtils {
     public static final String MEMORY_KEY_EXCAVATION_DONE = "$th_excavation_done";
 
     public static final String MISSING_IMAGE_FALLBACK = "graphics/icons/campaign/major_bad_event.png";
+
+    private static final String PERSISTENT_KEY_RIVALRY = "th_clan_rivalry_active";
+    private static final String PERSISTENT_KEY_CLEARED = "th_clan_cleared_colonies";
+
+    public static boolean isClanRivalryActive() {
+        return Boolean.TRUE.equals(Global.getSector().getPersistentData().get(PERSISTENT_KEY_RIVALRY));
+    }
+
+    public static void setClanRivalryActive() {
+        Global.getSector().getPersistentData().put(PERSISTENT_KEY_RIVALRY, true);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Set<String> getClanClearedColonies() {
+        Map<String, Object> data = Global.getSector().getPersistentData();
+        Set<String> cleared = (Set<String>) data.get(PERSISTENT_KEY_CLEARED);
+        if (cleared == null) {
+            cleared = new HashSet<>();
+            data.put(PERSISTENT_KEY_CLEARED, cleared);
+        }
+        return cleared;
+    }
+
+    public static boolean isVastRuins(MarketAPI market) {
+        return market != null && market.hasCondition(Conditions.RUINS_VAST);
+    }
+
+    public static boolean isRivalryRuinsColony(MarketAPI market) {
+        if (market == null || !market.isPlayerOwned()) return false;
+        return market.hasCondition(Conditions.RUINS_VAST) || market.hasCondition(Conditions.RUINS_EXTENSIVE);
+    }
+
+    public static boolean isClanRivalryGateMet() {
+        int extensive = 0;
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+            if (!isRivalryRuinsColony(market)) continue;
+            if (isVastRuins(market)) return true;
+            extensive++;
+        }
+        return extensive >= 2;
+    }
 
     public static int applyBoost(int points) {
         int boost = (int) Misc.getFleetwideTotalMod(Global.getSector().getPlayerFleet(), TH_TREASURE_HUNT_BOOST, 0);
@@ -47,6 +90,19 @@ public class THUtils {
 
     public static int clamp(int value, int min, int max) {
         return Math.max(min, Math.min(value, max));
+    }
+
+    // planetConditionMarketOnly can stay set on a market a mod has since colonized, so
+    // economy membership, size and faction are checked too.
+    public static boolean isUncolonizedRuinsWorld(MarketAPI market) {
+        if (market == null) return false;
+        if (!market.isPlanetConditionMarketOnly()) return false;
+        if (market.isPlayerOwned()) return false;
+        if (market.isInEconomy()) return false;
+        if (market.getSize() > 1) return false;
+        String factionId = market.getFactionId();
+        if (factionId != null && !Factions.NEUTRAL.equals(factionId)) return false;
+        return Misc.hasRuins(market);
     }
 
     public static Set<StarSystemAPI> getSectorSprintCandidates(int count) {

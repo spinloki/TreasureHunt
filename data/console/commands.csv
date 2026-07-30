@@ -7,6 +7,10 @@ TH_ClaimRelaysInAllSystems,spinloki.TreasureHunt.data.console.TH_ClaimRelaysInAl
 TH_TriggerOpportunity,spinloki.TreasureHunt.data.console.TH_TriggerOpportunity,"cheat,campaign",th_triggeropportunity <opportunity name>,Triggers a registered treasure hunt opportunity by name
 TH_TriggerClaimHandler,spinloki.TreasureHunt.data.console.TH_TriggerClaimHandler,"cheat,campaign",th_triggerclaimhandler <handler name> [treasure id],Triggers a registered treasure hunt claim handler by name (default treasure: pristine_nanoforge)
 TH_SurveyPlanet,spinloki.TreasureHunt.data.console.TH_SurveyPlanet,"cheat,campaign",th_surveyplanet <planet name>,Marks the named planet as fully surveyed
+TH_TestExcavation,spinloki.TreasureHunt.data.console.TH_TestExcavation,"cheat,campaign",th_testexcavation [survey|explore|colonize] [factionId],Stages a ruin excavation in a chosen survey/ruins state and teleports there (excavation dialog testing)
 TH_MakeTestColony,spinloki.TreasureHunt.data.console.TH_MakeTestColony,"cheat,campaign",th_maketestcolony [size=5] [notechmining],Stands up a player colony on a ruins world scaled by size and teleports there (raid target testing)
 TH_TriggerColonyRaid,spinloki.TreasureHunt.data.console.TH_TriggerColonyRaid,"cheat,campaign",th_triggercolonyraid [strengthMult=1.0],Fires a Salvor Clan raid at the current/nearest player colony (raid testing)
 TH_WarSimStrength,spinloki.TreasureHunt.data.console.TH_WarSimStrength,"cheat,campaign",th_warsimstrength [factionId=salvor_clan],Dumps WarSim per-faction strengths for the current system (raid diagnosis)
+TH_SpawnRaidFleets,spinloki.TreasureHunt.data.console.TH_SpawnRaidFleets,"cheat,campaign",th_spawnraidfleets [strengthMult=1.0],Spawns the clan raid fleets at your position without running the raid (composition/loot testing)
+TH_ClanRivalry,spinloki.TreasureHunt.data.console.TH_ClanRivalry,"cheat,campaign",th_clanrivalry [status|on|clear],Reports or forces Clanner Rivalry state and its colony crisis factors
+TH_SpawnProwler,spinloki.TreasureHunt.data.console.TH_SpawnProwler,"cheat,campaign",th_spawnprowler [count=1] [near],Spawns ambient clanner prowler fleets via the Clanner Rivalry crisis factor

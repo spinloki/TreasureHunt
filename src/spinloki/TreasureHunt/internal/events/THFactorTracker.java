@@ -11,14 +11,26 @@ import com.fs.starfarer.api.campaign.listeners.PlayerColonizationListener;
 import com.fs.starfarer.api.campaign.listeners.ShowLootListener;
 import com.fs.starfarer.api.util.Misc;
 import org.json.JSONException;
+import com.fs.starfarer.api.impl.campaign.intel.events.EventFactor;
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityEventIntel;
+import com.fs.starfarer.api.util.IntervalUtil;
+import com.fs.starfarer.api.impl.campaign.intel.events.HostileActivityCause2;
+import spinloki.TreasureHunt.internal.factors.THClanRivalryCause;
+import spinloki.TreasureHunt.internal.factors.THClanRivalryFactor;
+import spinloki.TreasureHunt.internal.intel.THClanRivalryIntel;
 import spinloki.TreasureHunt.internal.factors.THColonyRuinFactor;
 import spinloki.TreasureHunt.internal.factors.THSalvageFactor;
 import spinloki.TreasureHunt.internal.factors.THTimeFactor;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
 import spinloki.TreasureHunt.util.THUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 public class THFactorTracker implements ShowLootListener, PlayerColonizationListener, EveryFrameScript {
     // Threshold (in days) for determining if a market was recently raided by the player
@@ -118,6 +130,53 @@ public class THFactorTracker implements ShowLootListener, PlayerColonizationList
         }
         while (!factors.isEmpty()){
             TreasureHuntEventIntel.addFactorCreateIfNecessary(factors.poll(), null);
+        }
+
+        rivalryCheck.advance(Global.getSector().getClock().convertToDays(amount));
+        if (rivalryCheck.intervalElapsed()) syncClanRivalryFactors();
+    }
+
+    // Short interval so the crisis factor recovers quickly when the hostile activity
+    // event intel doesn't exist yet at the moment the rivalry is triggered.
+    private final IntervalUtil rivalryCheck = new IntervalUtil(0.5f, 1f);
+
+    public static void syncClanRivalryFactors() {
+        if (!THUtils.isClanRivalryActive()) return;
+        THClanRivalryIntel.getOrCreate();
+
+        HostileActivityEventIntel intel = HostileActivityEventIntel.get();
+        if (intel == null) return;
+
+        THClanRivalryFactor factor = null;
+        for (EventFactor curr : new ArrayList<>(intel.getFactors())) {
+            if (!(curr instanceof THClanRivalryFactor found)) continue;
+            if (factor == null) factor = found;
+            else intel.removeFactor(found);
+        }
+        if (factor == null) {
+            factor = new THClanRivalryFactor(intel);
+            intel.addFactor(factor);
+        }
+
+        Set<String> cleared = THUtils.getClanClearedColonies();
+
+        Map<String, THClanRivalryCause> existing = new HashMap<>();
+        for (HostileActivityCause2 cause : new ArrayList<>(factor.getCauses())) {
+            if (cause instanceof THClanRivalryCause curr) existing.put(curr.getMarketId(), curr);
+        }
+
+        Set<String> wanted = new HashSet<>();
+        for (MarketAPI market : Global.getSector().getEconomy().getMarketsCopy()) {
+            if (!THUtils.isRivalryRuinsColony(market)) continue;
+            if (cleared.contains(market.getId())) continue;
+            wanted.add(market.getId());
+            if (!existing.containsKey(market.getId())) {
+                factor.addCause(new THClanRivalryCause(intel, market));
+            }
+        }
+
+        for (Map.Entry<String, THClanRivalryCause> entry : existing.entrySet()) {
+            if (!wanted.contains(entry.getKey())) factor.getCauses().remove(entry.getValue());
         }
     }
 

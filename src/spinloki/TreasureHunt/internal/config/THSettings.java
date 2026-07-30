@@ -24,6 +24,7 @@ public class THSettings {
     private JSONObject colonyRuinsBaseProgress;
     private int colonyTechMiningProgressMultiplier;
     private int maxMonthlyProgress = 30;
+    private float clanRivalryCapMult = 1.5f;
     private int sectorSprintReward;
     private float pickOneTimeWeight;
     private boolean raidDiminishingReturnsEnabled;
@@ -67,6 +68,7 @@ public class THSettings {
         scavengerDataMinPoints = json.getInt("th_scavenger_data_min_points");
         scavengerDataMaxPoints = json.getInt("th_scavenger_data_max_points");
         maxMonthlyProgress = json.getInt("th_max_monthly_progress");
+        clanRivalryCapMult = (float) json.optDouble("th_clan_rivalry_cap_mult", 1.5);
         showFactorNotifications = json.optBoolean("th_show_factor_notifications", true);
 
         detectLuna();
@@ -99,6 +101,9 @@ public class THSettings {
 
             v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_max_monthly");
             if (v != null) maxMonthlyProgress = v;
+
+            d = lunalib.lunaSettings.LunaSettings.getDouble(MOD_ID, "th_luna_clan_rivalry_mult");
+            if (d != null) clanRivalryCapMult = d.floatValue();
 
             v = lunalib.lunaSettings.LunaSettings.getInt(MOD_ID, "th_luna_scav_kill_min");
             if (v != null) {
@@ -175,6 +180,7 @@ public class THSettings {
     }
     public int getColonyTechMiningProgressMultiplier() { return colonyTechMiningProgressMultiplier; }
     public int getMaxMonthlyProgress() { return maxMonthlyProgress; }
+    public float getClanRivalryCapMult() { return clanRivalryCapMult; }
     public int getSectorSprintReward() { return sectorSprintReward; }
     public float getPickOneTimeWeight() { return pickOneTimeWeight; }
     public boolean isRaidDiminishingReturnsEnabled() { return raidDiminishingReturnsEnabled; }

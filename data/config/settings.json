@@ -13,7 +13,8 @@
  			"sector_sprint":"graphics/icons/abilities/emergency_burn.png",
             "scavenger_swarm":"graphics/icons/campaign/hostile_activity4.png",
 			"station_lead":"graphics/icons/missions/data_retrieval.png",
-			"ruin_excavation":"graphics/icons/campaign/hostile_activity4.png"
+			"ruin_excavation":"graphics/icons/campaign/hostile_activity4.png",
+			"clanner_rivalry":"graphics/icons/campaign/hostile_activity2.png"
 		}
 	},
 	"th_rewards": {
