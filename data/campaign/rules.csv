@@ -310,7 +310,12 @@ thExcavation_blockSurvey,PopulateOptions,"$market.isPlanetConditionMarketOnly
 $th_excavation_blocked score:1000",SetEnabled surveyPerform false,An orbital station is preventing survey operations. It will need to be dealt with first.,,
 thExcavation_blockExplore,PopulateOptions,"$market.isPlanetConditionMarketOnly
 $market.isSurveyed
+$market.hasUnexploredRuins
 $th_excavation_blocked score:1000",SetEnabled salExplore false,An orbital station is preventing exploration of the ruins. It will need to be dealt with first.,,
+thExcavation_blockColonize,PopulateOptions,"$market.isPlanetConditionMarketOnly
+$market.isSurveyed
+!$market.hasUnexploredRuins
+$th_excavation_blocked score:1000",SetEnabled surveyPerform false,An orbital station is preventing any attempt to establish a colony. It will need to be dealt with first.,,
 # Ruin Excavation - defender fleet comm link,,,,,,
 thExcavation_defenderComm,OpenCommLink,"$entity.th_excavation_defender
 !$faction.isHostile score:1000","SetStoryOption thExcConvince 1 thExcConvinceDefender ui_char_spent_story_point ""Convinced excavation fleet to withdraw""
@@ -326,8 +331,17 @@ EndConversation","The $post’s eyes widen in a sudden panic when you imply that
 The comm link connection abruptly closes.",,
 thExcavation_interceptSurvey,DialogOptionSelected,"$option == surveyPerform
 $market.isPlanetConditionMarketOnly
+!$market.isSurveyed
 $th_excavation_ground_ops score:1000","TH_CMD excavationBombardMenu
 SetStoryOption thExcTrick 1 thExcTrickDefenders ui_char_spent_story_point ""Tricked excavation defenders into leaving fortifications""",Your survey teams report being harried by vengeful operatives from $th_excavation_faction_the. They are dug into the ruins and will have to be dealt with before you can conduct a proper survey.,"thExcRaid:Raid the excavation site
+thExcBombard:Prepare an orbital bombardment
+thExcTrick:Convince the operatives to leave their fortifications
+thExcGroundOpsGoBack:Go back",
+thExcavation_interceptColonize,DialogOptionSelected,"$option == surveyPerform
+$market.isPlanetConditionMarketOnly
+$market.isSurveyed
+$th_excavation_ground_ops score:1000","TH_CMD excavationBombardMenu
+SetStoryOption thExcTrick 1 thExcTrickDefenders ui_char_spent_story_point ""Tricked excavation defenders into leaving fortifications""",Your survey teams report that operatives from $th_excavation_faction_the are dug into the ruins and firing on anything that approaches. No colony can be established here until they are dealt with.,"thExcRaid:Raid the excavation site
 thExcBombard:Prepare an orbital bombardment
 thExcTrick:Convince the operatives to leave their fortifications
 thExcGroundOpsGoBack:Go back",
@@ -335,6 +349,13 @@ thExcavation_interceptExplore,DialogOptionSelected,"$option == salExplore
 $market.isPlanetConditionMarketOnly
 $th_excavation_ground_ops score:1000","TH_CMD excavationBombardMenu
 SetStoryOption thExcTrick 1 thExcTrickDefenders ui_char_spent_story_point ""Tricked excavation defenders into leaving fortifications""",Your exploration teams report being harried by vengeful operatives from $th_excavation_faction_the. They are dug into the ruins and will have to be dealt with before you can salvage the ruins.,"thExcRaid:Raid the excavation site
+thExcBombard:Prepare an orbital bombardment
+thExcTrick:Convince the operatives to leave their fortifications
+thExcGroundOpsGoBack:Go back",
+thExcavation_groundOpsOption,PopulateOptions,"$market.isPlanetConditionMarketOnly
+$th_excavation_ground_ops score:1000",,,1:thExcGroundOps:Deal with the excavation site,
+thExcavation_groundOpsSel,DialogOptionSelected,$option == thExcGroundOps,"TH_CMD excavationBombardMenu
+SetStoryOption thExcTrick 1 thExcTrickDefenders ui_char_spent_story_point ""Tricked excavation defenders into leaving fortifications""","Operatives from $th_excavation_faction_the are still dug into the ruins below, guarding whatever their excavation turned up.","thExcRaid:Raid the excavation site
 thExcBombard:Prepare an orbital bombardment
 thExcTrick:Convince the operatives to leave their fortifications
 thExcGroundOpsGoBack:Go back",

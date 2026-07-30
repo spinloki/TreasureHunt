@@ -217,9 +217,16 @@ public class THRuinExcavationIntel extends BaseIntelPlugin {
         String factionNameWithArticle = Misc.ucFirst(Global.getSector().getFaction(factionId).getDisplayNameWithArticle());
 
         if (!(isEnded() || isEnding())) {
-            info.addPara(factionNameWithArticle + " scavengers have discovered an uncharted planet with ruins "
-                    + "in the " + planet.getStarSystem().getNameWithTypeIfNebula()
-                    + " and have set up a fortified station to excavate them.", 0f);
+            boolean picketedOver = !Misc.hasUnexploredRuins(planet.getMarket());
+            if (picketedOver) {
+                info.addPara(factionNameWithArticle + " scavengers have moved in on the ruins "
+                        + "in the " + planet.getStarSystem().getNameWithTypeIfNebula()
+                        + " and have set up a fortified station to dig deeper than your own teams did.", 0f);
+            } else {
+                info.addPara(factionNameWithArticle + " scavengers have discovered an uncharted planet with ruins "
+                        + "in the " + planet.getStarSystem().getNameWithTypeIfNebula()
+                        + " and have set up a fortified station to excavate them.", 0f);
+            }
 
             info.addPara("Destroy the excavation station's garrison to clear the way, "
                     + "then raid the planet's ruins for valuable salvage and treasure hunt progress.", opad);

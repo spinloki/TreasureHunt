@@ -20,6 +20,7 @@ public class THUtils {
     public static final String TH_TREASURE_HUNT_BOOST = "th_treasure_hunt_boost";
     public static final String TH_TAG = "Treasure Hunt";
     public static final String MEMORY_KEY_TH_SCAVENGER = "$isThScavenger";
+    public static final String MEMORY_KEY_EXCAVATION_DONE = "$th_excavation_done";
 
     public static final String MISSING_IMAGE_FALLBACK = "graphics/icons/campaign/major_bad_event.png";
 
