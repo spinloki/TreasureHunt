@@ -194,4 +194,4 @@ nbdist/
 .idea/csv-editor.xml
 
 .idea/
-.run/
+.run/test/out/

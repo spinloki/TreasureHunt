@@ -9,7 +9,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../LunaLib-2.0.5/jars/LunaLib.jar!/" />
+          <root url="jar://$MODULE_DIR$/../LunaLib-2.1.0/jars/LunaLib.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

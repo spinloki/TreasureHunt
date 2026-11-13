@@ -18,7 +18,6 @@ import spinloki.TreasureHunt.internal.registry.THRegistry;
 
 public class TreasureHunt extends BaseModPlugin {
     private static final Logger log = Logger.getLogger(TreasureHunt.class);
-    private static THFactorTracker factorTracker = null;
 
     @Override
     public void onApplicationLoad() throws Exception {
@@ -31,7 +30,7 @@ public class TreasureHunt extends BaseModPlugin {
     @Override
     public void onNewGame() {
         super.onNewGame();
-        factorTracker = new THFactorTracker();
+        THFactorTracker factorTracker = new THFactorTracker();
         Global.getSector().addScript(factorTracker);
         Global.getSector().getListenerManager().addListener(factorTracker);
     }
@@ -44,7 +43,7 @@ public class TreasureHunt extends BaseModPlugin {
         }
         Global.getSector().getListenerManager().removeListenerOfClass(THExcavationRaidListener.class);
 
-        factorTracker = new THFactorTracker();
+        THFactorTracker factorTracker = new THFactorTracker();
         Global.getSector().addScript(factorTracker);
         Global.getSector().getListenerManager().addListener(factorTracker);
         Global.getSector().getListenerManager().addListener(new THExcavationRaidListener());
@@ -82,10 +81,6 @@ public class TreasureHunt extends BaseModPlugin {
                 }
             }
         }
-    }
-
-    public static THFactorTracker getFactorTrackerForTestOnly(){
-        return factorTracker;
     }
 
     private void registerLunaListener() {

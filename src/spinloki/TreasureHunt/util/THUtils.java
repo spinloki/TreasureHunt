@@ -11,7 +11,6 @@ import com.fs.starfarer.api.impl.campaign.ids.MemFlags;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
 import com.fs.starfarer.api.util.Misc;
 import com.fs.starfarer.api.util.WeightedRandomPicker;
-import com.fs.starfarer.campaign.*;
 import org.lazywizard.lazylib.MathUtils;
 import org.lwjgl.util.vector.Vector2f;
 import spinloki.TreasureHunt.internal.registry.THRegistry;
@@ -263,8 +262,8 @@ public class THUtils {
         if (e == null) return false;
         if (e.isExpired()) return false;
 
-        if (e instanceof CampaignAsteroid) return false;
-        if (e instanceof CampaignTerrain) return false;
+        if (e instanceof AsteroidAPI) return false;
+        if (e instanceof CampaignTerrainAPI) return false;
         if (e instanceof RingBandAPI) return false;
 
         if (e.getCustomEntitySpec() == null &&
